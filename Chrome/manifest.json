@@ -1,0 +1,22 @@
+{
+    "background": {
+        "scripts": ["assets/jquery.min.js", "background.js", "assets/analytics.js"],
+        "persistent": false
+    },
+    "content_scripts": [ {
+        "matches": ["*://*.gaiaonline.com/*"],
+        "js": ["assets/jquery.min.js", "assets/bridge.js", "assets/bettergaia.js"]
+    }],
+    "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
+    "description": "Change the way you experience Gaia.",
+    "homepage_url": "http://chrome.google.com/webstore/detail/lmgjagdflhhfjflolfalapokbplfldna",
+    "icons": {
+        "128": "images/logo/128.png"
+    },
+    "manifest_version": 2,
+    "minimum_chrome_version": "28",
+    "name": "BetaGaia with Bridge",
+    "permissions": [ "alarms", "tabs", "storage", "notifications", "*://*.gaiaonline.com/*", "*://*.bettergaia.com/*" ],
+    "version": "2014.50",
+    "web_accessible_resources": [ "code/css/main.css", "code/css/forum.css", "code/html/changelog.html", "code/html/settings-widget.html", "/code/css/glyphicons-halflings-regular.woff", "/images/legacy.jpg", "/images/goldengaia.png", "/images/omnidrink.png", "images/logo/128.png", "images/logo/500.png", "images/logo/text.png", "/images/editor.png" ]
+}
