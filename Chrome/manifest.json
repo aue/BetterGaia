@@ -5,13 +5,14 @@
     },
     "content_scripts": [ {
         "matches": ["*://*.gaiaonline.com/*"],
-        "js": ["assets/jquery.min.js", "assets/bridge.js", "assets/bettergaia.js"]
+        "js": ["assets/jquery.min.js", "assets/bridge.js", "assets/bettergaia.js"],
+        "run_at": "document_start"
     }],
     "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
     "description": "Change the way you experience Gaia.",
     "homepage_url": "http://chrome.google.com/webstore/detail/lmgjagdflhhfjflolfalapokbplfldna",
     "icons": {
-        "128": "images/logo/128.png"
+        "128": "images/logo/128text.png"
     },
     "manifest_version": 2,
     "minimum_chrome_version": "28",

@@ -33,7 +33,7 @@ var BetterGaia = {
                 callback({error: true});
                 return;
             }
-            
+
             $.ajax({
                 url: BetterGaia.serverUrl + 'framework/extensions/' + id + '/',
                 dataType: 'json'
@@ -89,18 +89,23 @@ var BetterGaia = {
         },
         bettergaia: function() {
             // Install core
-            
+            Storage.set('installed', true);
         }
     },
     
 	insert: {
 		css: function(css) {
 			try {
-				var style = document.createElement('style');
-					style.type = 'text/css';
-					style.setAttribute('bg-css', '');
-					style.appendChild(document.createTextNode(css));
-				document.documentElement.appendChild(style);
+                if (document.querySelectorAll('style[bg-css]').length > 0) {
+                    document.querySelectorAll('style[bg-css]')[0].appendChild(document.createTextNode(css));
+                }
+                else {
+                    var style = document.createElement('style');
+                        style.type = 'text/css';
+                        style.setAttribute('bg-css', '');
+                        style.appendChild(document.createTextNode(css));
+                    document.documentElement.appendChild(style);
+                }
 			}
 			catch(e) {
 				console.log('[BetterGaia][Bridge] Error when inserting css style: ' + e.message);
@@ -135,7 +140,7 @@ var BetterGaia = {
 	},
 
 	run: function() {
-		if (this.ready === false) throw new Error('Storage not initialized.');
+		//if (this.ready === false) throw new Error('Storage not initialized.');
 		// empty
 	},
 
@@ -146,11 +151,18 @@ var BetterGaia = {
 		if (Storage.ready === false) throw new Error('Storage not found.');
 
         // Check if installed
-        if (typeof Storage['installed'] !== 'boolean') {
+        if (typeof Storage.data['installed'] !== 'boolean') {
             this.console.log('Welcome to BetterGaia! Installing core package now...');
             this.install.bettergaia();
             return;
         }
+        
+        // Else, BG is installed, parse extensions
+        if (typeof Storage.data['extentionsInstalled'] == 'object') {
+            BetterGaia.console.log(Storage.data['extentionsInstalled']);
+        }
+        
+        Storage.set();
 	}
 };
 
@@ -174,11 +186,9 @@ var Storage = {
 		}
 	},
 
-    get: function() {
-		try {
-			chrome.storage.local.get(null, function(data) {
-				Storage.data = data;
-			});
+    get: function(key) {
+        try {
+            return Storage.data[key];
 		}
 		catch(e) {console.log('[BetterGaia][Bridge] Error when getting storage: ' + e.message);}
     },
@@ -198,19 +208,29 @@ var Storage = {
 
     init: function() {
 		if (this.ready === true) throw new Error('Storage already initialized.');
-        this.get();
-		this.ready = true;
+
+		try {
+			chrome.storage.local.get(null, function(data, callback) {
+				Storage.data = data;
+                Storage.ready = true;
+
+                // Init BG, unfo. can't pass in a callback
+                BetterGaia.init();
+			});
+		}
+		catch(e) {console.log('[BetterGaia][Bridge] Error when getting storage: ' + e.message);}
     }
 };
 
 // Start Bridge to the other side
 try {
     Storage.init();
-	BetterGaia.init();
-	if (Storage.ready && BetterGaia.ready) BetterGaia.run();
+	
+	//if (Storage.ready && BetterGaia.ready) BetterGaia.run();
 }
 catch(e) {
 	console.log('[BetterGaia][Bridge] Error when starting bridge: ' + e.message);
+    console.log(e);
 	try {
 		BetterGaia.run();
 	}

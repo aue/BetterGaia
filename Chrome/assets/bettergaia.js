@@ -7,9 +7,11 @@ Copyright (c) BetterGaia and Bowafishtech
 /*global localStorage: false, console: false, $: false, chrome: false, BetterGaia: false, Storage: false */
 /*jshint sub:true */
 
-BetterGaia.urlCheck('true');
+/*BetterGaia.urlCheck('true');
 
 // First run, download data
 if (typeof Storage.data['installed'] === 'boolean' && Storage.data['installed'] === false) {
 	Storage.set('installed', true);	
 }
+
+BetterGaia.insert.css('body {border: 10px solid orange;}');*/
