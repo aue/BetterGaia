@@ -28,6 +28,8 @@ var BetterGaia = {
 		try_count: 0,
         max_try_count: 4,
         extension: function(id, callback) {
+            if (typeof callback !== 'function') throw new Error('Download has no callback.');
+
             // try to get data from server
             if (BetterGaia.download.try_count >= BetterGaia.download.max_try_count) {
                 callback({error: true});
@@ -38,7 +40,7 @@ var BetterGaia = {
                 url: BetterGaia.serverUrl + 'framework/extensions/' + id + '/',
                 dataType: 'json'
             }).done(function(data) {
-                callback({error: false, 'data': data});
+                if (typeof callback === 'function') callback({error: false, 'data': data});
                 return;
             }).fail(function(data) {
                 BetterGaia.download.try_count++;
@@ -52,10 +54,10 @@ var BetterGaia = {
             // Install extension
             BetterGaia.download.extension(id, function(data) {
                 try {
-                    if (data.error === true || data.script === '') {
+                    if (data.error !== false || data.script === '') {
                         // Server returned an error or empty script.
-                        BetterGaia.console.log('installing extension failed: Empty script or errors.');
-                        return callback({error: true});
+                        callback({success: false});
+                        throw new Error('installing extension failed: Errors with fetching from server.');
                     }
                     BetterGaia.console.log('downloading of extension of ' + id + ' was successful, now installing.');
                     
@@ -75,7 +77,7 @@ var BetterGaia = {
                     if (errors === false) {
                         // Saved data without any errors!
                         BetterGaia.installed.add(data.id);
-                        callback(data);
+                        callback({success: true});
                     }
                     else {
                         // Something awful has happened.
@@ -83,17 +85,20 @@ var BetterGaia = {
                     }
                 }
                 catch(e) {
-                    BetterGaia.console.warn('install_extension failed: ' + e.message);            
+                    BetterGaia.console.warn('installing extension failed: ' + e.message);            
                 }            
             });
         },
         bettergaia: function() {
             // Install core
-            Storage.set('installed', true);
+            BetterGaia.install.extension('core', function(data) {
+                if (data.success === true) Storage.set('installed', true);
+            });        
         }
     },
     
 	insert: {
+        // make sure to clear out css hierarchy rules
 		css: function(css) {
 			try {
                 if (document.querySelectorAll('style[bg-css]').length > 0) {
@@ -162,7 +167,7 @@ var BetterGaia = {
             BetterGaia.console.log(Storage.data['extentionsInstalled']);
         }
         
-        Storage.set();
+        //Storage.set();
 	}
 };
 
@@ -178,7 +183,8 @@ var Storage = {
 		try {
 			// Send to chrome storage
 			chrome.storage.local.set(send, function() {
-				Storage.data[key] = value; // Sucess, put in bridge storage (might not work)
+                if (typeof chrome.runtime.lastError === 'object') throw new Error('Issue with chrome storage.');
+				Storage.data[key] = value; // Sucess, put in bridge storage
 			});
 		}
 		catch(e) {
@@ -197,8 +203,8 @@ var Storage = {
 		try {
 			// Send to chrome storage
 			chrome.storage.local.remove(key, function() {
-				delete Storage.data[key]; // Success, remove from bridge storage (might not work)
-				return {success: true};
+                if (typeof chrome.runtime.lastError === 'object') throw new Error('Issue with chrome storage.');
+				delete Storage.data[key]; // Success, remove from bridge storage
 			});
 		}
 		catch(e) {console.log('[BetterGaia][Bridge] Error when removing storage: ' + e.message);}
@@ -225,14 +231,12 @@ var Storage = {
 // Start Bridge to the other side
 try {
     Storage.init();
-	
-	//if (Storage.ready && BetterGaia.ready) BetterGaia.run();
 }
 catch(e) {
 	console.log('[BetterGaia][Bridge] Error when starting bridge: ' + e.message);
     console.log(e);
 	try {
-		BetterGaia.run();
+		BetterGaia.init();
 	}
 	catch(em) {
 		alert('[BetterGaia][Bridge] Fatal Error:\n' + em.message + '\n\nPlease go to bettergaia.com for support.');
