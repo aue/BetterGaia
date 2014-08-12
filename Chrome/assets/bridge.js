@@ -59,28 +59,59 @@ var BetterGaia = {
                         callback({success: false});
                         throw new Error('installing extension failed: Errors with fetching from server.');
                     }
-                    BetterGaia.console.log('downloading of extension of ' + id + ' was successful, now installing.');
+                    BetterGaia.console.log('downloading of extension of "' + id + '" was successful, now checking if valid download of json.');
                     
                     var errors = false;
                     var extension = {};
+                    
+                    // ID
+                    // ------------- Should do conflict check here
                     extension.id = data.id;
-                    extension.script = data.script;
+                    
+                    // Name
+                    if (typeof data.title !== 'undefined') extension.title = data.title;
+                    else errors = true;
 
-                    if (typeof data.css !== "undefined") extension.css = data.css;
-                    if (typeof data.title !== "undefined") extension.title = data.title;
-                    if (typeof data.description !== "undefined") extension.description = data.description;
-                    if (typeof data.developer !== "undefined") extension.developer = data.developer;
-                    if (typeof data.version !== "undefined") extension.version = data.version;
-                    if (typeof data.beta !== "undefined" && data.beta === true) extension.beta = true;
-                    if (typeof data.details !== "undefined") extension.details = data.details;
+                    // Version
+                    if (typeof data.version !== 'undefined') extension.version = data.version;
+                    else errors = true;
+                    
+                    // If Beta Version
+                    if (typeof data.beta !== 'undefined' && data.beta === true) extension.beta = true;
+                    
+                    // Detailed Text
+                    if (typeof data.details !== 'undefined') extension.details = data.details;
+                    // else extension.details = 'No Detailed Desc.';
+                    
+                    // Author
+                    if (typeof data.author !== 'undefined') extension.author = data.author;
+                    // else extension.author = 'Unknown Author';
+                    
+                    // JS Script
+                    if (typeof data.script !== 'undefined') extension.script = data.script;
+
+                    // CSS
+                    if (typeof data.css !== 'undefined') extension.css = data.css;
+                    
+                    // URL Matches
+                    if (typeof data.urlMatch !== 'undefined' && (typeof data.urlMatch == 'string' || data.urlMatch instanceof Array)) extension.urlMatch = data.urlMatch;
+                    else errors = true;
+                    
+                    // URL Excludes
+                    if (typeof data.urlExclude !== 'undefined' && data.urlExclude instanceof Array) extension.urlExclude = data.urlExclude;
+
 
                     if (errors === false) {
-                        // Saved data without any errors!
-                        BetterGaia.installed.add(data.id);
+                        // No errors! Save the data
+                        //BetterGaia.installed.add(id);
+                        
+                        if (id == 'core') Storage.set('extensions', [extension]);
+
                         callback({success: true});
                     }
                     else {
                         // Something awful has happened.
+                        BetterGaia.console.log(id + ' had errors in it\'s JSON data, or the download was bad.');
                         callback({success: false});
                     }
                 }
@@ -89,10 +120,13 @@ var BetterGaia = {
                 }            
             });
         },
+
+        // First time users will install the core here
         bettergaia: function() {
             // Install core
             BetterGaia.install.extension('core', function(data) {
                 if (data.success === true) Storage.set('installed', true);
+                else BetterGaia.console.log('Sorry, we\'ll try installing on the next page load.');
             });        
         }
     },
