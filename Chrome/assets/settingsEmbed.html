@@ -1,0 +1,66 @@
+<div id="BGSettings">
+    <div id="BGSHeader">BetterGaia <small>Version 2014.50</small></div>
+    
+    <div id="BGSMenu">
+        <a class="active">My BetterGaia</a>
+        <a>Get Extensions</a>
+        <a>About &amp; More</a>
+    </div>
+    
+    <div id="BGSPages">
+        <div class="page mybg active">
+            <div class="extensionsList"></div>
+            <div class="extensionsListPages">
+                <span class="spinner">Loading…</span>
+            </div>
+        </div>
+        
+        <div class="page get">
+        </div>
+        
+        <div class="page about">
+        </div>
+    </div>
+</div>
+
+<div id="BGSMask"></div>
+
+<style>
+html, body {overflow: hidden;}
+#BGSettings {top: 50%; left: 7%; right: 7%; margin-top: -315px; z-index: 99999; background: #fff; position: fixed; height: 600px;
+    font-family: sans-serif;
+}
+#BGSettings * {box-sizing: border-box;}
+    
+#BGSHeader {padding: 20px 20px 5px;}
+
+#BGSMenu {padding-left: 20px;}
+#BGSMenu a {display: block; float: left; padding: 15px 20px; cursor: pointer;}
+#BGSMenu a.active {background: blue; color: #FFF;}
+#BGSMenu:after {clear: both; content: ''; display: table;}
+
+#BGSPages {padding: 0 20px 20px;}
+#BGSPages .page {border: 1px solid #DDD; overflow: auto; height: 485px; display: none;}
+#BGSPages .page.active {display: block;}
+
+#BGSPages .page .extensionsList {float: left; width: 20%; border-right: 1px solid #DDD; height: 100%;}
+#BGSPages .page .extensionsList a {display: block; padding: 15px 20px; cursor: pointer;}
+#BGSPages .page .extensionsListPages {float: right; width: 80%; height: 100%;}
+#BGSPages .page .extensionsListPages .spinner {font-size: 100px; margin: 50px auto; color: blue; display: block;}
+    
+#BGSMask {top: 0; left: 0; right: 0; bottom: 0; position: fixed; background: #000; opacity: 0.5; z-index: 99998;}
+
+.spinner {
+    position: relative; display: inline-block; width: 1em; height: 1em; font-size: 32px; vertical-align: middle; overflow: hidden; text-indent: 100%;
+    -webkit-animation: 1s spinner linear infinite;
+       -moz-animation: 1s spinner linear infinite;
+            animation: 1s spinner linear infinite;
+}
+.spinner, .spinner:before, .spinner:after {border-radius: 100%;}
+.spinner:before, .spinner:after {content: ''; position: absolute; top: 0; right: 0; bottom: 0; left: 0;}
+.spinner:before {border: 2px solid; opacity: 0.2;}
+.spinner:after {border-bottom: 2px solid;}
+@-webkit-keyframes spinner {to {-webkit-transform: rotate(360deg);}}
+@-moz-keyframes spinner {to {-moz-transform: rotate(360deg);}}
+@keyframes spinner {to {transform: rotate(360deg);}}
+</style>

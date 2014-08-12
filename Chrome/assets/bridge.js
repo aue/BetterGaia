@@ -7,6 +7,9 @@ Copyright (c) BetterGaia and Bowafishtech
 /*global localStorage: false, console: false, $: false, document: false, alert: false, chrome: false */
 /*jshint sub:true */
 
+//(function(){
+//if (typeof BetterGaia !== 'undefined') return;
+
 var BetterGaia = {
     version: chrome.runtime.getManifest().version,
     serverUrl: 'http://www.bettergaia.com/',
@@ -17,6 +20,12 @@ var BetterGaia = {
         },
         warn: function(text) {
             console.warn(text);
+        }
+    },
+    
+    settings: {
+        init: function() {
+            
         }
     },
     
@@ -37,10 +46,10 @@ var BetterGaia = {
             }
 
             $.ajax({
-                url: BetterGaia.serverUrl + 'framework/extensions/' + id + '/',
+                url: BetterGaia.serverUrl + 'framework/extensions/' + id + '.json',
                 dataType: 'json'
             }).done(function(data) {
-                if (typeof callback === 'function') callback({error: false, 'data': data});
+                if (typeof callback === 'function') callback(data);
                 return;
             }).fail(function(data) {
                 BetterGaia.download.try_count++;
@@ -54,15 +63,15 @@ var BetterGaia = {
             // Install extension
             BetterGaia.download.extension(id, function(data) {
                 try {
-                    if (data.error !== false || data.script === '') {
-                        // Server returned an error or empty script.
-                        callback({success: false});
-                        throw new Error('installing extension failed: Errors with fetching from server.');
-                    }
+                    BetterGaia.console.log(data);
                     BetterGaia.console.log('downloading of extension of "' + id + '" was successful, now checking if valid download of json.');
                     
                     var errors = false;
                     var extension = {};
+                    
+                    var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                    var d = new Date(); 
+                    extension.lastUpdated = monthNames[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
                     
                     // ID
                     // ------------- Should do conflict check here
@@ -79,9 +88,9 @@ var BetterGaia = {
                     // If Beta Version
                     if (typeof data.beta !== 'undefined' && data.beta === true) extension.beta = true;
                     
-                    // Detailed Text
-                    if (typeof data.details !== 'undefined') extension.details = data.details;
-                    // else extension.details = 'No Detailed Desc.';
+                    // Description
+                    if (typeof data.description !== 'undefined') extension.description = data.description;
+                    // else extension.description = 'No Detailed Desc.';
                     
                     // Author
                     if (typeof data.author !== 'undefined') extension.author = data.author;
@@ -98,13 +107,12 @@ var BetterGaia = {
                     else errors = true;
                     
                     // URL Excludes
-                    if (typeof data.urlExclude !== 'undefined' && data.urlExclude instanceof Array) extension.urlExclude = data.urlExclude;
+                    if (typeof data.urlExclude !== 'undefined' && (typeof data.urlExclude == 'string' || data.urlExclude instanceof Array)) extension.urlExclude = data.urlExclude;
 
 
                     if (errors === false) {
                         // No errors! Save the data
-                        //BetterGaia.installed.add(id);
-                        
+                        BetterGaia.console.log('"' + id + '" has passed basic format!');                        
                         if (id == 'core') Storage.set('extensions', [extension]);
 
                         callback({success: true});
@@ -113,6 +121,7 @@ var BetterGaia = {
                         // Something awful has happened.
                         BetterGaia.console.log(id + ' had errors in it\'s JSON data, or the download was bad.');
                         callback({success: false});
+                        throw new Error('installing extension failed: Errors with fetching from server.');
                     }
                 }
                 catch(e) {
@@ -125,9 +134,12 @@ var BetterGaia = {
         bettergaia: function() {
             // Install core
             BetterGaia.install.extension('core', function(data) {
-                if (data.success === true) Storage.set('installed', true);
+                if (data.success === true) {
+                    BetterGaia.console.log('BetterGaia install was a success!');
+                    Storage.set('installed', true);
+                }
                 else BetterGaia.console.log('Sorry, we\'ll try installing on the next page load.');
-            });        
+            });
         }
     },
     
@@ -162,11 +174,36 @@ var BetterGaia = {
 			catch(e) {
 				console.log('[BetterGaia][Bridge] Error when inserting css link: ' + e.message);
 			}
-		}
+		},
+        js: function(script) {
+			try {
+                if (document.querySelectorAll('style[bg-css]').length > 0) {
+                    document.querySelectorAll('style[bg-css]')[0].appendChild(document.createTextNode(css));
+                }
+                else {
+                    var style = document.createElement('style');
+                        style.type = 'text/css';
+                        style.setAttribute('bg-css', '');
+                        style.appendChild(document.createTextNode(css));
+                    document.documentElement.appendChild(style);
+                }
+			}
+			catch(e) {
+				console.log('[BetterGaia][Bridge] Error when inserting css style: ' + e.message);
+			}
+        }
 	},
 
 	urlCheck: function(url) {
-		if (document.location.pathname.indexOf(url) > -1) return true;
+        // Only one condition
+        if (typeof url == 'string' && (document.location.pathname.indexOf(url) > -1 || url == '*')) return true;
+
+        // Array of conditions
+        else if (url instanceof Array) {
+            for (var i = 0; i < url.length; i++) {
+                if (document.location.pathname.indexOf(url[i]) > -1 || url[i] == '*') return true;
+            }
+        }
 
 		// else...
 		return false;
@@ -190,18 +227,30 @@ var BetterGaia = {
 		if (Storage.ready === false) throw new Error('Storage not found.');
 
         // Check if installed
-        if (typeof Storage.data['installed'] !== 'boolean') {
+        if (Storage.data['installed'] !== true) {
             this.console.log('Welcome to BetterGaia! Installing core package now...');
             this.install.bettergaia();
             return;
         }
         
-        // Else, BG is installed, parse extensions
-        if (typeof Storage.data['extentionsInstalled'] == 'object') {
-            BetterGaia.console.log(Storage.data['extentionsInstalled']);
+        // Else, BG is installed, parse and run extensions
+        if (Storage.data['extensions'] instanceof Array) {
+            //BetterGaia.console.log(Storage.data['extensions']);
+            
+            for (var i = 0; i < Storage.data['extensions'].length; i++) {
+                var extension = Storage.data['extensions'][i];
+                
+                // Matches URL requirments
+                if (BetterGaia.urlCheck(extension.urlMatch) && !BetterGaia.urlCheck(extension.urlExclude)) {
+                    BetterGaia.console.log('Running "' + extension.id + '" extension, last updated on ' + extension.lastUpdated + '.');
+                    
+                    if (typeof extension.css == 'string') BetterGaia.insert.css(extension.css);
+                    
+                    // Quite nasty...
+                    if (typeof extension.script == 'string') eval(extension.script);
+                }
+            }
         }
-        
-        //Storage.set();
 	}
 };
 
@@ -277,3 +326,5 @@ catch(e) {
 		console.log('[BetterGaia][Bridge] Error when starting bridge: ' + em.message);
 	}
 }
+    
+//}());
