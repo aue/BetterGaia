@@ -20,5 +20,5 @@
     "options_page": "assets/settings.html",
     "permissions": [ "alarms", "tabs", "storage", "notifications", "*://*.gaiaonline.com/*", "*://*.bettergaia.com/*" ],
     "version": "2014.50",
-    "web_accessible_resources": [ "assets/settingsEmbed.html", "images/logo/128.png", "images/logo/500.png", "images/logo/text.png" ]
+    "web_accessible_resources": [ "assets/settings.html", "images/logo/128.png", "images/logo/500.png", "images/logo/text.png" ]
 }
