@@ -5,7 +5,7 @@
     },
     "content_scripts": [ {
         "matches": ["*://*.gaiaonline.com/*"],
-        "js": ["assets/jquery.min.js", "assets/bridge.js", "assets/bettergaia.js"],
+        "js": ["assets/jquery.min.js", "assets/mustache.js", "assets/bridge.js", "assets/bettergaia.js"],
         "run_at": "document_start"
     }],
     "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
@@ -20,5 +20,5 @@
     "options_page": "assets/settings.html",
     "permissions": [ "alarms", "tabs", "storage", "notifications", "*://*.gaiaonline.com/*", "*://*.bettergaia.com/*" ],
     "version": "2014.50",
-    "web_accessible_resources": [ "assets/settings.html", "images/logo/128.png", "images/logo/500.png", "images/logo/text.png" ]
+    "web_accessible_resources": [ "assets/settingsEmbed.html", "images/logo/128.png", "images/logo/500.png", "images/logo/text.png" ]
 }

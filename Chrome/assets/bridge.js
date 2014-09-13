@@ -100,7 +100,7 @@ var BetterGaia = {
     install: {
         extension: function(id, callback) {
             BetterGaia.console.log('Now fetching "' + id + '"\'s files from the server.');
-            
+
             // Install extension
             BetterGaia.download.extension(id, function(data) {
                 try {
@@ -155,20 +155,27 @@ var BetterGaia = {
                     // No errors! Save the data
                     if (errors === false) {
                         // First install
-                        if (id == 'core') Storage.set('extensions', [extension]);
+                        if (id == 'core') {
+                            Storage.set('extensions', [extension]);
+                            Storage.set('extensionsInstalled', [id]);
+                        }
                         // More than one
                         else {
                             var data = Storage.get('extensions');
                             data.push(extension);
                             Storage.set('extensions', data);
+
+                            var extensionsInstalled = Storage.get('extensionsInstalled');
+                            extensionsInstalled.push(id);
+                            Storage.set('extensionsInstalled', extensionsInstalled);
                         }
 
                         BetterGaia.console.log('"' + id + '" extension install was a success!');
-                        if (typeof callback === 'function') callback({success: true});
+                        if (typeof callback === 'function') callback({'success': true, 'id': id});
                     }
                     else {
                         // Something awful has happened.
-                        if (typeof callback === 'function') callback({success: false});
+                        if (typeof callback === 'function') callback({'success': false, 'id': id});
                         throw new Error('"' + id + '" had errors in it\'s JSON or the download was bad.');
                     }
                 }

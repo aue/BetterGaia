@@ -10,7 +10,7 @@ Copyright (c) BetterGaia and Bowafishtech
 //BetterGaia.insert.css('');
 
 function settingsOpen() {
-    $.get(BetterGaia.path('assets/settings.html'), function(data) {
+    $.get(BetterGaia.path('assets/settingsEmbed.html'), function(data) {
         $('html').append(data);
 
         // Set up menu
@@ -38,18 +38,25 @@ function settingsOpen() {
             $.ajax({
                 url: BetterGaia.serverUrl + 'framework/extensions/list.json',
                 dataType: 'json'
-            }).done(function(json) {
-                $.each(json, function(key, data) {
-                    $('#BGSPages .page.get ul').append('<li>\
-                        <h2>' + data['title'] + '</h2>\
-                        <strong>' + data['author'] + '</strong>\
-                        <p>' + data['description'] + '</p>\
-                        <p>Version ' + data['version'] + '</p>\
-                        <p>Beta? ' + data['beta'] + '</p>\
-                        <p>id: ' + key + '</p>\
-                        <a class="install" data="' + key + '">Install</a>\
-                    </li>');
-                });
+            }).done(function(data) {
+                if (data['enabled']) {
+                    $('#BGSPages .page.get p.offline').show();
+                    //return;
+                }
+
+                for (var i = 0; i < data['extensions'].length; i++) {
+                    if (Storage.data['extensionsInstalled'].indexOf(data['extensions'][i]['id']) == -1) {
+                        data['extensions'][i]['notInstalled'] = true;
+                    }
+                }
+
+                var template = $('#BGSPages .page.get ul').html();
+                Mustache.parse(template);
+                var rendered = Mustache.render(template, data);
+                $('#BGSPages .page.get ul').html(rendered);
+
+                //if (Storage.data['extensions'].indexOf(key)) {}
+
             }).fail(function(data) {
                 $('#BGSPages .page.get').text('Could not get extensions list.');
             });
@@ -58,8 +65,10 @@ function settingsOpen() {
         // install new extensions
         $('#BGSPages .page.get ul').on('click', 'li a.install', function() {
             $(this).text('Installing...');
-            BetterGaia.install.extension($(this).attr('data'), function() {
-                BetterGaia.console.log('Installed!');
+            $(this).off('click.install');
+            BetterGaia.install.extension($(this).attr('data-id'), function(data) {
+                if (data['success']) BetterGaia.console.log('Installed!');
+                $('#BGSPages .page.get a[data-id="' + data['id'] + '"]').hide();
             });
         });
     })
