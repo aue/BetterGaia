@@ -1,0 +1,85 @@
+<style>
+html, body {overflow: hidden;}
+#BGSettings {top: 50px; bottom: 50px; left: 50px; right: 50px; z-index: 99999; color: #222; background: linear-gradient(to top right, #B5DDFF, #FFFFFF); position: fixed; font-family: sans-serif; padding: 20px;}
+#BGSettings * {box-sizing: border-box;}
+
+#BGSHeader {padding: 15px 20px; float: right;}
+
+#BGSMenu {padding: 0 0 0 1px; float: left;}
+#BGSMenu a {display: block; float: left; padding: 15px 20px; cursor: pointer; color: #555;}
+#BGSMenu a.active {background: #FFF; color: #222; border: 1px solid rgba(0,0,0,0.25); border-width: 1px 1px 0; padding: 14px 20px 16px; margin: 0px -1px -1px;}
+#BGSMenu:after {clear: both; content: ''; display: table;}
+
+#BGSPages {padding: 0; clear: both;}
+#BGSPages .page {border: 1px solid rgba(0,0,0,0.25); overflow: auto; height: calc(100vh - 190px); display: none; background: #FFF;}
+#BGSPages .page.active {display: block;}
+
+#BGSPages .page.mybg .extensionsList {float: left; width: 20%; border-right: 1px solid #DDD; height: 100%;}
+#BGSPages .page.mybg .extensionsList a {display: block; padding: 15px 20px; cursor: pointer;}
+#BGSPages .page.mybg .extensionsListPages {float: right; width: 80%; height: 100%;}
+#BGSPages .page.mybg .extensionsListPages .spinner {font-size: 100px; margin: 50px auto; color: blue; display: block;}
+
+#BGSPages .page.get ul {margin: 0; padding: 0;}
+#BGSPages .page.get ul li {display: block; width: 25%; float: left; padding: 20px;}
+#BGSPages .page.get ul li a {display: block; background: green; padding: 10px 20px; cursor: pointer;}
+
+#BGSMask {top: 0; left: 0; right: 0; bottom: 0; position: fixed; background: #000; opacity: 0.5; z-index: 99998;}
+
+.spinner {
+	position: relative; display: inline-block; width: 1em; height: 1em; font-size: 32px; vertical-align: middle; overflow: hidden; text-indent: 100%;
+	-webkit-animation: 1s spinner linear infinite;
+	-moz-animation: 1s spinner linear infinite;
+	animation: 1s spinner linear infinite;
+}
+.spinner, .spinner:before, .spinner:after {border-radius: 100%;}
+.spinner:before, .spinner:after {content: ''; position: absolute; top: 0; right: 0; bottom: 0; left: 0;}
+.spinner:before {border: 2px solid; opacity: 0.2;}
+.spinner:after {border-bottom: 2px solid;}
+@-webkit-keyframes spinner {to {-webkit-transform: rotate(360deg);}}
+@-moz-keyframes spinner {to {-moz-transform: rotate(360deg);}}
+@keyframes spinner {to {transform: rotate(360deg);}}
+</style>
+
+<div id="BGSettings">
+	<div id="BGSHeader">BetterGaia <small>Version 2014.50</small></div>
+
+	<div id="BGSMenu">
+		<a data-link="mybg" class="active">My BetterGaia</a>
+		<a data-link="get">Get Extensions</a>
+		<a data-link="about">About &amp; More</a>
+	</div>
+
+	<div id="BGSPages">
+		<div class="page mybg active">
+			<div class="extensionsList"></div>
+			<div class="extensionsListPages">
+				<span class="spinner">Loading…</span>
+			</div>
+		</div>
+
+		<div class="page get">
+			<span class="spinner">Loading…</span>
+			<p class="offline">The Store is offline right now. Check back later :)</p>
+			<ul>
+				{{#extensions}}
+				<li>
+					<h2>{{title}} {{#beta}}<small>Beta</small>{{/beta}}</h2>
+					<strong>{{author}}</strong>
+					<p>{{description}}</p>
+					<p>Version {{version}}</p>
+					<p>id: {{id}}</p>
+					{{#notInstalled}}<a class="install" data-id="{{id}}">Install</a>{{/notInstalled}}
+				</li>
+				{{/extensions}}
+			</ul>
+		</div>
+
+		<div class="page about">
+			<h1>BetterGaia</h1>
+			<strong>Change the way you experience Gaia.</strong>
+			<p>Powered by the Extension Framework by bowafishtech.</p>
+		</div>
+	</div>
+</div>
+
+<div id="BGSMask"></div>

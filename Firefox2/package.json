@@ -1,0 +1,14 @@
+{
+  "name": "bettergaia",
+  "title": "BetaGaia with Bridge",
+  "id": "bettergaia@bettergaia.com",
+  "homepage": "http://www.bettergaia.com/",
+  "description": "Change the way you experience Gaia.",
+  "icon": "data/images/128.png",
+  "author": "bowafishtech",
+  "license": "BettrGaia Licence",
+  "version": "2015.1",
+  "permissions": {
+    "cross-domain-content": ["http://www.bettergaia.com/"]
+  }
+}
