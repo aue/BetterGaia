@@ -16,7 +16,7 @@ html:not(.BGSOpen) #BGSettings, html:not(.BGSOpen) #BGSMask {display: none; visi
 #BGSMenu:after {clear: both; content: ''; display: table;}
 
 #BGSCloseMenu {padding: 15px 20px; position: absolute; top: 0; right: 0;}
-    
+
 #BGSPages {padding: 0; clear: both;}
 #BGSPages .page {border: 1px solid rgba(0,0,0,0.25); overflow: auto; height: calc(100vh - 140px); display: none; background: #FFF;}
 #BGSPages .page.active {display: block;}
@@ -54,7 +54,7 @@ html:not(.BGSOpen) #BGSettings, html:not(.BGSOpen) #BGSMask {display: none; visi
 <div id="BGSettings">
 	<div id="BGSHeader">
         <div id="BGSLogo">BetterGaia</div>
-        
+
         <div id="BGSMenu">
             <a data-link="mybg" class="active">My BetterGaia</a>
             <a data-link="get">Get Extensions</a>
@@ -91,7 +91,7 @@ html:not(.BGSOpen) #BGSettings, html:not(.BGSOpen) #BGSMask {display: none; visi
 					{{#if notInstalled}}
                     <a class="install" data-id="{{id}}">Add</a>
                     {{else}}
-                    <a data-id="{{id}}">Added</a>
+                    <a class="install" data-id="{{id}}">Added. Reinstall?</a>
                     {{/if}}
 				</li>
 				{{/extensions}}

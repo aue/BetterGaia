@@ -26,6 +26,7 @@ function settingsOpen() {
 
             $('#BGSCloseMenu').on('click', function() {
                 $('html').removeClass('BGSOpen');
+                window.location.hash = '';
             });
 
             // List installed extensions
@@ -82,13 +83,15 @@ function settingsOpen() {
             });
         });
     }
-    
+
     // open settings
     $('html').addClass('BGSOpen');
 }
 
-if (window.location.hash === '#bgsettings') settingsOpen();
-
-$(window).on('hashchange', function() {
+$(document).ready(function() {
     if (window.location.hash === '#bgsettings') settingsOpen();
+
+    $(window).on('hashchange', function() {
+        if (window.location.hash === '#bgsettings') settingsOpen();
+    });
 });

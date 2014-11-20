@@ -42,17 +42,26 @@ var BetterGaia = {
             $.ajax({
                 url: BetterGaia.serverUrl + 'framework/extensions/' + id + '/manifest.json',
                 extensionId: id,
-                dataType: 'json'
+                dataType: 'json',
+                cache: false
             }).done(function(data) {
                 var extensionId = this.extensionId;
                 var js = (typeof data.script === 'boolean' && data.script === true)? true:false;
                 var css = (typeof data.css === 'boolean' && data.css === true)? true:false;
 
                 function getCSS() {
-                    return $.get(BetterGaia.serverUrl + 'framework/extensions/' + extensionId + '/style.css');
+                    return $.ajax({
+                        url: BetterGaia.serverUrl + 'framework/extensions/' + extensionId + '/style.css',
+                        cache: false
+                    });
+                    //$.get(BetterGaia.serverUrl + 'framework/extensions/' + extensionId + '/style.css');
                 }
                 function getJS() {
-                    return $.get(BetterGaia.serverUrl + 'framework/extensions/' + extensionId + '/script.js');
+                    return $.ajax({
+                        url: BetterGaia.serverUrl + 'framework/extensions/' + extensionId + '/script.js',
+                        cache: false
+                    });
+                    //$.get(BetterGaia.serverUrl + 'framework/extensions/' + extensionId + '/script.js');
                 }
 
                 if (js && !css) {
@@ -76,8 +85,8 @@ var BetterGaia = {
                 else if (js && css) {
                     BetterGaia.console.log('Need to download "' + id + '"\'s CSS and JS.');
                     $.when(getCSS(), getJS()).then(function(css, js) {
-                        data['css'] = css;
-                        data['script'] = js;
+                        data['css'] = css[0];
+                        data['script'] = js[0];
                         if (typeof callback === 'function') callback(data);
                     }, function() {
                         callback({error: true});
@@ -268,7 +277,7 @@ var BetterGaia = {
         }
 		catch(e) {console.log('[BetterGaia][Bridge] Error when getting absolute path: ' + e.message);}
 	},
-    
+
     localFile: function(url) {
 		try {
             self.port.emit('getHtml', url);
@@ -372,7 +381,7 @@ var Storage = {
                 // Init BG, unfo. can't pass in a callback
                 BetterGaia.init();
 			});*/
-            
+
             Storage.data = self.options.storage;
             Storage.ready = true;
 
