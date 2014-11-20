@@ -11,7 +11,7 @@ html:not(.BGSOpen) #BGSettings, html:not(.BGSOpen) #BGSMask {display: none; visi
 #BGSLogo img {height: 50px; width: 50px; display: inline; margin: -30px 5px -20px 0;}
 
 #BGSMenu {display: inline-block;}
-#BGSMenu a {display: inline-block; padding: 15px 20px; cursor: pointer; color: #555;}
+#BGSMenu a {display: inline-block !important; padding: 15px 20px; cursor: pointer; color: #555;}
 #BGSMenu a.active {background: #FFF; color: #222; border: 1px solid rgba(0,0,0,0.25); border-width: 1px 1px 0; padding: 14px 20px 16px; margin: 0px -1px -1px;}
 #BGSMenu:after {clear: both; content: ''; display: table;}
 
@@ -69,6 +69,7 @@ html:not(.BGSOpen) #BGSettings, html:not(.BGSOpen) #BGSMask {display: none; visi
 			<div class="extensionsList"></div>
 			<div class="extensionsListPages">
 				<span class="spinner">Loading…</span>
+				<p>Nothing will load here.</p>
 			</div>
 		</div>
 

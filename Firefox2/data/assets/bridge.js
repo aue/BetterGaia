@@ -52,6 +52,7 @@ var BetterGaia = {
                 function getCSS() {
                     return $.ajax({
                         url: BetterGaia.serverUrl + 'framework/extensions/' + extensionId + '/style.css',
+                        dataType: 'text',
                         cache: false
                     });
                     //$.get(BetterGaia.serverUrl + 'framework/extensions/' + extensionId + '/style.css');
@@ -59,6 +60,7 @@ var BetterGaia = {
                 function getJS() {
                     return $.ajax({
                         url: BetterGaia.serverUrl + 'framework/extensions/' + extensionId + '/script.js',
+                        dataType: 'text',
                         cache: false
                     });
                     //$.get(BetterGaia.serverUrl + 'framework/extensions/' + extensionId + '/script.js');
@@ -119,7 +121,7 @@ var BetterGaia = {
                     var errors = false;
                     var extension = {};
 
-                    if (data.error == true) errors = true;
+                    if (data.error === true) errors = true;
 
                     var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
                     var d = new Date();
@@ -170,9 +172,9 @@ var BetterGaia = {
                         }
                         // More than one
                         else {
-                            var data = Storage.get('extensions');
-                            data.push(extension);
-                            Storage.set('extensions', data);
+                            var extensions = Storage.get('extensions');
+                            extensions.push(extension);
+                            Storage.set('extensions', extensions);
 
                             var extensionsInstalled = Storage.get('extensionsInstalled');
                             extensionsInstalled.push(id);
@@ -185,6 +187,7 @@ var BetterGaia = {
                     else {
                         // Something awful has happened.
                         if (typeof callback === 'function') callback({'success': false, 'id': id});
+                        BetterGaia.console.log(extension);
                         throw new Error('"' + id + '" had errors in it\'s JSON or the download was bad.');
                     }
                 }
@@ -315,9 +318,14 @@ var BetterGaia = {
                     BetterGaia.console.log('Running "' + extension.id + '" extension, last updated on ' + extension.lastUpdated + '.');
 
                     if (typeof extension.css == 'string') BetterGaia.insert.css(extension.css);
-
-                    // Quite nasty...
-                    if (typeof extension.script == 'string') eval(extension.script);
+                    if (typeof extension.script == 'string') {
+                        try {
+                            // Quite nasty... replace with function with limited scope later
+                            eval(extension.script);
+                        } catch (e) {
+                            BetterGaia.console.log('[BetterGaia][Bridge] Error when running "' + extension.id + '"\'s script: ' + e.message);
+                        }
+                    }
                 }
             }
         }
@@ -381,14 +389,13 @@ var Storage = {
                 // Init BG, unfo. can't pass in a callback
                 BetterGaia.init();
 			});*/
-
             Storage.data = self.options.storage;
             Storage.ready = true;
 
             // Init BG, unfo. can't pass in a callback
             BetterGaia.init();
 		}
-		catch(e) {console.log('[BetterGaia][Bridge] Error when getting storage: ' + e.message);}
+		catch(e) {console.log('[BetterGaia][Bridge] Error when getting storage in Storage init: ' + e.message);}
     }
 };
 

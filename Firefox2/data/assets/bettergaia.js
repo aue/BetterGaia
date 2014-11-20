@@ -10,7 +10,7 @@ Copyright (c) BetterGaia and Bowafishtech
 //BetterGaia.insert.css('');
 
 function settingsOpen() {
-    if ($('#BGSettings').length == 0) {
+    if ($('#BGSettings').length === 0) {
         BetterGaia.localFile('assets/settingsEmbed.html');
         self.port.on('assets/settingsEmbed.html', function(data) {
             $('html').append(data);
