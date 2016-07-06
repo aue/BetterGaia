@@ -1,0 +1,21 @@
+{
+  "name": "bettergaia",
+  "description": "The extension framework for a better Gaia",
+  "version": "0.0.1",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "homepage": "http://www.bettergaia.com/",
+  "private": true,
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "watch": "nodemon app.js"
+  },
+  "dependencies": {
+    "jquery": "^2.2.0"
+  },
+  "devDependencies": {
+    "browserify": "^13.0.0",
+    "gulp": "^3.9.0",
+    "watchify": "^3.6.0"
+  }
+}
