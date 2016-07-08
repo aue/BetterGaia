@@ -1,23 +1,62 @@
-class BetterGaia {
-  constructor(version) {
-    this.version = version;
-    this.mounted = false;
-  }
+let BetterGaia = {
+  version: Bridge.version,
+  path: Bridge.path,
+  prefs: {},
+  extensions: [],
+  
+  mounted: false,
 
-  mount() {
+  extensionFactory: function(id) {
+    return new extensionClasses[id]();
+  },
+
+  loadPrefs: function() {
+    Bridge.storage.get((response) => {
+      this.prefs = response;
+      /*for (var key in response) {
+        try {prefs[key] = response[key];}
+        catch(e) {console.warn('BetterGaia: unused preference, \'' + e + '\'.');}
+      }*/
+    });
+  },
+
+  mount: function() {
     if (this.mounted) return;
-    this.sampleExtension = new Extension('mySampleExtension');
-    console.log(this.sampleExtension.constructor.name);
-    this.sampleExtension.mount();
-    this.mounted = true;
-  }
 
-  unmount() {
+    this.loadPrefs();
+
+    let extensionList = ['BGCore', 'DrawAll', 'AnnouncementReader'];
+
+    for (let i = 0, len = extensionList.length; i < len; i++) {
+      let extension = this.extensionFactory(extensionList[i]);
+      extension.preMount();
+      this.extensions.push(extension);
+    }
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+      for (let i = 0, len = this.extensions.length; i < len; i++) {
+        this.extensions[i].mount();
+      }
+    });
+
+    this.mounted = true;
+  },
+
+  unMount: function() {
     if (!this.mounted) return;
-    this.sampleExtension.unmount();
+
+    for (let i = 0, len = this.extensions.length; i < len; i++) {
+      this.extensions[i].unMount();
+    }
+
     this.mounted = false;
   }
-}
+};
 
-BG = new BetterGaia('0.0.1');
-BG.mount();
+console.log('Mounting BetterGaia...');
+BetterGaia.mount();
+
+window.addEventListener('unload', function(event) {
+  console.log('Unmounting BetterGaia...');
+  BetterGaia.unMount();
+});

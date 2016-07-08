@@ -1,6 +1,7 @@
 class Extension {
   constructor(id) {
     this.id = id;
+    this.prefs = {};
   }
 
   addCSS(css) {
@@ -8,7 +9,7 @@ class Extension {
 
     if (styleTag === null) {
       styleTag = document.createElement('style');
-      styleTag.type = 'text/css';
+      styleTag.setAttribute('type', 'text/css');
       styleTag.setAttribute('bg-css', this.id);
       styleTag.appendChild(document.createTextNode(css));
       document.documentElement.appendChild(styleTag);
@@ -18,9 +19,20 @@ class Extension {
     }
   }
 
+  addStyleSheet(filename) {
+    let linkTag = document.createElement('link');
+    linkTag.setAttribute('rel', 'stylesheet');
+    linkTag.setAttribute('type', 'text/css');
+    linkTag.setAttribute('bg-css', this.id);
+    linkTag.setAttribute('href', `${BetterGaia.path}extensions/${this.id}/${filename}.css`);
+    document.documentElement.appendChild(linkTag);
+  }
+
   removeCSS() {
-    let styleTag = document.querySelector(`style[bg-css="${this.id}"]`);
-    if (styleTag !== null) styleTag.parentNode.removeChild(styleTag);
+    let tags = document.querySelectorAll(`style[bg-css="${this.id}"], link[bg-css="${this.id}"]`);
+    for (let i = 0, len = tags.length; i < len; i++) {
+      tags.parentNode.removeChild(tags[i]);
+    }
   }
 
   getPreference(key) {
@@ -35,11 +47,11 @@ class Extension {
 
   }
 
+  preMount() {}
+
   mount() {
-    this.addCSS('this is the sample css');
+    console.log(this.id + ' has mounted to the page!');
   }
 
-  unmount() {
-    this.removeCSS();
-  }
+  unMount() {}
 }

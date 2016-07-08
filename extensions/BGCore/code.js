@@ -1,9 +1,18 @@
 class BGCore extends Extension {
-  mount() {
-    this.addCSS('this is the sample css');
+  constructor() {
+    super('BGCore');
+    this.match = ['/', '/mygaia/', '/market/', '/forum/', '/world/', '/games/', '/payments/', '/gofusion/'];
   }
 
-  unmount() {
+  preMount() {
+    this.addStyleSheet('font');
+    this.addStyleSheet('style');
+  }
+
+  mount() {
+  }
+
+  unMount() {
     this.removeCSS();
   }
 }
