@@ -1,6 +1,7 @@
 ### BetterGaia Specific ###
 browser/Chrome/assets/*
 !browser/Chrome/assets/bridge.js
+browser/Chrome/extensions/*
 
 ### Windows ###
 # Windows image file caches

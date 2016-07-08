@@ -22,6 +22,7 @@ gulp.task('vendor', function() {
 
 gulp.task('build:core', ['vendor'], function() {
   let core = gulp.src([
+    '!core/extensions.js',
     'core/!(core)*.js',
     'core/core.js'
   ]).pipe(concat('core.js'))
@@ -36,7 +37,7 @@ gulp.task('build:core', ['vendor'], function() {
 gulp.task('build:extensions', function() {
   let condense = gulp.src([
     'extensions/*/code.js',
-    'extensions/extensions.js'
+    'core/extensions.js'
   ]).pipe(concat('extensions.js'))
     .pipe(replace({
       patterns: [{
