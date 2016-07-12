@@ -1,4 +1,16 @@
 /* Draw All */
+@keyframes flipInX {
+    0% {transform: perspective(400px) rotateX(90deg); transform-origin: center top; opacity: 0;}
+    40% {transform: perspective(400px) rotateX(-10deg);}
+    70% {transform: perspective(400px) rotateX(10deg);}
+    100% {transform: perspective(0) rotateX(0deg); opacity: 1; animation-fill-mode: none;}
+}
+
+@keyframes barberpole {
+    from { background-position: 0 0; }
+    to   { background-position: 0 100px; }
+}
+
 #dailyReward {z-index: 1;}
 #dailyReward .bg_drawall {background: linear-gradient(to bottom right, #FF1B1B, #850019); border: 1px solid #C8CED2; position: absolute; right: -25px; bottom: 16px; cursor: pointer; border-radius: 2px; box-shadow: 0 0 0 1px rgba(0,0,0,0.5) inset, 0 1px 1px rgba(0,0,0,0.7); box-sizing: border-box; font: bold 9px/7px 'Palatino Linotype', 'Book Antiqua', Palatino, serif; color: #FFCC00; text-transform: uppercase; padding: 6px 5px;}
 #dailyReward .bg_drawall em {font-weight: bold; text-transform: lowercase; font-size: 13px; display: block; text-align: right;}
@@ -8,56 +20,35 @@
 
 #bg_drawall .bg_model_container {width: 750px;}
 #bg_drawall .bg_model_content {display: flex; flex-wrap: wrap;}
-#bg_drawall ul li {position: relative; list-style: none; width: 20%; flex: 1 0 auto; background: #0092b2;     box-shadow: 0 2px 1px rgba(0,0,0,0.15) inset; text-align: center; padding: 1em; display: flex; justify-content: center; flex-direction: column; transition: background 0.5s ease; min-height: 9em;}
-#bg_drawall ul li.loading {overflow: hidden;}
-#bg_drawall ul li.loaded {background: none;}
-#bg_drawall ul li span {font: bold 15px "Century Gothic", "TeXGyreAdventorBold", Arial, Tahoma, Verdana, sans-serif; color: #fff; display: block; list-style: none; margin-bottom: 1em;}
-#bg_drawall ul li.loading span {color: #222;}
-#bg_drawall ul li.loaded span {color: #b11e95;}
-#bg_drawall ul li div {text-align: center; position: relative;}
-#bg_drawall ul li div p {margin: 0;}
-#bg_drawall ul li div img {margin: 0; height: 30px; width: 30px;}
-#bg_drawall ul li div strong {display: block;}
-#bg_drawall ul li div .bgreward {position: absolute; z-index: 1; background: #fff; padding: 0.5em; border: 5px solid #37474f; box-shadow: 0 0 2.5em 0 rgba(255,255,255,0.5), 0 1px 1px rgba(0,0,0,0.5); left: -25px; right: -25px; margin-top: 5px; display: none;}
-#bg_drawall ul li div img:hover ~ .bgreward, #bg_drawall ul li div strong:hover ~ .bgreward, #bg_drawall ul li div .bgreward:hover {display: block;}
-#bg_drawall ul li div a[data-candy] {background: linear-gradient(to bottom, #FFB74D, #FFA726); font-size: 115%; display: block; transition: all 0.5s ease; margin: 0; width: 100%; box-shadow: 0 1px 0 #FFF3E0 inset; border: 1px solid #FFA726; padding: 0.6em; border-radius: 1.5em/3.5em; text-align: center; cursor: pointer;}
-#bg_drawall ul li div a[data-candy]:hover {background: linear-gradient(to bottom, #FFCC80, #FFB74D); border-color: #FFB74D;}
-#bg_drawall ul li div a[data-candy]:active {background: linear-gradient(to top, #FFCC80, #FFB74D); border-color: #FFB74D;}
-@keyframes barberpole {
-    from { background-position: 0 0; }
-    to   { background-position: 0 100px; }
-}
-@-webkit-keyframes barberpole {
-    from { background-position: 0 0; }
-    to   { background-position: 0 100px; }
-}
-#bg_drawall ul li.loading {
-    background-color: #FFB74D;
-    background-size: 100px 100px;
-    background-image: linear-gradient(-45deg, rgba(255,255,255,0.25) 25%, rgba(255,255,255,0) 25%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.25) 50%, rgba(255,255,255,0.25) 75%, rgba(255,255,255,0) 75%, rgba(255,255,255,0));
-    -webkit-animation: barberpole 0.5s linear infinite;
-    animation: barberpole 0.5s linear infinite;
-}
-#bg_drawall ul li.loading div a[data-candy] {transform: scale(1.5); opacity: 0; pointer-events: none;}
 
-@keyframes flipInX {
-    0% {transform: perspective(400px) rotateX(90deg); transform-origin: center top; opacity: 0;}
-    40% {transform: perspective(400px) rotateX(-10deg);}
-    70% {transform: perspective(400px) rotateX(10deg);}
-    100% {transform: perspective(0) rotateX(0deg); opacity: 1; animation-fill-mode: none;}
-}
-@-webkit-keyframes flipInX {
-    0% {transform: perspective(400px) rotateX(90deg); transform-origin: center top; opacity: 0;}
-    40% {transform: perspective(400px) rotateX(-10deg);}
-    70% {transform: perspective(400px) rotateX(10deg);}
-    100% {transform: perspective(0) rotateX(0deg); opacity: 1; -webkit-animation-fill-mode: none;}
-}
+#bg_drawall li {position: relative; list-style: none; width: 20%; flex: 1 0 auto; background: #0092b2; box-shadow: 0 2px 1px rgba(0,0,0,0.15) inset; text-align: center; padding: 1em; display: flex; justify-content: center; flex-direction: column; transition: background 0.5s ease; min-height: 9em;}
 
-#bg_drawall.open ul li:nth-of-type(6), #bg_drawall.open ul li:nth-of-type(7), #bg_drawall.open ul li:nth-of-type(8), #bg_drawall.open ul li:nth-of-type(9) {
-    -webkit-animation-duration: 0.9s; -webkit-animation-delay: .2s; -webkit-animation-timing-function: ease; -webkit-animation-fill-mode: both; -webkit-backface-visibility: visible !important; -webkit-animation-name: flipInX;
-    animation-duration: 0.9s; animation-delay: .2s; animation-timing-function: ease; animation-fill-mode: both; backface-visibility: visible !important; animation-name: flipInX;
+#bg_drawall.open li:nth-of-type(6), #bg_drawall.open li:nth-of-type(7), #bg_drawall.open li:nth-of-type(8), #bg_drawall.open li:nth-of-type(9) {animation-duration: 0.9s; animation-delay: .2s; animation-timing-function: ease; animation-fill-mode: both; backface-visibility: visible; animation-name: flipInX;}
+#bg_drawall.open li:nth-of-type(6) {animation-delay: .1s;}
+#bg_drawall.open li:nth-of-type(7) {animation-delay: .2s;}
+#bg_drawall.open li:nth-of-type(8) {animation-delay: .3s;}
+#bg_drawall.open li:nth-of-type(9) {animation-delay: .4s;}
+
+#bg_drawall li h1 {font: bold 15px "Century Gothic", "TeXGyreAdventorBold", Arial, Tahoma, Verdana, sans-serif; color: #fff; display: block; margin: 0.5em 0; flex: 0 0 autol}
+#bg_drawall li div {flex: 1 1 auto; justify-content: center; display: flex; align-items: center; flex-direction: column;}
+#bg_drawall li div a[data-candy] {background: linear-gradient(to bottom, #FFB74D, #FFA726); font-size: 115%; display: block; transition: all 0.5s ease; margin: 0; width: 100%; box-shadow: 0 1px 0 #FFF3E0 inset; border: 1px solid #FFA726; padding: 0.6em; border-radius: 1.5em/3.5em; text-align: center; cursor: pointer;}
+#bg_drawall li div a[data-candy]:hover {background: linear-gradient(to bottom, #FFCC80, #FFB74D); border-color: #FFB74D;}
+#bg_drawall li div a[data-candy]:active {background: linear-gradient(to top, #FFCC80, #FFB74D); border-color: #FFB74D;}
+
+#bg_drawall li div img {margin-bottom: 0.25em; height: 30px; width: 30px;}
+#bg_drawall li div strong {display: block;}
+#bg_drawall li div .bgreward {position: absolute; z-index: 1; background: #fff; margin: 0; padding: 0.5em; border: 5px solid #37474f; box-shadow: 0 0 2.5em 0 rgba(255,255,255,0.5), 0 1px 1px rgba(0,0,0,0.5); left: -25px; right: -25px; margin-top: 5px; display: none;}
+#bg_drawall li div img:hover ~ .bgreward, #bg_drawall ul li div strong:hover ~ .bgreward, #bg_drawall ul li div .bgreward:hover {display: block;}
+
+#bg_drawall li.loading {
+  overflow: hidden;
+  background-color: #FFB74D;
+  background-size: 100px 100px;
+  background-image: linear-gradient(-45deg, rgba(255,255,255,0.25) 25%, rgba(255,255,255,0) 25%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.25) 50%, rgba(255,255,255,0.25) 75%, rgba(255,255,255,0) 75%, rgba(255,255,255,0));
+  animation: barberpole 0.5s linear infinite;
 }
-#bg_drawall.open ul li:nth-of-type(6) {-webkit-animation-delay: .1s; animation-delay: .1s;}
-#bg_drawall.open ul li:nth-of-type(7) {-webkit-animation-delay: .2s; animation-delay: .2s;}
-#bg_drawall.open ul li:nth-of-type(8) {-webkit-animation-delay: .3s; animation-delay: .3s;}
-#bg_drawall.open ul li:nth-of-type(9) {-webkit-animation-delay: .4s; animation-delay: .4s;}
+#bg_drawall li.loading h1 {color: #222;}
+#bg_drawall li.loading a[data-candy] {transform: scale(1.5); opacity: 0; pointer-events: none;}
+
+#bg_drawall li.loaded {background: none;}
+#bg_drawall li.loaded h1 {color: #b11e95;}

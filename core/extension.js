@@ -38,10 +38,6 @@ class Extension {
   }
 
   preMount() {}
-
-  mount() {
-    console.log(this.id + ' has mounted to the page!');
-  }
-
+  mount() {}
   unMount() {}
 }

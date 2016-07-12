@@ -23,7 +23,7 @@ let BetterGaia = {
   },
 
   loadPrefs: function(callback) {
-    this.prefStorage.enabledExtensions = ['BGCore', 'AnnouncementReader', 'DrawAll', 'MyGaia'];
+    this.prefStorage.enabledExtensions = ['BGCore', 'BGForums', 'AnnouncementReader', 'DrawAll', 'ExternalLinkRedirect', 'FormattingToolbar', 'Guilds', 'MyGaia', 'PrivateMessages'];
 
     Bridge.storage.get((response) => {
       for (var key in response) {

@@ -39,7 +39,7 @@ class DrawAll extends Extension {
                 <ul class="bg_model_content">
                   {{#each this}}
                   <li>
-                    <span>{{name}}</span>
+                    <h1>{{name}}</h1>
                     <div><a data-candy="{{id}}">Collect</a></div>
                   </li>
                   {{/each}}

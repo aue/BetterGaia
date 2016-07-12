@@ -1,5 +1,10 @@
 html.bg_noscroll {overflow: hidden !important;}
 
+@keyframes loading {
+    0% {transform: rotate(0deg);}
+    100% {transform: rotate(360deg);}
+}
+
 /* Spinner */
 .bg_spinner {
 	position: relative; display: inline-block; width: 1em; height: 1em; font-size: 100px; vertical-align: middle; overflow: hidden; text-indent: 100%;
@@ -9,10 +14,8 @@ html.bg_noscroll {overflow: hidden !important;}
 }
 .bg_spinner, .bg_spinner:before, .bg_spinner:after {border-radius: 100%;}
 .bg_spinner:before, .bg_spinner:after {content: ''; position: absolute; top: 0; right: 0; bottom: 0; left: 0;}
-.bg_spinner:before {border: 5px solid; border-color: #81D4FA; box-shadow: 0 0 0.1em #81D4FA, 0 0 0.1em #81D4FA inset;}
-.bg_spinner:after {border-top: 4px solid; border-bottom: 4px solid; border-color: #E040FB;}
-@-webkit-keyframes spinner {to {-webkit-transform: rotate(360deg);}}
-@-moz-keyframes spinner {to {-moz-transform: rotate(360deg);}}
+.bg_spinner:before {border: 5px solid; border-color: rgba(129,212,250,0.75); box-shadow: 0 0 0.1em #81D4FA, 0 0 0.1em #81D4FA inset; z-index: 1;}
+.bg_spinner:after {border-top: 4px solid; border-bottom: 4px solid; border-color: #b11e95;}
 @keyframes spinner {to {transform: rotate(360deg);}}
 
 /* BetterGaia Model */
@@ -27,7 +30,7 @@ html.bg_noscroll {overflow: hidden !important;}
 .bg_model .bg_model_header .close:after {content: '\e014';}
 .bg_model .bg_model_header .close:hover {background: #FFF; color: #222;}
 
-.bg_model .bg_model_content {border: 5px solid #37474f; border-width: 5px 0; box-shadow: 0 0 2.5em 0 rgba(255,255,255,0.5), 0 1px 1px rgba(0,0,0,0.5); background: #fff;}
+.bg_model .bg_model_content {border: 5px solid #37474f; border-width: 5px 0; box-shadow: 0 0 2.5em 0 rgba(255,255,255,0.5), 0 1px 1px rgba(0,0,0,0.5), 0 1em 0.25em -1em rgba(0,0,0,0.25) inset; background: #fff;}
 
 .bg_model.flex .bg_model_container {width: 60em; height: 100%; display: flex; flex-direction: column;}
 .bg_model.flex .bg_model_header {flex: 0 0 auto;}
