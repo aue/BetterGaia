@@ -219,7 +219,7 @@ class BGCore extends Extension {
       $('html').addClass('bg_noscroll');
     });
 
-    $('.bg_settings_link').click();
+    //$('.bg_settings_link').click();
   }
 
   unMount() {

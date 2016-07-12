@@ -29,6 +29,10 @@ html.bg_noscroll {overflow: hidden !important;}
 
 .bg_model .bg_model_content {border: 5px solid #37474f; border-width: 5px 0; box-shadow: 0 0 2.5em 0 rgba(255,255,255,0.5), 0 1px 1px rgba(0,0,0,0.5); background: #fff;}
 
+.bg_model.flex .bg_model_container {width: 60em; height: 100%; display: flex; flex-direction: column;}
+.bg_model.flex .bg_model_header {flex: 0 0 auto;}
+.bg_model.flex .bg_model_content {display: flex; flex: 1 1 auto;}
+
 /* Settings */
 .bg_settings_link {width: auto !important; cursor: pointer;}
 

@@ -31,17 +31,21 @@ class DrawAll extends Extension {
     $('#dailyReward .bg_drawall').on('click.DrawAll', function() {
         if ($('#bg_drawall').length < 1) {
             var template = Handlebars.compile(`<div id="bg_drawall" class="bg_model">
-                <h1>Draw All <a class="close" title="Close"></a></h1>
-                <ul class="bg_container">
-                    {{#each this}}
-                    <li>
-                        <span>{{name}}</span>
-                        <div><a data-candy="{{id}}">Collect</a></div>
-                    </li>
-                    {{/each}}
+              <div class="bg_model_container">
+                <div class="bg_model_header">
+                  <h1>Draw All</h1>
+                  <a class="close" title="Close"></a>
+                </div>
+                <ul class="bg_model_content">
+                  {{#each this}}
+                  <li>
+                    <span>{{name}}</span>
+                    <div><a data-candy="{{id}}">Collect</a></div>
+                  </li>
+                  {{/each}}
                 </ul>
-            </div>
-            <div class="bg_mask"></div>`);
+              </div>
+            </div>`);
 
             var template2 = Handlebars.compile(`<img src="http://gaiaonline.com/images/{{data.reward.thumb}}">
             <strong>{{data.reward.name}}</strong>
@@ -58,16 +62,8 @@ class DrawAll extends Extension {
                 {{/if}}
             </p>`);
 
-            var candy = [{id: 1, name: 'Home'}, {id: 2, name: 'MyGaia'}, {id: 1279, name: 'Gaia Cash'}, {id: 8, name: 'Shops'}, {id: 1271, name: 'GoFusion'}, {id: 3, name: 'Forums'}, {id: 5, name: 'World'}, {id: 4, name: 'Games'}, {id: 12, name: 'Mobile App'}];
+            var candy = [{id: 1, name: 'Home'}, {id: 2, name: 'My Gaia'}, {id: 1279, name: 'Gaia Cash'}, {id: 8, name: 'Shops'}, {id: 1271, name: 'GoFusion'}, {id: 3, name: 'Forums'}, {id: 5, name: 'World'}, {id: 4, name: 'Games'}, {id: 12, name: 'Mobile App'}];
             $('body').append(template(candy));
-
-            $('#bg_drawall h1 .close').on('click.DrawAll', function() {
-                $('#bg_drawall').removeClass('open');
-            });
-
-            $('#bg_drawall ul').on('click.DrawAll', '.bgreward', function() {
-                $(this).parent().toggleClass('bgexpand');
-            });
 
             $('#bg_drawall a[data-candy]').on('click.DrawAll', function() {
                 var thisCandy = $(this).closest('li');
@@ -99,12 +95,13 @@ class DrawAll extends Extension {
         }
 
         $('#bg_drawall').addClass('open');
+        $('html').addClass('bg_noscroll');
     });
   }
 
   unMount() {
     this.removeCSS();
-    $('#dailyReward .bg_drawall, #bg_drawall h1 .close, #bg_drawall ul, #bg_drawall a[data-candy]').off('click.DrawAll');
+    $('#dailyReward .bg_drawall, #bg_drawall a[data-candy]').off('click.DrawAll');
     $('#bg_drawall, #bg_drawall + .bg_mask, .bg_drawall').remove();
   }
 }

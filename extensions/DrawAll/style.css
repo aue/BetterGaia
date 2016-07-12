@@ -6,19 +6,21 @@
 #dailyReward .bg_drawall:after {right: 7px; left: auto;}
 #dailyReward .bg_drawall:hover {opacity: 0.7;}
 
-#bg_drawall {margin-left: -375px; width: 750px;}
-#bg_drawall ul li {overflow: hidden; position: relative; list-style: none;}
-#bg_drawall ul li span, #bg_drawall ul li div {display: block; float: left; min-height: 58px;}
-#bg_drawall ul li span {padding: 1.25em; font: bold 15px "Century Gothic", "TeXGyreAdventorBold", Arial, Tahoma, Verdana, sans-serif; background: #0288D1; color: #FFF; display: block; list-style: none; box-shadow: 0 1em 0.25em -1em rgba(0,0,0,0.25) inset; width: 20%;}
-#bg_drawall ul li div {padding: 1.25em; background: rgba(255,255,255,0.9); transition: all 0.6s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 1em 0.25em -1em rgba(0,0,0,0.25) inset; width: 80%;}
+#bg_drawall .bg_model_container {width: 750px;}
+#bg_drawall .bg_model_content {display: flex; flex-wrap: wrap;}
+#bg_drawall ul li {position: relative; list-style: none; width: 20%; flex: 1 0 auto; background: #0092b2;     box-shadow: 0 2px 1px rgba(0,0,0,0.15) inset; text-align: center; padding: 1em; display: flex; justify-content: center; flex-direction: column; transition: background 0.5s ease; min-height: 9em;}
+#bg_drawall ul li.loading {overflow: hidden;}
+#bg_drawall ul li.loaded {background: none;}
+#bg_drawall ul li span {font: bold 15px "Century Gothic", "TeXGyreAdventorBold", Arial, Tahoma, Verdana, sans-serif; color: #fff; display: block; list-style: none; margin-bottom: 1em;}
+#bg_drawall ul li.loading span {color: #222;}
+#bg_drawall ul li.loaded span {color: #b11e95;}
+#bg_drawall ul li div {text-align: center; position: relative;}
 #bg_drawall ul li div p {margin: 0;}
-#bg_drawall ul li div img {margin: -1em .5em -1em 0; height: 30px; width: 30px;}
-#bg_drawall ul li div strong {flex: 1; margin: -1em .5em -1em 0;}
-#bg_drawall ul li div strong + p {flex: 3; max-height: 24px; transition: all 0.5s ease; cursor: pointer;}
-#bg_drawall ul li div.bgexpand strong + p {max-height: 150px; transition-delay: .75s;}
-#bg_drawall ul li div strong + p:after {display: block; content: '...'; background: #fff; position: absolute; bottom: 0; margin-left: 11em; left: 50%; border-radius: 25px 25px 0 0; box-shadow: 0 0 2px rgba(0,0,0,0.75); padding: 0 15px 3px; transition: all ease 2s;}
-#bg_drawall ul li div.bgexpand strong + p:after {bottom: -25px;}
-#bg_drawall ul li div a[data-candy] {background: linear-gradient(to bottom, #FFB74D, #FFA726); font-size: 125%; display: block; transition: all 0.5s ease; margin: -1em 0; width: 100%; box-shadow: 0 1px 0 #FFF3E0 inset; border: 1px solid #FFA726; padding: 0.6em; border-radius: 1.5em/3.5em; text-align: center; cursor: pointer;}
+#bg_drawall ul li div img {margin: 0; height: 30px; width: 30px;}
+#bg_drawall ul li div strong {display: block;}
+#bg_drawall ul li div .bgreward {position: absolute; z-index: 1; background: #fff; padding: 0.5em; border: 5px solid #37474f; box-shadow: 0 0 2.5em 0 rgba(255,255,255,0.5), 0 1px 1px rgba(0,0,0,0.5); left: -25px; right: -25px; margin-top: 5px; display: none;}
+#bg_drawall ul li div img:hover ~ .bgreward, #bg_drawall ul li div strong:hover ~ .bgreward, #bg_drawall ul li div .bgreward:hover {display: block;}
+#bg_drawall ul li div a[data-candy] {background: linear-gradient(to bottom, #FFB74D, #FFA726); font-size: 115%; display: block; transition: all 0.5s ease; margin: 0; width: 100%; box-shadow: 0 1px 0 #FFF3E0 inset; border: 1px solid #FFA726; padding: 0.6em; border-radius: 1.5em/3.5em; text-align: center; cursor: pointer;}
 #bg_drawall ul li div a[data-candy]:hover {background: linear-gradient(to bottom, #FFCC80, #FFB74D); border-color: #FFB74D;}
 #bg_drawall ul li div a[data-candy]:active {background: linear-gradient(to top, #FFCC80, #FFB74D); border-color: #FFB74D;}
 @keyframes barberpole {
@@ -29,14 +31,14 @@
     from { background-position: 0 0; }
     to   { background-position: 0 100px; }
 }
-#bg_drawall ul li.loading div {
+#bg_drawall ul li.loading {
     background-color: #FFB74D;
     background-size: 100px 100px;
     background-image: linear-gradient(-45deg, rgba(255,255,255,0.25) 25%, rgba(255,255,255,0) 25%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.25) 50%, rgba(255,255,255,0.25) 75%, rgba(255,255,255,0) 75%, rgba(255,255,255,0));
     -webkit-animation: barberpole 0.5s linear infinite;
     animation: barberpole 0.5s linear infinite;
 }
-#bg_drawall ul li.loading div a[data-candy] {transform: scaleX(1.05) scaleY(1.8); opacity: 0; pointer-events: none;}
+#bg_drawall ul li.loading div a[data-candy] {transform: scale(1.5); opacity: 0; pointer-events: none;}
 
 @keyframes flipInX {
     0% {transform: perspective(400px) rotateX(90deg); transform-origin: center top; opacity: 0;}
@@ -51,10 +53,11 @@
     100% {transform: perspective(0) rotateX(0deg); opacity: 1; -webkit-animation-fill-mode: none;}
 }
 
-#bg_drawall.open ul li:nth-of-type(7), #bg_drawall.open ul li:nth-of-type(8), #bg_drawall.open ul li:nth-of-type(9) {
+#bg_drawall.open ul li:nth-of-type(6), #bg_drawall.open ul li:nth-of-type(7), #bg_drawall.open ul li:nth-of-type(8), #bg_drawall.open ul li:nth-of-type(9) {
     -webkit-animation-duration: 0.9s; -webkit-animation-delay: .2s; -webkit-animation-timing-function: ease; -webkit-animation-fill-mode: both; -webkit-backface-visibility: visible !important; -webkit-animation-name: flipInX;
     animation-duration: 0.9s; animation-delay: .2s; animation-timing-function: ease; animation-fill-mode: both; backface-visibility: visible !important; animation-name: flipInX;
 }
-#bg_drawall.open ul li:nth-of-type(7) {-webkit-animation-delay: .1s; animation-delay: .1s;}
-#bg_drawall.open ul li:nth-of-type(8) {-webkit-animation-delay: .2s; animation-delay: .2s;}
-#bg_drawall.open ul li:nth-of-type(9) {-webkit-animation-delay: .3s; animation-delay: .3s; margin-bottom: 0;}
+#bg_drawall.open ul li:nth-of-type(6) {-webkit-animation-delay: .1s; animation-delay: .1s;}
+#bg_drawall.open ul li:nth-of-type(7) {-webkit-animation-delay: .2s; animation-delay: .2s;}
+#bg_drawall.open ul li:nth-of-type(8) {-webkit-animation-delay: .3s; animation-delay: .3s;}
+#bg_drawall.open ul li:nth-of-type(9) {-webkit-animation-delay: .4s; animation-delay: .4s;}

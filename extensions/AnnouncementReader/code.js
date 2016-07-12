@@ -32,23 +32,27 @@ class AnnouncementReader extends Extension {
       // Open model
       $('#notifyItemList .notify_icon_announcement').on('click.AnnouncementReader', function() {
           if ($('#bg_anreader').length < 1) {
-              $('body').append('<div id="bg_anreader" class="bg_model">\
-                  <h1>Announcement Reader <a class="close" title="Close"></a></h1>\
-                  <div class="bg_container">\
-                      <ul></ul>\
-                      <div class="content">\
-                          <span class="bg_spinner"></span>\
-                      </div>\
-                  </div>\
-              </div>\
-              <div class="bg_mask"></div>');
+              $('body').append(`<div id="bg_anreader" class="bg_model flex">
+                <div class="bg_model_container">
+                  <div class="bg_model_header">
+                    <h1>Announcement Reader</h1>
+                    <a class="close" title="Close"></a>
+                  </div>
+                  <div class="bg_model_content">
+                    <ul></ul>
+                    <div class="content">
+                      <span class="bg_spinner"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>`);
 
-              var liTemplate = Handlebars.compile('<li class="new" data-announcement="{{i}}">\
+              let liTemplate = Handlebars.compile('<li class="new" data-announcement="{{i}}">\
                   <span class="username">{{username}}</span>\
                   <span class="title">{{title}}</span>\
               </li>');
 
-              var threadTemplate = Handlebars.compile('<div class="page" data-announcement="{{i}}">\
+              let threadTemplate = Handlebars.compile('<div class="page" data-announcement="{{i}}">\
                   <div class="header">\
                       <div class="avatar">{{{avatar}}}</div>\
                       <a href="{{link}}" target="_blank">{{username}}</a>\
@@ -57,11 +61,6 @@ class AnnouncementReader extends Extension {
                   </div>\
                   <div class="message">{{{content}}}</div>\
               </div>');
-
-              $('#bg_anreader h1 .close').on('click.AnnouncementReader', function() {
-                  $('#bg_anreader').removeClass('open');
-                  $('html').removeClass('bg_noscroll');
-              });
 
               var apply = function() {
                   $.ajax({
@@ -82,8 +81,8 @@ class AnnouncementReader extends Extension {
                               avatar: $('#post-1 .avi_box .avatar', html).html()
                           };
 
-                          $('#bg_anreader .bg_container > ul').prepend(liTemplate(thread));
-                          $('#bg_anreader .content').prepend(threadTemplate(thread));
+                          $('#bg_anreader .bg_model_content > ul').prepend(liTemplate(thread));
+                          $('#bg_anreader .bg_model_content .content').prepend(threadTemplate(thread));
                       }
                       else {
                           remaining = 0;
@@ -97,15 +96,15 @@ class AnnouncementReader extends Extension {
                       // No more, end
                       else {
                           $('#bg_anreader').addClass('loaded');
-                          $('#bg_anreader .content .page .message a').attr('target', '_blank');
+                          $('#bg_anreader .bg_model_content .content .page .message a').attr('target', '_blank');
 
-                          $('#bg_anreader .bg_container > ul').on('click.AnnouncementReader', 'li', function() {
-                              $('#bg_anreader .bg_container > ul li.active, #bg_anreader .content .page.active').removeClass('active');
+                          $('#bg_anreader .bg_model_content > ul').on('click.AnnouncementReader', 'li', function() {
+                              $('#bg_anreader .bg_model_content > ul li.active, #bg_anreader .bg_model_content .content .page.active').removeClass('active');
                               $(this).removeClass('new').addClass('active');
-                              $('#bg_anreader .content .page[data-announcement="' + $(this).attr('data-announcement') + '"]').addClass('active');
+                              $('#bg_anreader .bg_model_content .content .page[data-announcement="' + $(this).attr('data-announcement') + '"]').addClass('active');
                           });
 
-                          $('#bg_anreader .bg_container > ul li:first-child').click();
+                          $('#bg_anreader .bg_model_content > ul li:first-child').click();
                       }
                   });
               };
@@ -122,7 +121,8 @@ class AnnouncementReader extends Extension {
 
   unMount() {
     this.removeCSS();
-    $('#notifyItemList .notify_icon_announcement, #bg_anreader h1 .close, #bg_anreader .bg_container > ul').off('click.AnnouncementReader');
-    $('#bg_anreader, #bg_anreader + .bg_mask, .bg_drawall').remove();
+    $('#notifyItemList .notify_icon_announcement').off('click.AnnouncementReader');
+    $('#bg_anreader .bg_model_content > ul').off('click.AnnouncementReader', 'li');
+    $('#bg_anreader').remove();
   }
 }
