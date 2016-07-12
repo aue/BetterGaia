@@ -1,8 +1,10 @@
 class Extension {
   constructor(id) {
     this.id = id;
-    this.prefs = {};
   }
+
+  static info() {}
+  static defaultPrefs() {}
 
   addCSS(css) {
     let styleTag = document.querySelector(`style[bg-css="${this.id}"]`);
@@ -31,20 +33,8 @@ class Extension {
   removeCSS() {
     let tags = document.querySelectorAll(`style[bg-css="${this.id}"], link[bg-css="${this.id}"]`);
     for (let i = 0, len = tags.length; i < len; i++) {
-      tags.parentNode.removeChild(tags[i]);
+      tags[i].parentNode.removeChild(tags[i]);
     }
-  }
-
-  getPreference(key) {
-
-  }
-
-  setPreference(key, value) {
-
-  }
-
-  removePreference(key) {
-
   }
 
   preMount() {}

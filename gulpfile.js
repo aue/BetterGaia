@@ -22,9 +22,10 @@ gulp.task('vendor', function() {
 
 gulp.task('build:core', ['vendor'], function() {
   let core = gulp.src([
+    '!core/extension.js',
     '!core/extensions.js',
-    'core/!(core)*.js',
-    'core/core.js'
+    'core/!(execute)*.js',
+    'core/execute.js'
   ]).pipe(concat('core.js'))
     .pipe(gulp.dest('browser/Chrome/assets'));
 
@@ -36,6 +37,7 @@ gulp.task('build:core', ['vendor'], function() {
 
 gulp.task('build:extensions', function() {
   let condense = gulp.src([
+    'core/extension.js',
     'extensions/*/code.js',
     'core/extensions.js'
   ]).pipe(concat('extensions.js'))
@@ -60,8 +62,8 @@ gulp.task('package', function() {
 });
 
 gulp.task('watch', function() {
-  gulp.watch('core/*.js', ['build:core']);
-  gulp.watch('extensions/**/*', ['build:extensions']);
+  gulp.watch(['core/*.js', '!core/extension.js', '!core/extensions.js'], ['build:core']);
+  gulp.watch(['core/extension.js', 'core/extensions.js', 'extensions/**/*'], ['build:extensions']);
 });
 
 gulp.task('build', ['build:core', 'build:extensions']);

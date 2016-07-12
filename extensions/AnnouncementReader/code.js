@@ -3,6 +3,22 @@ class AnnouncementReader extends Extension {
     super('AnnouncementReader');
   }
 
+  static info() {
+    return {
+      id: 'AnnouncementReader',
+      title: 'Announcement Reader',
+      description: 'Stop reading announcments one by one. ',
+      extendedDescription: 'Built with speed in mind, with one touch Announcement Reader opens all of your announcments just for you.',
+      author: 'The BetterGaia Team',
+      homepage: 'http://www.bettergaia.com/',
+      version: '1.0'
+    };
+  }
+
+  static defaultPrefs() {
+    return {};
+  }
+
   preMount() {
     this.addStyleSheet('style');
   }
@@ -14,7 +30,7 @@ class AnnouncementReader extends Extension {
       if (remaining > 10) remaining = 10;
 
       // Open model
-      $('#notifyItemList .notify_icon_announcement').on('click', function() {
+      $('#notifyItemList .notify_icon_announcement').on('click.AnnouncementReader', function() {
           if ($('#bg_anreader').length < 1) {
               $('body').append('<div id="bg_anreader" class="bg_model">\
                   <h1>Announcement Reader <a class="close" title="Close"></a></h1>\
@@ -42,7 +58,7 @@ class AnnouncementReader extends Extension {
                   <div class="message">{{{content}}}</div>\
               </div>');
 
-              $('#bg_anreader h1 .close').on('click', function() {
+              $('#bg_anreader h1 .close').on('click.AnnouncementReader', function() {
                   $('#bg_anreader').removeClass('open');
                   $('html').removeClass('bg_noscroll');
               });
@@ -83,7 +99,7 @@ class AnnouncementReader extends Extension {
                           $('#bg_anreader').addClass('loaded');
                           $('#bg_anreader .content .page .message a').attr('target', '_blank');
 
-                          $('#bg_anreader .bg_container > ul').on('click', 'li', function() {
+                          $('#bg_anreader .bg_container > ul').on('click.AnnouncementReader', 'li', function() {
                               $('#bg_anreader .bg_container > ul li.active, #bg_anreader .content .page.active').removeClass('active');
                               $(this).removeClass('new').addClass('active');
                               $('#bg_anreader .content .page[data-announcement="' + $(this).attr('data-announcement') + '"]').addClass('active');
@@ -106,6 +122,7 @@ class AnnouncementReader extends Extension {
 
   unMount() {
     this.removeCSS();
+    $('#notifyItemList .notify_icon_announcement, #bg_anreader h1 .close, #bg_anreader .bg_container > ul').off('click.AnnouncementReader');
     $('#bg_anreader, #bg_anreader + .bg_mask, .bg_drawall').remove();
   }
 }

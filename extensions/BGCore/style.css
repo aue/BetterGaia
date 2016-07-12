@@ -1,3 +1,5 @@
+html.bg_noscroll {overflow: hidden !important;}
+
 /* Spinner */
 .bg_spinner {
 	position: relative; display: inline-block; width: 1em; height: 1em; font-size: 100px; vertical-align: middle; overflow: hidden; text-indent: 100%;
@@ -14,15 +16,80 @@
 @keyframes spinner {to {transform: rotate(360deg);}}
 
 /* BetterGaia Model */
-.bg_model {position: absolute; top: 25px; left: 50%; z-index: 99999; margin: 0; padding: 0; display: none; color: #222;}
+.bg_model {display: none; position: fixed; z-index: 99999; margin: 0; padding: 2.5em; background: rgba(96,125,139,0.7); top: 0; left: 0; right: 0; bottom: 0; overflow: auto;}
 .bg_model * {box-sizing: border-box;}
-.bg_model.open {display: block;}
-.bg_mask {display: none;}
-.bg_model.open + .bg_mask {display: block; z-index: 99998; background: #000; opacity: 0.75; position: absolute; top: 0; left: 0; right: 0; bottom: 0;}
+.bg_model.open {display: flex; align-items: center; justify-content: center;}
+.bg_model .bg_model_container {}
 
-.bg_model > h1 {padding: 0.7em; margin: 0; font: normal 27px "Century Gothic", "TeXGyreAdventorBold", Arial, sans-serif; color: #fff; background: radial-gradient(ellipse farthest-side at bottom center, rgba(179,229,252,0.75), transparent 95%); position: relative;}
-.bg_model > h1 .close {cursor: pointer; font: normal 0.65em/1.4em 'Glyphicons Halflings'; color: #FFF; padding: 0 0.25em; margin: 0.4em -0.35em 0 0; border-radius: 1.5em/3.5em; float: right;}
-.bg_model > h1 .close:after {content: '\e014';}
-.bg_model > h1 .close:hover {background: #FFF; color: #222;}
+.bg_model .bg_model_header {position: relative;}
+.bg_model .bg_model_header h1 {padding: 0.5em; margin: 0; font: normal 2em "Century Gothic", "TeXGyreAdventorRegular", Arial, sans-serif; color: #fff; position: relative; text-align: center; text-shadow: 0 1px 1px rgba(0,0,0,0.5);}
+.bg_model .bg_model_header .close {cursor: pointer; font: normal 1.25em 'Glyphicons Halflings'; color: #fff; padding: 0 0.25em; border-radius: 1.5em/3.5em; position: absolute; top: 35%; right: 0.5em;}
+.bg_model .bg_model_header .close:after {content: '\e014';}
+.bg_model .bg_model_header .close:hover {background: #FFF; color: #222;}
 
-.bg_model > .bg_container {border: 5px solid #37474F; border-width: 5px 0;}
+.bg_model .bg_model_content {border: 5px solid #37474f; border-width: 5px 0; box-shadow: 0 0 2.5em 0 rgba(255,255,255,0.5), 0 1px 1px rgba(0,0,0,0.5); background: #fff;}
+
+/* Settings */
+.bg_settings_link {width: auto !important; cursor: pointer;}
+
+#bg_settings .bg_model_container {width: 60em; height: 100%; display: flex; flex-direction: column;}
+#bg_settings .bg_model_header {flex: 0 0 auto;}
+#bg_settings .bg_model_content {display: flex; flex: 1 1 auto;}
+
+#bg_settings .bgs_menu {background: #0092b2; width: 11%; overflow: hidden; padding: 0; margin: 0; flex: 0 0 auto;}
+#bg_settings .bgs_menu ul {overflow-y: auto; height: 100%; list-style: none;}
+#bg_settings .bgs_menu li {display: block; text-align: center; transition: all 0.25s ease; box-shadow: 0 1em 0.25em -1em rgba(0,0,0,0.25) inset; color: #fff;}
+#bg_settings .bgs_menu li a {display: block; padding: 1em 0.5em; text-decoration: none; outline: none; transition: all 0.25s ease; cursor: pointer; color: #fff;}
+#bg_settings .bgs_menu li a i {display: block; margin: 0 0 0.1em; font: normal 2em/1.4em 'Glyphicons Halflings';}
+#bg_settings .bgs_menu li a i.bgs_menu_myextensions:before {content: "\e021";}
+#bg_settings .bgs_menu li a i.bgs_menu_extensions:before {content: "\e011";}
+#bg_settings .bgs_menu li a i.bgs_menu_about:before {content: "\e122";}
+#bg_settings .bgs_menu li:hover {background: rgba(255,255,255,0.1);}
+#bg_settings .bgs_menu li.bgs_active {font-weight: bold; background: #fff;}
+#bg_settings .bgs_menu li.bgs_active a {color: #b11e95;}
+
+#bg_settings .bgs_pages {flex: 1 1 auto; overflow-y: auto;}
+#bg_settings .bgs_pages .bgs_page {display: none;}
+#bg_settings .bgs_pages .bgs_page.bgs_active {display: flex;}
+
+#bg_settings h1 small {font-size: 50%; font-weight: normal; background: #37474f; color: #fff; padding: 0.2em 0.5em; display: inline-block; position: relative; top: -0.35em; border-radius: 1em;}
+#bg_settings .button {display: block; background: #b11e95; padding: 0.75em 1.75em; color: #fff; text-align: center; cursor: pointer; font-weight: bold; border-radius: 1.5em/3.5em; text-decoration: none; box-shadow: 0 1px 1px rgba(0,0,0,0.15); transition: background 0.25s ease;}
+#bg_settings .button:hover {background: #ca58b4;}
+#bg_settings .button:active {background: #862874;}
+
+#bg_settings .bgs_page .card {}
+#bg_settings .bgs_page .card {padding: 1em; margin: 0.5em; box-shadow: 0 0 1em rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.15);}
+#bg_settings .bgs_page .card h1 {margin: 0.3em 0 0.7em;}
+
+#bg_settings .bgs_page.myextensions {height: 100%;}
+#bg_settings .bgs_page.myextensions .list {width: 35%; padding: 1em; overflow-y: auto;}
+#bg_settings .bgs_page.myextensions .list li {list-style: none; padding: 1em; margin: 0; box-shadow: 0 0 1em rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.15); border-bottom-width: 0; cursor: pointer; transition: background 0.25s ease;}
+#bg_settings .bgs_page.myextensions .list li:last-child {border-bottom-width: 1px;}
+#bg_settings .bgs_page.myextensions .list li:hover {background: rgba(177,30,149,0.1);}
+#bg_settings .bgs_page.myextensions .list li.bgs_active {background: #b11e95; color: #fff; cursor: default;}
+#bg_settings .bgs_page.myextensions .list li h1 {margin: 0;}
+#bg_settings .bgs_page.myextensions .list li p {margin: 0.5em 0 0;}
+
+#bg_settings .bgs_page.myextensions .details {flex: 1; overflow: auto;}
+#bg_settings .bgs_page.myextensions .details .detail {display: none; padding: 1em 1em 1em 0.75em;}
+#bg_settings .bgs_page.myextensions .details .detail.bgs_active {display: block;}
+#bg_settings .bgs_page.myextensions .details .detail h1, h2 {margin: 0.75em 0;}
+#bg_settings .bgs_page.myextensions .details .detail h2 {font-weight: normal;}
+#bg_settings .bgs_page.myextensions .details .detail .about {background: #f5f5f5; padding: 1em; border-radius: 0.25em; margin: 1em 0;}
+#bg_settings .bgs_page.myextensions .details .detail .about p:last-child {margin-bottom: 0;}
+#bg_settings .bgs_page.myextensions .details .detail .about .button {margin-top: -0.35em; float: right; background: #455a64;}
+#bg_settings .bgs_page.myextensions .details .detail .about .button:hover {background: #546e7a;}
+#bg_settings .bgs_page.myextensions .details .detail .about .button:active {background: #37474f;}
+
+#bg_settings .bgs_page.extensions {padding: 0.5em; overflow: auto; flex-wrap: wrap; justify-content: center;}
+#bg_settings .bgs_page.extensions .card {width: calc(100%/3 - 1em); padding-bottom: 3.75em; position: relative;}
+#bg_settings .bgs_page.extensions .card .button {position: absolute; bottom: 1em; left: 1em; right: 1em;}
+#bg_settings .bgs_page.extensions .card .button:before {content: 'Enable'}
+#bg_settings .bgs_page.extensions .card .button.enabled {background: #bdbdbd; cursor: default;}
+#bg_settings .bgs_page.extensions .card .button.enabled:before {content: 'Enabled'}
+
+#bg_settings .bgs_page.about {padding: 1em 2em 2.5em; overflow: hidden;}
+#bg_settings .bgs_page.about.bgs_active {display: block;}
+#bg_settings .bgs_page.about .logo {float: left; width: 20%;}
+#bg_settings .bgs_page.about .credits {float: left; width: 80%; padding-left: 2em;}
+#bg_settings .bgs_page.about .credits .button {display: inline;}
