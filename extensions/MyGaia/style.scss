@@ -95,7 +95,7 @@ body.mygaia.app-page_mygaia #gaia_content #mygaia_tabs .gaia_tab_orphans li.clea
     body.mygaia #gaia_content #bd .mg_status .my_status .avatar {margin: 0 0 5px 0; border: 0;}
     body.mygaia #gaia_content #bd .mg_status .my_status .status {width: calc(100% - 48px - 5px); margin: 0; float: right; background: none; padding: 0; overflow: visible;}
     body.mygaia #gaia_content #bd .mg_status .my_status .status .lead {margin: 0; display: none;}
-    body.mygaia #gaia_content #bd .mg_status .my_status .status p, body.mygaia #gaia_content #bd .mg_status .my_status .status p + div {margin: 0; display: block; background: none; padding: 3px 2px 2px; font-size: 85%;}
+    body.mygaia #gaia_content #bd .mg_status .my_status .status p, body.mygaia #gaia_content #bd .mg_status .my_status .status p + div {margin: 0; display: block; background: none; padding: 3px 2px 2px; font-size: 85%; word-wrap: break-word;}
     body.mygaia #gaia_content #bd .mg_status .my_status .status p a, body.mygaia #gaia_content #bd .mg_status .my_status .status p + div a {text-transform: capitalize; margin: 5px 0 0; display: inline-block;}
     body.mygaia #gaia_content #bd .mg_status .my_status .status p + div textarea {margin: 0; border: 1px solid #DDD;}
     body.mygaia #gaia_content #bd .mg_status .my_status .status p + div label {display: inline; float: right; position: static; margin: 5px 0 0;}
@@ -108,7 +108,7 @@ body.mygaia.app-page_mygaia #gaia_content #mygaia_tabs .gaia_tab_orphans li.clea
     body.mygaia #gaia_content #bd .mg_status .friend_statuses .avatar {border: 0;}
     body.mygaia #gaia_content #bd .mg_status .friend_statuses .status {width: calc(100% - 35px); float: right; padding: 0; overflow: visible; background: none; margin: 0; clear: none;}
     body.mygaia #gaia_content #bd .mg_status .friend_statuses .status .lead {display: none;}
-    body.mygaia #gaia_content #bd .mg_status .friend_statuses .status p {display: block; margin: 0; padding: 0; background: none;}
+    body.mygaia #gaia_content #bd .mg_status .friend_statuses .status p {display: block; margin: 0; padding: 0; background: none; word-wrap: break-word;}
     body.mygaia #gaia_content #bd .mg_status .friend_statuses .clear {height: 10px !important;}
     body.mygaia #gaia_content #bd .mg_status .friend_statuses .clear:last-of-type {display: none;}
 

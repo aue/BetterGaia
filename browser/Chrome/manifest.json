@@ -1,6 +1,7 @@
 {
     "content_scripts": [ {
         "matches": ["*://*.gaiaonline.com/*"],
+        "exclude_globs": [ "*://*.gaiaonline.com/profiles/*/*/", "*://*.gaiaonline.com/launch/*", "*://*.gaiaonline.com/tank/*"],
         "js": ["assets/vendor.js", "assets/bridge.js", "assets/extensions.js", "assets/core.js"],
         "run_at": "document_start"
     }],

@@ -1,7 +1,6 @@
 class BGCore extends Extension {
   constructor() {
     super('BGCore');
-    this.match = ['/', '/mygaia/', '/market/', '/forum/', '/world/', '/games/', '/payments/', '/gofusion/'];
   }
 
   static info() {
@@ -93,6 +92,27 @@ class BGCore extends Extension {
           </div>
         </div>`);
 
+        // credit to https://gist.github.com/akhoury/9118682
+        Handlebars.registerHelper("x", function (expression, options) {
+          var fn = function(){}, result;
+          try {
+            fn = Function.apply(this, ["window", "return " + expression + " ;"]);
+          } catch (e) {
+            console.warn("{{x " + expression + "}} has invalid javascript", e);
+          }
+
+          try {
+            result = fn.call(this, window);
+          } catch (e) {
+            console.warn("{{x " + expression + "}} hit a runtime error", e);
+          }
+          return result;
+        });
+
+        Handlebars.registerHelper('xif', function (expression, options) {
+          return Handlebars.helpers['x'].apply(this, [expression, options]) ? options.fn(this) : options.inverse(this);
+        });
+
         const activeExtensionsListTemplate = Handlebars.compile(`<li data-id="{{info.id}}">
           <h1>{{info.title}}</h1>
           <p>{{info.description}}</p>
@@ -100,7 +120,7 @@ class BGCore extends Extension {
 
         const activeExtensionsDetailTemplate = Handlebars.compile(`<div data-id="{{info.id}}" class="detail">
           <h1>{{info.title}} <small>{{info.version}}</small></h1>
-          <div class="about">
+          <div class="card about">
             <p>By
               {{#if info.homepage}}
               <a href="{{{info.homepage}}}" target="_blank">{{info.author}}</a>.
@@ -112,7 +132,9 @@ class BGCore extends Extension {
             {{#if info.extendedDescription}}
             <p>{{info.extendedDescription}}</p>
             {{/if}}
+            {{#xif "this.info.id != 'BGCore'"}}
             <a class="button disable" data-id="{{info.id}}">Disable</a>
+            {{/xif}}
           </div>
 
           <h2>Settings</h2>
@@ -137,11 +159,13 @@ class BGCore extends Extension {
             <a href="#" title="{{info.extendedDescription}}">More info.</a>
             {{/if}}
           </p>
+          {{#xif "this.info.id != 'BGCore'"}}
           {{#if enabled}}
           <a data-id="{{info.id}}" class="button enabled"></a>
           {{else}}
           <a data-id="{{info.id}}" class="button enable"></a>
           {{/if}}
+          {{/xif}}
         </div>`);
 
         // Insert extensions currently enabled
@@ -185,6 +209,7 @@ class BGCore extends Extension {
               info: extensionClasses[extensionId].info(),
               prefs: extensionClasses[extensionId].defaultPrefs()
             })).appendTo('#bg_settings .myextensions .details');
+            detail.css('opacity'); // http://stackoverflow.com/questions/24148403/trigger-css-transition-on-appended-element
           }
           detail.addClass('bgs_active');
         });
@@ -192,6 +217,8 @@ class BGCore extends Extension {
         // Disable active extension
         $('#bg_settings .myextensions .details').on('click.BGCore', '.disable[data-id]', function() {
           let extensionId = $(this).attr('data-id');
+          if (extensionId == 'BGCore') return console.warn('BetterGaia Core cannot be disabled.');
+
           $(this).closest('.detail').remove();
           $(`#bg_settings .myextensions .list li[data-id="${extensionId}"]`).remove();
           $(`#bg_settings .extensions .button.enabled[data-id="${extensionId}"]`).removeClass('enabled').addClass('enable');
@@ -202,6 +229,8 @@ class BGCore extends Extension {
         // Enable extension
         $('#bg_settings .extensions').on('click.BGCore', '.button.enable[data-id]', function() {
           let extensionId = $(this).attr('data-id');
+          if (extensionId == 'BGCore') return console.warn('BetterGaia Core cannot be enabled.');
+
           $(this).removeClass('enable').addClass('enabled');
 
           $(activeExtensionsListTemplate({

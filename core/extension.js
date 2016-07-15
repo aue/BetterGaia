@@ -1,6 +1,9 @@
 class Extension {
   constructor(id) {
     this.id = id;
+    this.match = [];
+    this.exclude = [];
+    this.mounted = false;
   }
 
   static info() {}

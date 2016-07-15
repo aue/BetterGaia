@@ -1,9 +1,11 @@
 var fs = require('fs');
 var gulp = require('gulp');
+var autoprefixer = require('gulp-autoprefixer');
 var concat = require('gulp-concat');
 var replace = require('gulp-replace-task');
 var streamify = require('gulp-streamify');
 var uglify = require('gulp-uglify');
+var sass = require('gulp-sass');
 var merge = require('merge-stream');
 
 function getDirectories(path) {
@@ -20,7 +22,7 @@ gulp.task('vendor', function() {
     .pipe(gulp.dest('browser/Chrome/assets'));
 });
 
-gulp.task('build:core', ['vendor'], function() {
+gulp.task('build:core', function() {
   let core = gulp.src([
     '!core/extension.js',
     '!core/extensions.js',
@@ -35,8 +37,8 @@ gulp.task('build:core', ['vendor'], function() {
   return merge(core, logo);
 });
 
-gulp.task('build:extensions', function() {
-  let condense = gulp.src([
+gulp.task('build:extensions:core', function() {
+  return gulp.src([
     'core/extension.js',
     'extensions/*/code.js',
     'core/extensions.js'
@@ -48,13 +50,21 @@ gulp.task('build:extensions', function() {
       }]
     }))
     .pipe(gulp.dest('browser/Chrome/assets'));
+});
 
-  let copy = gulp.src([
+gulp.task('build:extensions:copy', function() {
+  return gulp.src([
     'extensions/**/*',
+    '!extensions/**/*.scss',
     '!extensions/**/code.js'
   ]).pipe(gulp.dest('browser/Chrome/extensions'));
+});
 
-  return merge(condense, copy);
+gulp.task('build:extensions:css', function() {
+  return gulp.src('extensions/**/*.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(autoprefixer())
+    .pipe(gulp.dest('browser/Chrome/extensions'));
 });
 
 gulp.task('package', function() {
@@ -63,9 +73,12 @@ gulp.task('package', function() {
 
 gulp.task('watch', function() {
   gulp.watch(['core/*.js', '!core/extension.js', '!core/extensions.js'], ['build:core']);
-  gulp.watch(['core/extension.js', 'core/extensions.js', 'extensions/**/*'], ['build:extensions']);
+  gulp.watch(['core/extension.js', 'extensions/*/code.js', 'core/extensions.js'], ['build:extensions:core']);
+  gulp.watch(['extensions/**/*', '!extensions/**/*.scss', '!extensions/**/code.js'], ['build:extensions:copy']);
+  gulp.watch('extensions/**/*.scss', ['build:extensions:css']);
 });
 
-gulp.task('build', ['build:core', 'build:extensions']);
+gulp.task('build', ['vendor', 'build:core', 'build:extensions']);
+gulp.task('build:extensions', ['build:extensions:core', 'build:extensions:copy', 'build:extensions:css']);
 gulp.task('package', ['build', 'package']);
 gulp.task('default', ['build']);

@@ -23,7 +23,7 @@
 
 #bg_drawall li {position: relative; list-style: none; width: 20%; flex: 1 0 auto; background: #0092b2; box-shadow: 0 2px 1px rgba(0,0,0,0.15) inset; text-align: center; padding: 1em; display: flex; justify-content: center; flex-direction: column; transition: background 0.5s ease; min-height: 9em;}
 
-#bg_drawall.open li:nth-of-type(6), #bg_drawall.open li:nth-of-type(7), #bg_drawall.open li:nth-of-type(8), #bg_drawall.open li:nth-of-type(9) {animation-duration: 0.9s; animation-delay: .2s; animation-timing-function: ease; animation-fill-mode: both; backface-visibility: visible; animation-name: flipInX;}
+#bg_drawall li.loaded, #bg_drawall.open li:nth-of-type(6), #bg_drawall.open li:nth-of-type(7), #bg_drawall.open li:nth-of-type(8), #bg_drawall.open li:nth-of-type(9) {animation-duration: 0.9s; animation-delay: .2s; animation-timing-function: ease; animation-fill-mode: both; backface-visibility: visible; animation-name: flipInX;}
 #bg_drawall.open li:nth-of-type(6) {animation-delay: .1s;}
 #bg_drawall.open li:nth-of-type(7) {animation-delay: .2s;}
 #bg_drawall.open li:nth-of-type(8) {animation-delay: .3s;}
@@ -37,10 +37,11 @@
 
 #bg_drawall li div img {margin-bottom: 0.25em; height: 30px; width: 30px;}
 #bg_drawall li div strong {display: block;}
+#bg_drawall li div p {margin: 0;}
 #bg_drawall li div .bgreward {position: absolute; z-index: 1; background: #fff; margin: 0; padding: 0.5em; border: 5px solid #37474f; box-shadow: 0 0 2.5em 0 rgba(255,255,255,0.5), 0 1px 1px rgba(0,0,0,0.5); left: -25px; right: -25px; margin-top: 5px; display: none;}
 #bg_drawall li div img:hover ~ .bgreward, #bg_drawall ul li div strong:hover ~ .bgreward, #bg_drawall ul li div .bgreward:hover {display: block;}
 
-#bg_drawall li.loading {
+#bg_drawall li.loading, #bg_drawall.open li.loading {
   overflow: hidden;
   background-color: #FFB74D;
   background-size: 100px 100px;
@@ -50,5 +51,6 @@
 #bg_drawall li.loading h1 {color: #222;}
 #bg_drawall li.loading a[data-candy] {transform: scale(1.5); opacity: 0; pointer-events: none;}
 
-#bg_drawall li.loaded {background: none;}
+#bg_drawall li.loaded, #bg_drawall.open li.loaded {background: none; animation-delay: 0s;}
+#bg_drawall li.loaded:hover {z-index: 1;}
 #bg_drawall li.loaded h1 {color: #b11e95;}
