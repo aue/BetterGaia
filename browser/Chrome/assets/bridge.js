@@ -12,8 +12,17 @@ const Bridge = {
       object[key] = value;
       chrome.storage.local.set(object);
     },
-    unset: function(key) {
+    remove: function(key) {
       chrome.storage.local.remove(key);
     }
+  },
+  reset: function() {
+    // clear storage, reload extension
+    chrome.storage.local.clear(function() {
+      chrome.storage.sync.clear(function() {
+        // chrome.runtime.reload();
+        location.reload();
+      });
+    });
   }
 };

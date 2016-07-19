@@ -15,7 +15,10 @@ class BGCore extends Extension {
   }
 
   static defaultPrefs() {
-    return {};
+    return {
+      cat: true,
+      dog: false
+    };
   }
 
   preMount() {
@@ -83,8 +86,9 @@ class BGCore extends Extension {
                       <br>
                       <a class="button" target="_blank" href="http://www.bettergaia.com/">BetterGaia.com</a>
                       <a class="button" target="_blank" href="http://www.bettergaia.com/donate/">Contribute</a>
-                      <a class="button reset">Reset</a>
                       <a class="button" target="_blank" href="http://www.gaiaonline.com/forum/t.96293729/">Support</a>
+                      <br>
+                      <a class="button reset">Reset</a>
                   </div>
                 </div>
               </div>
@@ -237,6 +241,11 @@ class BGCore extends Extension {
             info: extensionClasses[extensionId].info(),
             prefs: extensionClasses[extensionId].defaultPrefs()
           })).appendTo('#bg_settings .myextensions .list');
+        });
+
+        // Reset button
+        $('#bg_settings .about .reset').on('click.BGCore', function() {
+          BetterGaia.reset();
         });
 
         // Ready to go!

@@ -38,6 +38,8 @@ gulp.task('build:core', function() {
 });
 
 gulp.task('build:extensions:core', function() {
+  const extensionClasses = getDirectories(__dirname + '/extensions/');
+
   return gulp.src([
     'core/extension.js',
     'extensions/*/code.js',
@@ -46,7 +48,10 @@ gulp.task('build:extensions:core', function() {
     .pipe(replace({
       patterns: [{
         match: 'ListOfCommaSeperatedExtensionIdsGoHere',
-        replacement: getDirectories(__dirname + '/extensions/').join(', ')
+        replacement: extensionClasses.join(', ')
+      }, {
+        match: 'ListOfCommaSeperatedExtensionIdsWithQuotesGoHere',
+        replacement: extensionClasses.join("', '")
       }]
     }))
     .pipe(gulp.dest('browser/Chrome/assets'));

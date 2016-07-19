@@ -1,22 +1,85 @@
 let BetterGaia = {
   version: Bridge.version,
   path: Bridge.path,
-  prefStorage: {},
+  mounted: false,
   extensions: [],
 
   pref: {
-    get: function(key) {
-      return BetterGaia.prefStorage[key];
+    // Only accessed by BetterGaia
+    storage: {},
+    defaults: {
+      disabledExtensions: [],
+      extensions: {}
     },
-    set: function(key, value) {
-      return false;
+
+    // Extensions allowed to use these
+    get: function(key, extensionId) {
+      if (typeof extensionId === 'undefined') {
+        if (BetterGaia.pref.storage.hasOwnProperty(key)) {
+          return BetterGaia.pref.storage[key];
+        }
+        else if (BetterGaia.pref.defaults.hasOwnProperty(key)) {
+          return BetterGaia.pref.defaults[key];
+        }
+        else {
+          console.warn(`BetterGaia: preference with key not found, ${key}`);
+          return;
+        }
+      }
+      else {
+        // extension called this
+        if (BetterGaia.pref.storage.hasOwnProperty('extensions') && BetterGaia.pref.storage.extensions.hasOwnProperty(extensionId) && BetterGaia.pref.storage.extensions[extensionId].hasOwnProperty(key)) {
+          // this is awful (above)
+          return BetterGaia.pref.storage.extensions[extensionId][key];
+        }
+        else if (BetterGaia.pref.defaults.extensions[extensionId].hasOwnProperty(key)) {
+          // extension must have default pref object, even if empty
+          return BetterGaia.pref.defaults.extensions[extensionId][key];
+        }
+        else {
+          console.warn(`BetterGaia: preference with key not found, ${extensionId}.${key}`);
+          return;
+        }
+      }
     },
-    remove: function(key) {
-      return false;
+
+    set: function(key, value, extensionId) {
+      if (BetterGaia.pref.defaults.hasOwnProperty(key)
+          && value === BetterGaia.pref.defaults[key]
+          && BetterGaia.pref.storage.hasOwnProperty(key)) {
+        // if default value, remove from the browsers storage
+        Bridge.storage.remove(key);
+        delete BetterGaia.pref.storage[key];
+      }
+      else {
+        Bridge.storage.set(key, value);
+        BetterGaia.pref.storage[key] = value;
+      }
+    },
+
+    remove: function(key, extensionId) {
+      if (BetterGaia.pref.storage.hasOwnProperty(key)) {
+        Bridge.storage.remove(key);
+        delete BetterGaia.pref.storage[key];
+      }
+      else if (BetterGaia.pref.defaults.hasOwnProperty(key)) {
+        console.warn(`BetterGaia: preference with key is already at default value, ${key}`);
+      }
+      else {
+        console.warn(`BetterGaia: preference with key not found, ${key}`);
+      }
     }
   },
 
-  mounted: false,
+  reset() {
+    let confirm = prompt('All of your set preferences will be removed, and this cannot be undone.\n\nTo proceed with the reset, enter "Reset BetterGaia".');
+
+    if (confirm && confirm.toLowerCase() === 'reset bettergaia') {
+      console.log('Resetting BetterGaia...');
+      Bridge.reset();
+    }
+    else console.log('Reset aborted.');
+  },
 
   extensionFactory: function(id) {
     try {
@@ -27,14 +90,11 @@ let BetterGaia = {
   },
 
   loadPrefs: function(callback) {
-    this.prefStorage.enabledExtensions = ['BGCore', 'BGForums', 'AnnouncementReader', 'DrawAll', 'ExternalLinkRedirect', 'FormattingToolbar', 'Guilds', 'MyGaia', 'Personalize', 'PostFormatting', 'PrivateMessages', 'Shortcuts', 'UserTags'];
-
     Bridge.storage.get((response) => {
-      for (var key in response) {
-        try {this.prefs[key] = response[key];}
-        catch(e) {console.warn(`BetterGaia: unused preference, ${key}\n`, e);}
-      }
+      // Get entire storage from the browser, store it locally
+      BetterGaia.pref.storage = response;
 
+      // finish with the callback
       if (typeof callback === 'function') {
         callback();
       }
@@ -56,12 +116,18 @@ let BetterGaia = {
   mount: function() {
     if (this.mounted) return;
 
-    let extensionList = BetterGaia.pref.get('enabledExtensions');
+    let disabledExtensions = BetterGaia.pref.get('disabledExtensions');
 
-    // Create and premount extension (CSS, images)
-    for (let i = 0, len = extensionList.length; i < len; i++) {
-      let extension = this.extensionFactory(extensionList[i]);
+    // Prework on the extension
+    for (let i = 0, len = extensionClassesIds.length; i < len; i++) {
+      if (disabledExtensions.indexOf(extensionClassesIds[i]) !== -1) continue; // skip if disabled
+
+      let extension = this.extensionFactory(extensionClassesIds[i]);
       if (extension) {
+        // Store the default prefs for the extension
+        BetterGaia.pref.defaults.extensions[extensionClassesIds[i]] = extension.constructor.defaultPrefs();
+
+        // Premount the extensions
         extension.preMount();
         this.extensions.push(extension);
       }

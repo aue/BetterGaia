@@ -9,6 +9,16 @@ class Extension {
   static info() {}
   static defaultPrefs() {}
 
+  getPref(key) {
+    return BetterGaia.pref.get(key, this.id);
+  }
+  setPref(key, value) {
+    BetterGaia.pref.set(key, value, this.id);
+  }
+  removePref(key) {
+    BetterGaia.pref.remove(key, this.id);
+  }
+
   addCSS(css) {
     let styleTag = document.querySelector(`style[bg-css="${this.id}"]`);
 
