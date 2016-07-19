@@ -72,7 +72,7 @@ let BetterGaia = {
   },
 
   reset() {
-    let confirm = prompt('All of your set preferences will be removed, and this cannot be undone.\n\nTo proceed with the reset, enter "Reset BetterGaia".');
+    let confirm = prompt('Resetting will erase all of your personal content and settings for BetterGaia, which cannot be undone.\n\nTo continue, enter "Reset BetterGaia" below.');
 
     if (confirm && confirm.toLowerCase() === 'reset bettergaia') {
       console.log('Resetting BetterGaia...');
@@ -103,13 +103,21 @@ let BetterGaia = {
 
   mountExtensions: function() {
     for (let i = 0, len = this.extensions.length; i < len; i++) {
-      this.extensions[i].mount();
+      try {
+        this.extensions[i].mount();
+      } catch(e) {
+        console.warn(`BetterGaia: cannot mount extension, ${this.extensions[i].id}\n`, e);
+      }
     }
   },
 
   unMountExtensions: function() {
     for (let i = 0, len = this.extensions.length; i < len; i++) {
-      this.extensions[i].unMount();
+      try {
+        this.extensions[i].unMount();
+      } catch(e) {
+        console.warn(`BetterGaia: cannot unMount extension, ${this.extensions[i].id}\n`, e);
+      }
     }
   },
 
@@ -128,8 +136,12 @@ let BetterGaia = {
         BetterGaia.pref.defaults.extensions[extensionClassesIds[i]] = extension.constructor.defaultPrefs();
 
         // Premount the extensions
-        extension.preMount();
-        this.extensions.push(extension);
+        try {
+          extension.preMount();
+          this.extensions.push(extension);
+        } catch(e) {
+          console.warn(`BetterGaia: cannot preMount extension, ${extensionClassesIds[i]}\n`, e);
+        }
       }
     }
 

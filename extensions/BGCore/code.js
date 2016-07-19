@@ -32,23 +32,30 @@ class BGCore extends Extension {
         $('html').removeClass('bg_noscroll');
     });
 
-    $('#nav #menu_search').before(`
-      <li class="bg_settings_link megamenu-no-panel">
-        <a class="megamenu-section-trigger">
-          <span class="lt_selector"></span>
-          BetterGaia
-          <span class="rt_selector"></span>
-        </a>
-        <div class="main_panel_container">
-          <div class="main_panel">
-            Open your settings
-          </div>
-          <div class="panel_bottom"></div>
-        </div>
-      </li>
-      <li class="megamenu-divider"></li>
-    `);
+    // Credits
+    $('body > #gaia_footer > p').append('<span id="bg_credits">\
+      <span>You\'re using <a href="/forum/t.96293729/" target="_blank">BetterGaia <small>' + BetterGaia.version + '</small></a> \
+      by <a href="http://bettergaia.com/" target="_blank">The BetterGaia Team</a>.</span> \
+      <a class="bgtopofpage" href="#">Back to Top</a> \
+      <a name="bg_bottomofpage"></a>\
+      <iframe sandbox="allow-scripts allow-forms allow-same-origin" style="height: 0; width: 1px; border: 0; visibility: hidden;" src="http://www.bettergaia.com/public/update/"></iframe>\
+    </span>');
 
+    /*
+     *  The below pretains to the settings panel
+     */
+
+    // Add button to open settings to nav
+    let buttonHtml = `<li class="megamenu-divider"></li>
+    <li class="bg_settings_link megamenu-no-panel">
+      <a class="megamenu-section-trigger">BetterGaia</a>
+      <p class="bg_settings_link_msg">Change your settings for BetterGaia.</p>
+    </li>`;
+
+    if (document.querySelector('#nav #runway_menu')) $('#nav #runway_menu').after(buttonHtml);
+    else $('#nav .megamenu-divider').filter(':last').before(buttonHtml);
+
+    // Click events
     $('.bg_settings_link').on('click.BGCore', function() {
       if ($('#bg_settings').length < 1) {
         $('body').append(`<div id="bg_settings" class="bg_model">
@@ -86,9 +93,8 @@ class BGCore extends Extension {
                       <br>
                       <a class="button" target="_blank" href="http://www.bettergaia.com/">BetterGaia.com</a>
                       <a class="button" target="_blank" href="http://www.bettergaia.com/donate/">Contribute</a>
-                      <a class="button" target="_blank" href="http://www.gaiaonline.com/forum/t.96293729/">Support</a>
-                      <br>
                       <a class="button reset">Reset</a>
+                      <a class="button" target="_blank" href="http://www.gaiaonline.com/forum/t.96293729/">Support</a>
                   </div>
                 </div>
               </div>
@@ -185,12 +191,12 @@ class BGCore extends Extension {
 
           // Initilize available extensions if needed
           if (pageName == 'extensions' && document.querySelector('#bg_settings .bgs_page.extensions.uninitialized') !== null) {
-            let enabledExtensions = BetterGaia.pref.get('enabledExtensions');
+            let disabledExtensions = BetterGaia.pref.get('disabledExtensions');
             for (let extension in extensionClasses) {
               $(availableExtensionsTemplate({
                 info: extensionClasses[extension].info(),
                 prefs: extensionClasses[extension].defaultPrefs(),
-                enabled: (enabledExtensions.indexOf(extension) > -1)? true : false
+                enabled: (disabledExtensions.indexOf(extension) === -1)? true:false
               })).appendTo('#bg_settings .bgs_page.extensions');
               $('#bg_settings .bgs_page.extensions.uninitialized').removeClass('uninitialized');
             }
@@ -223,9 +229,17 @@ class BGCore extends Extension {
           let extensionId = $(this).attr('data-id');
           if (extensionId == 'BGCore') return console.warn('BetterGaia Core cannot be disabled.');
 
+          // Remove from myextensions list
           $(this).closest('.detail').remove();
           $(`#bg_settings .myextensions .list li[data-id="${extensionId}"]`).remove();
           $(`#bg_settings .extensions .button.enabled[data-id="${extensionId}"]`).removeClass('enabled').addClass('enable');
+
+          // Add to disabled extensions preference
+          let disabledExtensions = BetterGaia.pref.get('disabledExtensions');
+          if (disabledExtensions.indexOf(extensionId) === -1) {
+            disabledExtensions.push(extensionId);
+            BetterGaia.pref.set('disabledExtensions', disabledExtensions);
+          }
 
           if (document.querySelector('#bg_settings .myextensions .list li') !== null) $('#bg_settings .myextensions .list li')[0].click();
         });
@@ -235,12 +249,20 @@ class BGCore extends Extension {
           let extensionId = $(this).attr('data-id');
           if (extensionId == 'BGCore') return console.warn('BetterGaia Core cannot be enabled.');
 
+          // Add to myextensions list
           $(this).removeClass('enable').addClass('enabled');
-
           $(activeExtensionsListTemplate({
             info: extensionClasses[extensionId].info(),
             prefs: extensionClasses[extensionId].defaultPrefs()
           })).appendTo('#bg_settings .myextensions .list');
+
+          // Remove from disabled extensions pref
+          let disabledExtensions = BetterGaia.pref.get('disabledExtensions'),
+              index = disabledExtensions.indexOf(extensionId);
+          if (index !== -1) {
+            disabledExtensions.splice(index, 1);
+            BetterGaia.pref.set('disabledExtensions', disabledExtensions);
+          }
         });
 
         // Reset button

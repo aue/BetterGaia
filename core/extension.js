@@ -6,8 +6,12 @@ class Extension {
     this.mounted = false;
   }
 
-  static info() {}
-  static defaultPrefs() {}
+  static info() {
+    return {};
+  }
+  static defaultPrefs() {
+    return {};
+  }
 
   getPref(key) {
     return BetterGaia.pref.get(key, this.id);

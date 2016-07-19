@@ -76,7 +76,7 @@ gulp.task('package', function() {
   console.log('To be written...');
 });
 
-gulp.task('watch', function() {
+gulp.task('watch', ['build'], function() {
   gulp.watch(['core/*.js', '!core/extension.js', '!core/extensions.js'], ['build:core']);
   gulp.watch(['core/extension.js', 'extensions/*/code.js', 'core/extensions.js'], ['build:extensions:core']);
   gulp.watch(['extensions/**/*', '!extensions/**/*.scss', '!extensions/**/code.js'], ['build:extensions:copy']);

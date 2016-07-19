@@ -1,4 +1,6 @@
+html {height: auto !important;}
 html.bg_noscroll {overflow: hidden !important;}
+body {height: 100% !important; min-height: 100% !important;}
 
 @keyframes loading {
     0% {transform: rotate(0deg);}
@@ -37,7 +39,9 @@ html.bg_noscroll {overflow: hidden !important;}
 .bg_model.flex .bg_model_content {display: flex; flex: 1 1 auto;}
 
 /* Settings */
-.bg_settings_link {width: auto !important; cursor: pointer;}
+.bg_settings_link {width: auto !important; cursor: pointer; position: relative;}
+.bg_settings_link .bg_settings_link_msg {position: absolute; z-index: 1; background: #fff; margin: 0; padding: 0.5em; border: 5px solid #37474f; box-shadow: 0 0 2.5em 0 rgba(255,255,255,0.5), 0 1px 1px rgba(0,0,0,0.5); left: -25px; right: -25px; margin-top: 5px; display: none; font-size: 115%; text-align: center;}
+.bg_settings_link:hover .bg_settings_link_msg {display: block;}
 
 #bg_settings .bg_model_container {width: 60em; height: 100%; display: flex; flex-direction: column;}
 #bg_settings .bg_model_header {flex: 0 0 auto;}
@@ -80,7 +84,7 @@ html.bg_noscroll {overflow: hidden !important;}
 #bg_settings .bgs_page.myextensions .details {flex: 1; overflow: auto;}
 #bg_settings .bgs_page.myextensions .details .detail {height: 0; padding: 0; transition: 0.75s ease opacity; opacity: 0; overflow: hidden;}
 #bg_settings .bgs_page.myextensions .details .detail.bgs_active {padding: 1em 1em 1em 0.75em; opacity: 1; height: auto;}
-#bg_settings .bgs_page.myextensions .details .detail h1, h2 {margin: 0.75em 0;}
+#bg_settings .bgs_page.myextensions .details .detail h1, h2 {margin: 0.75em 0; text-align: center;}
 #bg_settings .bgs_page.myextensions .details .detail h2 {font-weight: normal;}
 #bg_settings .bgs_page.myextensions .details .detail .about {margin-left: 0; margin-right: 0;}
 #bg_settings .bgs_page.myextensions .details .detail .about p:last-child {margin-bottom: 0;}
@@ -90,6 +94,7 @@ html.bg_noscroll {overflow: hidden !important;}
 
 #bg_settings .bgs_page.extensions {padding: 0.5em; overflow: auto; flex-wrap: wrap; justify-content: center;}
 #bg_settings .bgs_page.extensions .card {width: calc(100%/3 - 1em); padding-bottom: 3.75em; position: relative;}
+#bg_settings .bgs_page.extensions .card h1 {text-align: center;}
 #bg_settings .bgs_page.extensions .card .button {position: absolute; bottom: 1em; left: 1em; right: 1em;}
 #bg_settings .bgs_page.extensions .card .button:before {content: 'Enable'}
 #bg_settings .bgs_page.extensions .card .button.enabled {background: #bdbdbd; cursor: default;}
@@ -100,3 +105,24 @@ html.bg_noscroll {overflow: hidden !important;}
 #bg_settings .bgs_page.about .logo {float: left; width: 20%;}
 #bg_settings .bgs_page.about .credits {float: left; width: 80%; padding-left: 2em;}
 #bg_settings .bgs_page.about .credits .button {display: inline;}
+
+/* Footer */
+body div#gaia_footer {width: 1140px; margin: 3em auto; padding: 0 !important; position: relative; font-size: 13px;}
+body div#gaia_footer, body #gaia_footer * {box-sizing: border-box;}
+body #gaia_footer ul, body #gaia_footer p {font-size: 13px}
+
+    /* Links */
+    body #gaia_footer ul {padding: 0.5em; margin: 0; border-radius: 5px 5px 0 0; width: auto; float: none; background: rgba(255,255,255,0.9); box-shadow: 0 0 0.25em rgba(0,0,0,0.25);}
+    body #gaia_footer ul:after {content: ''; display: table; clear: both;}
+    body #gaia_footer ul li {border: 0; padding: 0; text-align: left; width: 20%; float: left; margin: 0;}
+    body #gaia_footer ul li a {display: inline-block; color: #222 !important; padding: 0.5em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+    body #gaia_footer ul li a:hover {text-decoration: underline;}
+
+    /* Copyright */
+    body #gaia_footer p {background: #864B86; margin: 0; padding: 1em; display: block; color: rgba(255,255,255,0.5); text-align: left; width: auto; border-radius: 0; box-shadow: 0 0 0.25em rgba(0,0,0,0.25);}
+
+    /* Credits */
+    body #gaia_footer #bg_credits {float: right; margin: -2px 0 0;}
+    body #gaia_footer #bg_credits a {color: #FFF;}
+    body #gaia_footer #bg_credits a:hover {text-decoration: underline;}
+    body #bg_credits .bgtopofpage {color: #FFF; cursor: pointer; background: rgba(0,0,0,0.25); display: inline-block; padding: 0.5em; margin: -5px -0.75em 0 0.5em;}

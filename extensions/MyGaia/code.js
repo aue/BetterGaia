@@ -16,26 +16,35 @@ class MyGaia extends Extension {
   }
 
   static defaultPrefs() {
-    return {};
+    return {
+      'showSuggestedContent': true,
+      'showBGChat': true
+    };
   }
 
   preMount() {
     this.addStyleSheet('style');
+
+    // Show Suggested Content
+    if (this.getPref('showSuggestedContent') === false)
+      this.addCSS('body.mygaia #gaia_content #bd .mg_content.suggested {display: block;}');
   }
 
   mount() {
-    $('body.mygaia #gaia_content.grid_ray_davies #bd #yui-main .yui-g > .left').prepend('<div id="bg_sidebar" class="mg_content">\
-        <div class="mg_sprite hd">BetterGaia <small class="bgversion">' + BetterGaia.version + '</small>\
-            <a class="bg_expand"></a>\
-        </div>\
-        <div class="bd">\
-            <iframe sandbox="allow-scripts allow-forms allow-same-origin allow-popups" width="100%" frameborder="0" src="http://www.bettergaia.com/sidebar/"></iframe>\
-        </div>\
-    </div>');
+    if (this.getPref('showBGChat') === true) {
+      $('body.mygaia #gaia_content.grid_ray_davies #bd #yui-main .yui-g > .left').prepend(`<div id="bg_sidebar" class="mg_content">
+        <div class="mg_sprite hd">BetterGaia <small class="bgversion">${BetterGaia.version}<small>
+          <a class="bg_expand"></a>
+        </div>
+        <div class="bd">
+          <iframe sandbox="allow-scripts allow-forms allow-same-origin allow-popups" width="100%" frameborder="0" src="http://www.bettergaia.com/sidebar/"></iframe>
+        </div>
+      </div>`);
 
-    $('#bg_sidebar .bg_expand').on('click.MyGaia', function() {
+      $('#bg_sidebar .bg_expand').on('click.MyGaia', function() {
         $('#gaia_content .left').toggleClass('bgexpanded');
-    });
+      });
+    }
   }
 
   unMount() {
