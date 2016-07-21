@@ -1,7 +1,6 @@
 class Personalize extends Extension {
   constructor() {
     super('Personalize');
-    this.match = ['/mygaia/'];
     this.scrollTimeout = null;
   }
 

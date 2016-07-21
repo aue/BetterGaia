@@ -11,7 +11,8 @@ class DrawAll extends Extension {
       extendedDescription: 'No more excessive page browsing or hassle, just more treasure collecting.',
       author: 'The BetterGaia Team',
       homepage: 'http://www.bettergaia.com/',
-      version: '1.0'
+      version: '1.0',
+      match: ['/', '/@(mygaia|market|forum|world|games|payments|gofusion)/']
     };
   }
 

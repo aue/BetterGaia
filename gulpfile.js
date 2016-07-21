@@ -1,3 +1,4 @@
+var browserify = require('browserify');
 var fs = require('fs');
 var gulp = require('gulp');
 var autoprefixer = require('gulp-autoprefixer');
@@ -7,6 +8,7 @@ var streamify = require('gulp-streamify');
 var uglify = require('gulp-uglify');
 var sass = require('gulp-sass');
 var merge = require('merge-stream');
+var source = require('vinyl-source-stream');
 
 function getDirectories(path) {
   return fs.readdirSync(path).filter(function(file) {
@@ -14,12 +16,21 @@ function getDirectories(path) {
   });
 }
 
-gulp.task('vendor', function() {
+gulp.task('vendor', ['browserify-vendor'], function() {
   return gulp.src([
     'node_modules/jquery/dist/jquery.js',
-    'node_modules/handlebars/dist/handlebars.js'
+    'node_modules/handlebars/dist/handlebars.js',
+    'node_modules/minimatch/dist/minimatch.js'
   ]).pipe(concat('vendor.js'))
     .pipe(gulp.dest('browser/Chrome/assets'));
+});
+
+gulp.task('browserify-vendor', function() {
+  return browserify()
+    .require('minimatch')
+    .bundle()
+    .pipe(source('minimatch.js'))
+    .pipe(gulp.dest('node_modules/minimatch/dist/'));
 });
 
 gulp.task('build:core', function() {

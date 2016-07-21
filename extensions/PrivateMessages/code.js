@@ -1,7 +1,6 @@
 class PrivateMessages extends Extension {
   constructor() {
     super('PrivateMessages');
-    this.match = ['/mygaia/'];
   }
 
   static info() {
@@ -11,7 +10,8 @@ class PrivateMessages extends Extension {
       description: 'A more modern private messaging page.',
       author: 'The BetterGaia Team',
       homepage: 'http://www.bettergaia.com/',
-      version: '1.0'
+      version: '1.0',
+      match: ['/profile/privmsg.php**']
     };
   }
 

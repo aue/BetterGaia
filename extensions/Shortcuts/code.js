@@ -1,7 +1,6 @@
 class Shortcuts extends Extension {
   constructor() {
     super('Shortcuts');
-    this.match = ['/mygaia/'];
   }
 
   static info() {

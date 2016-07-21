@@ -1,3 +1,5 @@
+let minimatch = require('minimatch');
+
 let BetterGaia = {
   version: Bridge.version,
   path: Bridge.path,
@@ -83,7 +85,7 @@ let BetterGaia = {
 
   extensionFactory: function(id) {
     try {
-      return new extensionClasses[id]();
+      return extensionClasses[id];
     } catch(e) {
       console.warn(`BetterGaia: extension not found, ${id}\n`, e);
     }
@@ -101,6 +103,13 @@ let BetterGaia = {
     });
   },
 
+  match: function(path, matchArray) {
+    for (let i = 0, len = matchArray.length; i < len; i++) {
+      if (minimatch(path, matchArray[i])) return true;
+    }
+    return false; // no matches
+  },
+
   mountExtensions: function() {
     for (let i = 0, len = this.extensions.length; i < len; i++) {
       try {
@@ -112,13 +121,16 @@ let BetterGaia = {
   },
 
   unMountExtensions: function() {
+    console.groupCollapsed('Unmounting extensions...');
     for (let i = 0, len = this.extensions.length; i < len; i++) {
       try {
+        console.log(`Unmounting ${extensionClassesIds[i]}...`);
         this.extensions[i].unMount();
       } catch(e) {
-        console.warn(`BetterGaia: cannot unMount extension, ${this.extensions[i].id}\n`, e);
+        console.warn(`BetterGaia: cannot unmount extension, ${this.extensions[i].id}\n`, e);
       }
     }
+    console.groupEnd();
   },
 
   mount: function() {
@@ -127,16 +139,36 @@ let BetterGaia = {
     let disabledExtensions = BetterGaia.pref.get('disabledExtensions');
 
     // Prework on the extension
+    console.groupCollapsed('Mounting extensions...');
     for (let i = 0, len = extensionClassesIds.length; i < len; i++) {
       if (disabledExtensions.indexOf(extensionClassesIds[i]) !== -1) continue; // skip if disabled
 
       let extension = this.extensionFactory(extensionClassesIds[i]);
       if (extension) {
         // Store the default prefs for the extension
-        BetterGaia.pref.defaults.extensions[extensionClassesIds[i]] = extension.constructor.defaultPrefs();
+        BetterGaia.pref.defaults.extensions[extensionClassesIds[i]] = extension.defaultPrefs();
+
+        // see if matches or excludes current page
+        let path = document.location.pathname + document.location.search;
+        let info = extension.info();
+
+        if (info.hasOwnProperty('match')) {
+          if (typeof info.match === 'string') info.match = [info.match];
+          if (info.match.length > 0) {
+            if (!this.match(path, info.match)) continue;
+          }
+        }
+        if (info.hasOwnProperty('exclude')) {
+          if (typeof info.exclude === 'string') info.exclude = [info.exclude];
+          if (info.exclude.length > 0) {
+            if (this.match(path, info.exclude)) continue;
+          }
+        }
 
         // Premount the extensions
         try {
+          console.log(`Mounting ${extensionClassesIds[i]}...`);
+          extension = new extension;
           extension.preMount();
           this.extensions.push(extension);
         } catch(e) {
@@ -144,6 +176,7 @@ let BetterGaia = {
         }
       }
     }
+    console.groupEnd();
 
     // Mount extension (func)
     if (document.readyState === 'interactive' || document.readyState === 'complete') {
@@ -160,7 +193,7 @@ let BetterGaia = {
 
   unMount: function() {
     if (!this.mounted) return;
-    this.unMountExtensions();
+    //this.unMountExtensions();
     this.mounted = false;
   }
 };

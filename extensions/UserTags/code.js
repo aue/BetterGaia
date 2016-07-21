@@ -1,7 +1,6 @@
 class UserTags extends Extension {
   constructor() {
     super('UserTags');
-    this.match = ['/mygaia/'];
   }
 
   static info() {
@@ -12,12 +11,17 @@ class UserTags extends Extension {
       extendedDescription: `Manage tags shown next to users' names in posts.`,
       author: 'The BetterGaia Team',
       homepage: 'http://www.bettergaia.com/',
-      version: '1.0'
+      version: '1.0',
+      match: ['/forum/**', '/news/**']
     };
   }
 
   static defaultPrefs() {
-    return {};
+    return {
+      'usertags.list': {
+          //'12345': ['cat', 'He is a cat.', 'http://google.com', 2014]
+      }
+    };
   }
 
   preMount() {
@@ -36,7 +40,7 @@ class UserTags extends Extension {
     });
 
     // Add stored tags
-    var tags = this.getPref['usertags.list'];
+    var tags = this.getPref('usertags.list');
 
     // Idenitfy me, special [color=#FEFEF0][size=1].[/size][/color]
     $('.bgUserTag a[userid="8152358"]').each(function() {

@@ -1,7 +1,6 @@
 class FormattingToolbar extends Extension {
   constructor() {
     super('FormattingToolbar');
-    this.match = ['/mygaia/'];
   }
 
   static info() {

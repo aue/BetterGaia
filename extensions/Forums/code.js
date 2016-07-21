@@ -1,7 +1,6 @@
 class Forums extends Extension {
   constructor() {
     super('Forums');
-    this.match = ['/', '/mygaia/', '/market/', '/forum/', '/world/', '/games/', '/payments/', '/gofusion/'];
   }
 
   static info() {
@@ -11,7 +10,8 @@ class Forums extends Extension {
       author: 'The BetterGaia Team',
       description: 'A more modern forums.',
       homepage: 'http://www.bettergaia.com/',
-      version: '1.0'
+      version: '1.0',
+      match: ['/forum/**', '/news/**']
     };
   }
 

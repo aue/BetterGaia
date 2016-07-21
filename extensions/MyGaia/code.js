@@ -1,7 +1,6 @@
 class MyGaia extends Extension {
   constructor() {
     super('MyGaia');
-    this.match = ['/mygaia/'];
   }
 
   static info() {
@@ -11,7 +10,8 @@ class MyGaia extends Extension {
       description: 'A more modern My Gaia page.',
       author: 'The BetterGaia Team',
       homepage: 'http://www.bettergaia.com/',
-      version: '1.0'
+      version: '1.0',
+      match: ['/mygaia/**']
     };
   }
 

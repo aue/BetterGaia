@@ -1,7 +1,6 @@
 class ExternalLinkRedirect extends Extension {
   constructor() {
     super('ExternalLinkRedirect');
-    this.match = ['/mygaia/'];
   }
 
   static info() {
@@ -11,7 +10,8 @@ class ExternalLinkRedirect extends Extension {
       description: 'External link redirects, now with warnings on the same page.',
       author: 'The BetterGaia Team',
       homepage: 'http://www.bettergaia.com/',
-      version: '1.0'
+      version: '1.0',
+      match: ['/forum/**', '/news/**', '/guilds/**']
     };
   }
 

@@ -2,6 +2,7 @@ class Extension {
   constructor(id) {
     this.id = id;
     this.match = [];
+    this.exactMatch = [];
     this.exclude = [];
     this.mounted = false;
   }
@@ -11,6 +12,9 @@ class Extension {
   }
   static defaultPrefs() {
     return {};
+  }
+  static getPrefForId(key, id) {
+    return BetterGaia.pref.get(key, id);
   }
 
   getPref(key) {
