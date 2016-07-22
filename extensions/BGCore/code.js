@@ -15,10 +15,7 @@ class BGCore extends Extension {
   }
 
   static defaultPrefs() {
-    return {
-      cat: true,
-      dog: false
-    };
+    return {};
   }
 
   preMount() {
@@ -31,15 +28,6 @@ class BGCore extends Extension {
         $(this).closest('.bg_model.open').removeClass('open');
         $('html').removeClass('bg_noscroll');
     });
-
-    // Credits
-    $('body > #gaia_footer > p').append('<span id="bg_credits">\
-      <span>You\'re using <a href="/forum/t.96293729/" target="_blank">BetterGaia <small>' + BetterGaia.version + '</small></a> \
-      by <a href="http://bettergaia.com/" target="_blank">The BetterGaia Team</a>.</span> \
-      <a class="bgtopofpage" href="#">Back to Top</a> \
-      <a name="bg_bottomofpage"></a>\
-      <iframe sandbox="allow-scripts allow-forms allow-same-origin" style="height: 0; width: 1px; border: 0; visibility: hidden;" src="http://www.bettergaia.com/public/update/"></iframe>\
-    </span>');
 
     /*
      *  The below pretains to the settings panel
@@ -179,29 +167,26 @@ class BGCore extends Extension {
         </div>`);
 
         // Insert extensions currently enabled
-        for (let i = 0, len = BetterGaia.extensions.length; i < len; i++) {
+        let disabledExtensions = BetterGaia.pref.get('disabledExtensions');
+        for (let i = 0, len = extensionClassesIds.length; i < len; i++) {
+          let extension = extensionClasses[extensionClassesIds[i]];
+          let enabled = (disabledExtensions.indexOf(extensionClassesIds[i]) === -1)? true:false;
+
+          if (enabled)
           $(activeExtensionsListTemplate({
-            info: BetterGaia.extensions[i].constructor.info(),
-            prefs: BetterGaia.extensions[i].constructor.defaultPrefs()
+            info: extension.info(),
+            prefs: extension.defaultPrefs()
           })).appendTo('#bg_settings .myextensions .list');
+
+          $(availableExtensionsTemplate({
+            info: extension.info(),
+            prefs: extension.defaultPrefs(),
+            enabled: enabled
+          })).appendTo('#bg_settings .bgs_page.extensions');
         }
 
         $('#bg_settings .bgs_menu').on('click.BGCore', 'a[data-link]', function() {
           let pageName = $(this).attr('data-link');
-
-          // Initilize available extensions if needed
-          if (pageName == 'extensions' && document.querySelector('#bg_settings .bgs_page.extensions.uninitialized') !== null) {
-            let disabledExtensions = BetterGaia.pref.get('disabledExtensions');
-            for (let extension in extensionClasses) {
-              $(availableExtensionsTemplate({
-                info: extensionClasses[extension].info(),
-                prefs: extensionClasses[extension].defaultPrefs(),
-                enabled: (disabledExtensions.indexOf(extension) === -1)? true:false
-              })).appendTo('#bg_settings .bgs_page.extensions');
-              $('#bg_settings .bgs_page.extensions.uninitialized').removeClass('uninitialized');
-            }
-          }
-
           $('#bg_settings .bgs_menu .bgs_active, #bg_settings .bgs_pages .bgs_page.bgs_active').removeClass('bgs_active');
           $(this).parent().addClass('bgs_active');
           $(`#bg_settings .bgs_pages .bgs_page.${pageName}`).addClass('bgs_active');
@@ -229,6 +214,14 @@ class BGCore extends Extension {
           let extensionId = $(this).attr('data-id');
           if (extensionId == 'BGCore') return console.warn('BetterGaia Core cannot be disabled.');
 
+          // Click on next extension
+          let liTag = $(`#bg_settings .myextensions .list li[data-id="${extensionId}"]`).next();
+          if (liTag.length > 0) liTag.click();
+          else {
+            liTag = $(`#bg_settings .myextensions .list li[data-id="${extensionId}"]`).prev();
+            if (liTag.length > 0) liTag.click();
+          }
+
           // Remove from myextensions list
           $(this).closest('.detail').remove();
           $(`#bg_settings .myextensions .list li[data-id="${extensionId}"]`).remove();
@@ -240,8 +233,6 @@ class BGCore extends Extension {
             disabledExtensions.push(extensionId);
             BetterGaia.pref.set('disabledExtensions', disabledExtensions);
           }
-
-          if (document.querySelector('#bg_settings .myextensions .list li') !== null) $('#bg_settings .myextensions .list li')[0].click();
         });
 
         // Enable extension

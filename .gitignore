@@ -3,6 +3,10 @@ browser/Chrome/assets/*
 !browser/Chrome/assets/bridge.js
 browser/Chrome/extensions/*
 
+browser/Firefox/assets/*
+!browser/Firefox/assets/bridge.js
+browser/Firefox/extensions/*
+
 ### Windows ###
 # Windows image file caches
 Thumbs.db

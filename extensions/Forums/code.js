@@ -95,37 +95,38 @@ class Forums extends Extension {
     }
 
     // Adds Instants
-    $('body.forums .post .message .messagecontent .post-options ul').each(function () {
-        if ($(this).find('a.post-quote').length > 0 || $(this).find('a.post-edit').length > 0)
-          $(this).prepend('<div class="bg_instant"><li><a class="bg_instanttext"><span>Instant</span></a></li></div>');
+    $('body.forums .post .message .messagecontent .post-options ul').each(function() {
+      if ($(this).find('a.post-quote').length > 0 || $(this).find('a.post-edit').length > 0)
+        $(this).prepend('<div class="bg_instant"><li><a class="bg_instanttext"><span>Instant</span></a></li></div>');
 
-        if ($(this).find('a.post-quote').length > 0) {
-            $(this).find('.bg_instant').append('<li><a class="bg_instantquote"><span>Quote</span></a></li>');
-        }
-        if ($(this).find('a.post-edit').length > 0) {
-            $(this).find('.bg_instant').append('<li><a class="bg_instantedit"><span>Edit</span></a></li>');
-        }
+      if ($(this).find('a.post-quote').length > 0)
+        $(this).find('.bg_instant').append('<li><a class="bg_instantquote"><span>Quote</span></a></li>');
+
+      if ($(this).find('a.post-edit').length > 0)
+        $(this).find('.bg_instant').append('<li><a class="bg_instantedit"><span>Edit</span></a></li>');
     });
 
-    $("body.forums .post .message .messagecontent .post-options ul a.bg_instantquote").click(function() {
-        var bubbleThis = $(this).closest('.messagecontent');
+    $('.post .post-options .bg_instantquote').click(function() {
+      let message = $(this).closest('.messagecontent');
 
-        if (bubbleThis.find(".bg_instantbox.quote").length === 0) {
-            bubbleThis.find(".post-bubble").after("<div class='bg_instantbox quote loading'></div>");
+      if (message.find('.bg_instantbox.quote').length === 0) {
+        message.find('.post-bubble').after(`<div class="bg_instantbox quote loading">
+          <span class="bg_spinner"></span>
+        </div>`);
 
-            //get url
-            var url = bubbleThis.find(".post-options a.post-quote").attr("href");
-            $.get(url).done(function(data) {
-                var pageHtml = $('<div>').html(data);
-                pageHtml.find('script').remove();
+        //get url
+        var url = message.find('.post-options .post-quote').attr('href');
+        $.get(url).done(function(data) {
+          var pageHtml = $('<div>').html(data);
+          pageHtml.find('script').remove();
 
-                bubbleThis.find(".bg_instantbox.quote").removeClass("loading").html(pageHtml.find("form#compose_entry")[0].outerHTML);
-                BGjs.format();
-            });
-        }
-        else {
-            $(this).closest('.messagecontent').find(".bg_instantbox.quote").slideToggle('slow');
-        }
+          message.find('.bg_instantbox.quote').removeClass('loading').html(pageHtml.find('form#compose_entry')[0].outerHTML);
+          //BGjs.format();
+        });
+      }
+      else {
+        $(this).closest('.messagecontent').find('.bg_instantbox.quote').slideToggle('slow');
+      }
     });
 
     $("body.forums .post .message .messagecontent .post-options ul a.bg_instantedit").click( function() {
@@ -146,11 +147,6 @@ class Forums extends Extension {
         else {
             $(this).closest('.messagecontent').find('.bg_instantbox.edit').slideToggle('slow');
         }
-    });
-
-    // Moves timestamp
-    $('body.forums .post .message .messagecontent > .post-options > ul > li.post-meta').each(function () {
-        $(this).appendTo($(this).closest('.postcontent').find('.user_info_wrapper .user_info'));
     });
   }
 

@@ -1,0 +1,516 @@
+/* Styles MyGaia Page */
+body.mygaia #mygaia_tabs > span {
+  display: none; }
+
+body.mygaia.app-page_mygaia #gaia_content.grid_ray_davies #bd {
+  width: auto;
+  overflow: visible; }
+
+body.mygaia.app-page_mygaia #gaia_content.grid_ray_davies #bd #yui-main .yui-g {
+  position: relative;
+  background: #F8FAFC; }
+
+body.mygaia.app-page_mygaia #gaia_content #mygaia_tabs .tab {
+  border: 0;
+  height: 35px;
+  background: #FFF; }
+
+body.mygaia.app-page_mygaia #gaia_content #mygaia_tabs .tab > a.link {
+  filter: contrast(1.23);
+  -webkit-filter: contrast(1.23);
+  height: 35px; }
+
+body.mygaia.app-page_mygaia #gaia_content #mygaia_tabs .tab > a.link.mygaia-tab-overview {
+  filter: contrast(1.07);
+  -webkit-filter: contrast(1.07); }
+
+body.mygaia.app-page_mygaia #gaia_content #mygaia_tabs .tab > a.yuimenu_trigger {
+  filter: contrast(1.23);
+  -webkit-filter: contrast(1.23);
+  height: 35px; }
+
+body.mygaia.app-page_mygaia #gaia_content #mygaia_tabs .tab > .yuimenu {
+  margin: 35px 0 0 -1px; }
+
+body.mygaia.app-page_mygaia #gaia_content #mygaia_tabs .tab_end {
+  border: 0;
+  width: 100px;
+  background: -webkit-linear-gradient(left, #FFF, transparent);
+  background: linear-gradient(to right, #FFF, transparent); }
+
+body.mygaia.app-page_mygaia #gaia_content #mygaia_tabs .gaia_tab_orphans li.clear {
+  display: none; }
+
+body.mygaia #gaia_content.grid_ray_davies #bd #yui-main .yui-g > .mg_sprite.top_bg ~ div[class] #req_bird,
+body.mygaia #gaia_content.grid_ray_davies #bd #yui-main .yui-g > .mg_sprite.top_bg ~ div[class] #my_choc,
+body.mygaia #gaia_content.grid_ray_davies #bd #yui-main .yui-g > .mg_sprite.top_bg ~ div[class] #feed_goldguy,
+body.mygaia #gaia_content.grid_ray_davies #bd #yui-main .yui-g > .mg_sprite.top_bg ~ div[class] .rc,
+body.mygaia #gaia_content.grid_ray_davies #bd #yui-main .yui-g > .mg_sprite.top_bg ~ div[class] .mg_content .ft,
+body.mygaia #gaia_content #bd #friends2.mg_content .bd .bd_inner .friends_wrapper ul.mygaia-friends li .clear,
+body.mygaia #gaia_content #bd #friends2.mg_content .bg, body.mygaia #gaia_content.grid_ray_davies #bd #yui-main .yui-g > .right > div + br {
+  display: none; }
+
+/* Top image */
+body.mygaia #gaia_content.grid_ray_davies #bd #yui-main .yui-g > .mg_sprite.top_bg {
+  mask-image: linear-gradient(to bottom, black, transparent);
+  -webkit-mask-image: -webkit-linear-gradient(top, black, transparent);
+  filter: saturate(0.75);
+  -webkit-filter: saturate(0.75);
+  background-repeat: repeat-x;
+  background-position-x: center; }
+
+body.mygaia #gaia_content.grid_ray_davies #bd #yui-main .yui-g > .mg_sprite.btm_bg {
+  clear: both;
+  background-repeat: repeat-x;
+  background-position-x: center;
+  mask-image: linear-gradient(to top, black, transparent);
+  -webkit-mask-image: -webkit-linear-gradient(bottom, black, transparent); }
+
+/* Left, Right */
+body.mygaia #gaia_content.grid_ray_davies #bd #yui-main .yui-g > .left, body.mygaia #gaia_content.grid_ray_davies #bd #yui-main .yui-g > .right {
+  position: relative;
+  z-index: 1;
+  margin: 1em;
+  box-sizing: border-box; }
+
+body.mygaia #gaia_content.grid_ray_davies #bd #yui-main .yui-g > .left {
+  float: right;
+  width: calc(100% - 350px);
+  margin-left: 0;
+  padding: 0 300px 0 0;
+  -webkit-transition: padding ease .5s;
+  transition: padding ease .5s; }
+
+body.mygaia #gaia_content.grid_ray_davies #bd #yui-main .yui-g > .left.bgexpanded {
+  padding: 450px 0 0; }
+
+body.mygaia #gaia_content.grid_ray_davies #bd #yui-main .yui-g > .right {
+  float: left;
+  width: 300px; }
+
+body.mygaia #gaia_content.grid_ray_davies #bd #yui-main .yui-g > .right > div + br {
+  display: none; }
+
+/* BetterGaia Sidebar */
+body.mygaia #bg_sidebar {
+  width: 275px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  -webkit-transition: all ease .6s;
+  transition: all ease .6s; }
+
+body.mygaia #bg_sidebar .bg_expand {
+  font-size: 15px;
+  padding: 5px;
+  cursor: pointer;
+  font-family: 'Glyphicons Halflings';
+  float: right; }
+
+body.mygaia #bg_sidebar .bg_expand:before {
+  content: '\e096'; }
+
+body.mygaia #bg_sidebar .bd iframe {
+  height: 350px; }
+
+body.mygaia .bgexpanded #bg_sidebar {
+  width: 790px; }
+
+body.mygaia .bgexpanded #bg_sidebar .bd iframe {
+  height: 400px; }
+
+body.mygaia .bgexpanded #bg_sidebar .bg_expand:before {
+  content: '\e097'; }
+
+/* Module footers */
+body.mygaia #gaia_content #bd #yui-main .yui-g > .mg_sprite.top_bg ~ div[class] .mg_content .ft {
+  background: none;
+  border: 0; }
+
+body.mygaia #gaia_content #bd #yui-main .yui-g > .mg_sprite.top_bg ~ div[class] .mg_content .ft.see_all {
+  border: 0 none;
+  display: block !important;
+  margin: 5px 0 0;
+  height: 15px;
+  background: none; }
+
+body.mygaia #gaia_content #bd #yui-main .yui-g > .mg_sprite.top_bg ~ div[class] .mg_content .ft div.see_all {
+  background: none;
+  padding: 0;
+  float: right; }
+
+body.mygaia #gaia_content #bd #yui-main .yui-g > .mg_sprite.top_bg ~ div[class] .mg_content .ft div.see_all a {
+  width: auto;
+  display: inline-block; }
+
+body.mygaia #gaia_content #bd #yui-main .yui-g > .mg_sprite.top_bg ~ div[class] .mg_content .ft div.see_all #notice_settings {
+  margin: 0 0 0 5px;
+  border-left: 1px solid #000;
+  padding: 0 0 0 5px;
+  position: static;
+  display: inline-block; }
+
+body.mygaia #gaia_content #bd #yui-main .yui-g > .mg_sprite.top_bg ~ div[class] .mg_content .ft div.see_all #notice_settings:only-child {
+  border-width: 0; }
+
+/* Add text to headers */
+body.mygaia #gaia_content.grid_ray_davies #bd #yui-main .yui-g > .right .suggested .hd:before {
+  content: "Suggested"; }
+
+body.mygaia #gaia_content.grid_ray_davies #bd #yui-main .yui-g > .right .mg_status .hd:before {
+  content: "Status"; }
+
+body.mygaia #gaia_content.grid_ray_davies #bd #yui-main .yui-g > .right .mystats .hd:before {
+  content: "My Stats"; }
+
+body.mygaia #bd .mg_content.req .mg_sprite.hd:before {
+  content: "Requests"; }
+
+body.mygaia #bd .mg_content.friends .mg_sprite.hd:before {
+  content: "Friends"; }
+
+body.mygaia #bd .mg_content.mystuff .mg_sprite.hd:before {
+  content: "Notices"; }
+
+body.mygaia #bd .mg_content.notices .mg_sprite.hd:before {
+  content: "My Friend's Stuff"; }
+
+/* My Stats */
+body.mygaia #gaia_content.grid_ray_davies #bd #yui-main .yui-g > .right .mystats {
+  height: auto; }
+
+body.mygaia #gaia_content.grid_ray_davies #bd #yui-main .yui-g > .right .mystats .bd {
+  padding: 0.5em .75em; }
+
+body.mygaia #gaia_content.grid_ray_davies #bd #yui-main .yui-g > .right .mystats .bd h3.activity {
+  margin: 1em 0 0; }
+
+body.mygaia #gaia_content.grid_ray_davies #bd #yui-main .yui-g > .right .mystats .bd ul li {
+  padding: 0.25em 0; }
+
+/* Feeds, Status */
+body.mygaia #gaia_content #bd .mg_content, body.mygaia #gaia_content #bd .mg_status {
+  margin: 0 0 1.25em; }
+
+body.mygaia #gaia_content #bd .mg_content .mg_sprite.hd, body.mygaia #gaia_content #bd .mg_status .mg_sprite.hd {
+  margin: 0;
+  background: none;
+  width: auto;
+  height: auto !important;
+  font: normal 24px "Century Gothic", "TeXGyreAdventorRegular", Arial, sans-serif;
+  color: #4B9438;
+  padding: 0 1px .25em; }
+
+body.mygaia #gaia_content #bd .mg_content .bd, body.mygaia #gaia_content #bd .mg_status .bd {
+  background: #FFF;
+  border: 1px solid #B6E2AD;
+  border-radius: 3px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 0;
+  overflow: visible; }
+
+body.mygaia #gaia_content #bd .mg_content .bd:after, body.mygaia #gaia_content #bd .mg_status .bd:after {
+  display: table;
+  content: '';
+  clear: both; }
+
+body.mygaia #gaia_content #bd .mg_content .bd > p {
+  padding: 10px 12px;
+  margin: 0; }
+
+body.mygaia #gaia_content #bd .mg_content .bd ul {
+  margin: 0;
+  /*max-height: 220px; overflow: auto;*/ }
+
+body.mygaia #gaia_content #bd .mg_content .bd ul li {
+  display: block;
+  padding: 6px 10px;
+  width: auto;
+  height: auto;
+  margin: 0;
+  z-index: initial; }
+
+body.mygaia #gaia_content #bd .mg_content .bd ul li:hover {
+  background-color: #E1F0DD; }
+
+body.mygaia #gaia_content #bd .mg_content .bd ul li:first-child {
+  border-radius: 3px 3px 0 0;
+  padding-top: 10px; }
+
+body.mygaia #gaia_content #bd .mg_content .bd ul li:last-child {
+  border-radius: 0 0 3px 3px;
+  padding-bottom: 10px; }
+
+body.mygaia #gaia_content #bd .mg_content .bd ul li:only-child {
+  border-radius: 3px;
+  padding: 10px; }
+
+body.mygaia #gaia_content #bd .mg_content .bd ul li .content {
+  width: 270px; }
+
+body.mygaia #gaia_content #bd .mg_content .bd ul li .controls {
+  padding: 2px 0 0; }
+
+body.mygaia #gaia_content #bd .mg_content .bd .datafeeds {
+  padding: 0; }
+
+body.mygaia #gaia_content #bd .mg_content .bd .datafeeds > p {
+  padding: 10px 12px;
+  margin: 0; }
+
+body.mygaia #gaia_content #bd .mg_content .bd .datafeeds ul li div.message {
+  width: auto;
+  float: none; }
+
+/* Status */
+body.mygaia #gaia_content #bd .mg_status {
+  position: relative; }
+
+body.mygaia #gaia_content #bd .mg_status .my_status {
+  background: none;
+  padding: 5px 5px 0; }
+
+body.mygaia #gaia_content #bd .mg_status .my_status:after {
+  display: table;
+  content: '';
+  clear: both; }
+
+body.mygaia #gaia_content #bd .mg_status .my_status .avatar {
+  margin: 0 0 5px 0;
+  border: 0; }
+
+body.mygaia #gaia_content #bd .mg_status .my_status .status {
+  width: calc(100% - 48px - 5px);
+  margin: 0;
+  float: right;
+  background: none;
+  padding: 0;
+  overflow: visible; }
+
+body.mygaia #gaia_content #bd .mg_status .my_status .status .lead {
+  margin: 0;
+  display: none; }
+
+body.mygaia #gaia_content #bd .mg_status .my_status .status p, body.mygaia #gaia_content #bd .mg_status .my_status .status p + div {
+  margin: 0;
+  display: block;
+  background: none;
+  padding: 3px 2px 2px;
+  font-size: 85%;
+  word-wrap: break-word; }
+
+body.mygaia #gaia_content #bd .mg_status .my_status .status p a, body.mygaia #gaia_content #bd .mg_status .my_status .status p + div a {
+  text-transform: capitalize;
+  margin: 5px 0 0;
+  display: inline-block; }
+
+body.mygaia #gaia_content #bd .mg_status .my_status .status p + div textarea {
+  margin: 0;
+  border: 1px solid #DDD; }
+
+body.mygaia #gaia_content #bd .mg_status .my_status .status p + div label {
+  display: inline;
+  float: right;
+  position: static;
+  margin: 5px 0 0; }
+
+body.mygaia #gaia_content #bd .mg_status .my_status .clear {
+  display: none; }
+
+body.mygaia #gaia_content #bd .mg_status .my_status > form {
+  clear: none;
+  float: right;
+  width: calc(100% - 58px); }
+
+body.mygaia #gaia_content #bd .mg_status .my_status > form fieldset {
+  margin: 0; }
+
+body.mygaia #gaia_content #bd .mg_status .friend_statuses {
+  margin: 0;
+  border-color: #DFF4C6;
+  padding: 5px;
+  max-height: 150px;
+  overflow: auto; }
+
+body.mygaia #gaia_content #bd .mg_status .friend_statuses h4 {
+  margin: 0;
+  padding: 0 0 5px;
+  float: right;
+  width: calc(100% - 35px); }
+
+body.mygaia #gaia_content #bd .mg_status .friend_statuses .avatar {
+  border: 0; }
+
+body.mygaia #gaia_content #bd .mg_status .friend_statuses .status {
+  width: calc(100% - 35px);
+  float: right;
+  padding: 0;
+  overflow: visible;
+  background: none;
+  margin: 0;
+  clear: none; }
+
+body.mygaia #gaia_content #bd .mg_status .friend_statuses .status .lead {
+  display: none; }
+
+body.mygaia #gaia_content #bd .mg_status .friend_statuses .status p {
+  display: block;
+  margin: 0;
+  padding: 0;
+  background: none;
+  word-wrap: break-word; }
+
+body.mygaia #gaia_content #bd .mg_status .friend_statuses .clear {
+  height: 10px !important; }
+
+body.mygaia #gaia_content #bd .mg_status .friend_statuses .clear:last-of-type {
+  display: none; }
+
+body.mygaia #gaia_content #bd .mg_status #mygaia_see_more_status {
+  padding: 0;
+  position: absolute;
+  font-weight: normal;
+  display: inline;
+  bottom: -1.75em;
+  right: 0; }
+
+/* Suggested Content */
+body.mygaia #gaia_content #bd .mg_content.suggested {
+  display: none; }
+
+body.mygaia #gaia_content #bd .mg_content.suggested .mg_sprite.hd a#edit_interests {
+  font: normal 11px Arial, Helvetica, sans-serif;
+  top: 4px;
+  right: 0; }
+
+body.mygaia #gaia_content #bd .mg_content.suggested h3 {
+  padding: 3px 5px; }
+
+body.mygaia #gaia_content #bd .mg_content.suggested .bd {
+  padding: 0;
+  max-height: 145px; }
+
+body.mygaia #gaia_content #bd .mg_content.suggested .bd #suggested_friends .friend {
+  width: auto;
+  display: block;
+  float: none;
+  clear: both;
+  overflow: auto;
+  margin: 0;
+  padding: 5px; }
+
+body.mygaia #gaia_content #bd .mg_content.suggested .bd #suggested_friends .friend:hover {
+  background: #E3FF99; }
+
+body.mygaia #gaia_content #bd .mg_content.suggested .bd #suggested_friends .friend .left.avatar img {
+  width: 24px;
+  height: 24px; }
+
+body.mygaia #gaia_content #bd .mg_content.suggested .bd #suggested_friends .friend .left:not(.avatar) a:first-child {
+  font-size: 11px;
+  font-weight: bold;
+  display: block; }
+
+body.mygaia #gaia_content #bd .mg_content.suggested .bd #suggested_friends .friend .left:not(.avatar) a:not(:first-child) {
+  margin: 0;
+  display: inline; }
+
+body.mygaia #gaia_content #bd .mg_content.suggested .bd #suggested_friends .friend .left:not(.avatar) a:last-child {
+  border-left: 1px solid #3E53A2;
+  padding-left: 5px;
+  margin-left: 1px; }
+
+body.mygaia #gaia_content #bd .mg_content.suggested .bd #suggested_friends .friend .close {
+  top: 5px;
+  right: 5px; }
+
+/* Friends */
+body.mygaia #gaia_content #bd #friends2.mg_content .bd {
+  padding: 5px;
+  min-height: 0; }
+
+body.mygaia #gaia_content #bd #friends2.mg_content .bd * {
+  box-sizing: border-box; }
+
+body.mygaia #gaia_content #bd #friends2.mg_content .bd #find_friends_a {
+  top: 5px;
+  right: 0;
+  z-index: 5; }
+
+body.mygaia #gaia_content #bd #friends2.mg_content .bd .bd_inner .friends_wrapper ul.mygaia-friends li {
+  padding: 5px;
+  width: 25%;
+  float: left; }
+
+body.mygaia #gaia_content #bd #friends2.mg_content .bd .bd_inner .friends_wrapper ul.mygaia-friends li:hover {
+  background: #dff4c6;
+  border-radius: 3px; }
+
+body.mygaia #gaia_content #bd #friends2.mg_content .bd .bd_inner .friends_wrapper ul.mygaia-friends li .user_name {
+  padding: 0;
+  display: block;
+  font-size: 12px;
+  height: 20px; }
+
+body.mygaia #gaia_content #bd #friends2.mg_content .bd .bd_inner .friends_wrapper ul.mygaia-friends li .user_name a {
+  display: block;
+  padding: 0 0 0.5em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; }
+
+body.mygaia #gaia_content #bd #friends2.mg_content .bd .bd_inner .friends_wrapper ul.mygaia-friends li:hover .user_name a {
+  width: auto;
+  position: absolute;
+  left: 0;
+  padding: 5px;
+  background: #dff4c6;
+  top: 0;
+  border-radius: 3px;
+  z-index: 1; }
+
+body.mygaia #gaia_content #bd #friends2.mg_content .bd .bd_inner .friends_wrapper ul.mygaia-friends li .dropBox {
+  width: auto;
+  height: auto;
+  margin: 0; }
+
+body.mygaia #gaia_content #bd #friends2.mg_content .bd .bd_inner .friends_wrapper ul.mygaia-friends li .dropBox img {
+  width: 48px;
+  height: 48px; }
+
+body.mygaia #gaia_content #bd #friends2.mg_content .bd .bd_inner .friends_wrapper ul.mygaia-friends li .online_status {
+  position: absolute;
+  bottom: 4px;
+  width: 49px;
+  height: 5px;
+  font-size: 0;
+  background: #82d02f; }
+
+body.mygaia #gaia_content #bd #friends2.mg_content .bd .bd_inner .friends_wrapper ul.mygaia-friends li .online_status a {
+  font-size: 9px;
+  bottom: calc(100% + 7px);
+  left: calc(100% + 7px);
+  width: 100%;
+  position: absolute; }
+
+body.mygaia #gaia_content #bd #friends2.mg_content .bd .bd_inner .friends_wrapper ul.mygaia-friends li:hover .online_status a {
+  background: #dff4c6; }
+
+body.mygaia #gaia_content #bd #friends2.mg_content .bd .bd_inner .friends_wrapper ul.mygaia-friends li .online_status.offline {
+  background: #A6B09A; }
+
+body.mygaia #gaia_content #bd #friends2.mg_content .ft.see_all {
+  border: 0 none;
+  display: block !important;
+  margin: 5px 0 0;
+  height: 15px;
+  background: none; }
+
+body.mygaia #gaia_content #bd #friends2.mg_content .ft.see_all .see_all {
+  background: none;
+  padding: 0;
+  float: right; }
+
+/* Fix avatar dressup overflow */
+body.mygaia.mystuff #gaia_content #bd, body.mygaia.mystuff #gaia_content #bd #yui-main .yui-g {
+  overflow: visible; }

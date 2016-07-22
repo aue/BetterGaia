@@ -1,0 +1,22 @@
+{
+  "gecko": {
+    "id": "bettergaia@bowafishtech.co.cc",
+    "strict_min_version": "48.0"
+  },
+  "content_scripts": [ {
+    "matches": ["*://*.gaiaonline.com/*"],
+    "exclude_globs": [ "*://*.gaiaonline.com/profiles/*/*/", "*://*.gaiaonline.com/launch/*", "*://*.gaiaonline.com/tank/*"],
+    "js": ["assets/vendor.js", "assets/bridge.js", "assets/extensions.js", "assets/core.js"],
+    "run_at": "document_start"
+  }],
+  "description": "Change the way you experience Gaia.",
+  "homepage_url": "https://addons.mozilla.org/en-US/firefox/addon/bettergaia/",
+  "icons": {
+    "128": "assets/logo.png"
+  },
+  "manifest_version": 2,
+  "name": "BetaGaia",
+  "permissions": [ "tabs", "storage", "*://*.gaiaonline.com/*", "*://*.bettergaia.com/*" ],
+  "version": "2016.1",
+  "web_accessible_resources": [ "assets/logo.png", "extensions/*" ]
+}

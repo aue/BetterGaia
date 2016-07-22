@@ -45,7 +45,7 @@ body {height: 100% !important; min-height: 100% !important;}
 
 #bg_settings .bg_model_container {width: 60em; height: 100%; display: flex; flex-direction: column;}
 #bg_settings .bg_model_header {flex: 0 0 auto;}
-#bg_settings .bg_model_content {display: flex; flex: 1 1 auto;}
+#bg_settings .bg_model_content {display: flex; flex: 1 1 auto; overflow: hidden;}
 
 #bg_settings .bgs_menu {background: #0092b2; width: 11%; overflow: hidden; padding: 0; margin: 0; flex: 0 0 auto;}
 #bg_settings .bgs_menu ul {overflow-y: auto; overflow-x: hidden; height: 100%; list-style: none;}
@@ -75,7 +75,7 @@ body {height: 100% !important; min-height: 100% !important;}
 #bg_settings .bgs_page.myextensions {height: 100%;}
 #bg_settings .bgs_page.myextensions .list {width: 35%; padding: 1em; overflow-y: auto;}
 #bg_settings .bgs_page.myextensions .list li {list-style: none; padding: 1em; margin: 0; box-shadow: 0 0 1em rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.15); border-bottom-width: 0; cursor: pointer; transition: background 0.25s ease;}
-#bg_settings .bgs_page.myextensions .list li:last-child {border-bottom-width: 1px;}
+#bg_settings .bgs_page.myextensions .list li:last-child {border-bottom-width: 1px; margin-bottom: 1em;}
 #bg_settings .bgs_page.myextensions .list li:hover {background: rgba(177,30,149,0.1);}
 #bg_settings .bgs_page.myextensions .list li.bgs_active {background: #b11e95; color: #fff; cursor: default;}
 #bg_settings .bgs_page.myextensions .list li h1 {margin: 0;}
@@ -105,24 +105,3 @@ body {height: 100% !important; min-height: 100% !important;}
 #bg_settings .bgs_page.about .logo {float: left; width: 20%;}
 #bg_settings .bgs_page.about .credits {float: left; width: 80%; padding-left: 2em;}
 #bg_settings .bgs_page.about .credits .button {display: inline;}
-
-/* Footer */
-body div#gaia_footer {width: 1140px; margin: 3em auto; padding: 0 !important; position: relative; font-size: 13px;}
-body div#gaia_footer, body #gaia_footer * {box-sizing: border-box;}
-body #gaia_footer ul, body #gaia_footer p {font-size: 13px}
-
-    /* Links */
-    body #gaia_footer ul {padding: 0.5em; margin: 0; border-radius: 5px 5px 0 0; width: auto; float: none; background: rgba(255,255,255,0.9); box-shadow: 0 0 0.25em rgba(0,0,0,0.25);}
-    body #gaia_footer ul:after {content: ''; display: table; clear: both;}
-    body #gaia_footer ul li {border: 0; padding: 0; text-align: left; width: 20%; float: left; margin: 0;}
-    body #gaia_footer ul li a {display: inline-block; color: #222 !important; padding: 0.5em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
-    body #gaia_footer ul li a:hover {text-decoration: underline;}
-
-    /* Copyright */
-    body #gaia_footer p {background: #864B86; margin: 0; padding: 1em; display: block; color: rgba(255,255,255,0.5); text-align: left; width: auto; border-radius: 0; box-shadow: 0 0 0.25em rgba(0,0,0,0.25);}
-
-    /* Credits */
-    body #gaia_footer #bg_credits {float: right; margin: -2px 0 0;}
-    body #gaia_footer #bg_credits a {color: #FFF;}
-    body #gaia_footer #bg_credits a:hover {text-decoration: underline;}
-    body #bg_credits .bgtopofpage {color: #FFF; cursor: pointer; background: rgba(0,0,0,0.25); display: inline-block; padding: 0.5em; margin: -5px -0.75em 0 0.5em;}

@@ -37,8 +37,8 @@ body #gaia_header #user_account.bg_fixed {
   margin-right: -570px;
 }
 
-body #gaia_header #user_account .avatarName {font-size: 0; padding: 5px 10px 0;}
-body #gaia_header #user_account .avatarName span {width: calc(100% - 4px); font-size: 14px; display: inline-block; overflow: hidden; line-height: 1.3;}
+body #gaia_header #user_account .avatarName {font-size: 0; padding: 0; margin: 5px 10px 0; overflow: hidden;}
+body #gaia_header #user_account .avatarName span {width: 100%; font-size: 14px; display: inline-block; margin-right: -4px; line-height: 1.3;}
 body #gaia_header #user_account .user-dropdown-arrow {position: static; float: none; display: block; margin-top: 10px;}
 
 /* Logout menu */
@@ -74,3 +74,25 @@ body #gaia_menu_bar #mygaia_menu:not(.panel-open) .megamenu-section-trigger {bor
 // Theme
 #gaia_menu_bar, #gaia_header #user_account {filter: hue-rotate(100deg);}
 #gaia_menu_bar .main_panel_container .panel-img, #gaia_menu_bar .main_panel_container .new-img, #gaia_menu_bar .main_panel_container .panel-more .arrow, #gaia_menu_bar #menu_search, #gaia_menu_bar .bg_settings_link_msg {filter: hue-rotate(-100deg);}
+
+/* Footer */
+body div#gaia_footer {width: 1140px; margin: 3em auto 0; padding: 0 !important; position: relative; font-size: 13px;}
+body div#gaia_footer::after {display: block; content: ''; height: 3em; clear: both;}
+body div#gaia_footer, body #gaia_footer * {box-sizing: border-box;}
+body #gaia_footer ul, body #gaia_footer p {font-size: 13px}
+
+  /* Links */
+  body #gaia_footer ul {padding: 0.5em; margin: 0; border-radius: 5px 5px 0 0; width: auto; float: none; background: rgba(255,255,255,0.9); box-shadow: 0 0 0.25em rgba(0,0,0,0.25);}
+  body #gaia_footer ul:after {content: ''; display: table; clear: both;}
+  body #gaia_footer ul li {border: 0; padding: 0; text-align: left; width: 20%; float: left; margin: 0;}
+  body #gaia_footer ul li a {display: inline-block; color: #222 !important; padding: 0.5em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+  body #gaia_footer ul li a:hover {text-decoration: underline;}
+
+  /* Copyright */
+  body #gaia_footer p {background: #864B86; margin: 0; padding: 1em; display: block; color: rgba(255,255,255,0.5); text-align: left; width: auto; border-radius: 0; box-shadow: 0 0 0.25em rgba(0,0,0,0.25);}
+
+  /* Credits */
+  body #gaia_footer #bg_credits {float: right; margin: -2px 0 0;}
+  body #gaia_footer #bg_credits a {color: #FFF;}
+  body #gaia_footer #bg_credits a:hover {text-decoration: underline;}
+  body #bg_credits .bgtopofpage {color: #FFF; cursor: pointer; background: rgba(0,0,0,0.25); display: inline-block; padding: 0.5em; margin: -5px -0.75em 0 0.5em;}

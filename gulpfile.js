@@ -16,13 +16,18 @@ function getDirectories(path) {
   });
 }
 
+/*
+ |--------------------------------------------------------------------------
+ | Combine all JS libraries into a single file
+ |--------------------------------------------------------------------------
+ */
 gulp.task('vendor', ['browserify-vendor'], function() {
   return gulp.src([
     'node_modules/jquery/dist/jquery.js',
     'node_modules/handlebars/dist/handlebars.js',
     'node_modules/minimatch/dist/minimatch.js'
   ]).pipe(concat('vendor.js'))
-    .pipe(gulp.dest('browser/Chrome/assets'));
+    .pipe(gulp.dest('staging/assets'));
 });
 
 gulp.task('browserify-vendor', function() {
@@ -33,6 +38,11 @@ gulp.task('browserify-vendor', function() {
     .pipe(gulp.dest('node_modules/minimatch/dist/'));
 });
 
+/*
+ |--------------------------------------------------------------------------
+ | Build Core into staging
+ |--------------------------------------------------------------------------
+ */
 gulp.task('build:core', function() {
   let core = gulp.src([
     '!core/extension.js',
@@ -40,14 +50,19 @@ gulp.task('build:core', function() {
     'core/!(execute)*.js',
     'core/execute.js'
   ]).pipe(concat('core.js'))
-    .pipe(gulp.dest('browser/Chrome/assets'));
+    .pipe(gulp.dest('staging/assets'));
 
   let logo = gulp.src('core/logo.png')
-    .pipe(gulp.dest('browser/Chrome/assets'));
+    .pipe(gulp.dest('staging/assets'));
 
   return merge(core, logo);
 });
 
+/*
+ |--------------------------------------------------------------------------
+ | Build Extensions into staging
+ |--------------------------------------------------------------------------
+ */
 gulp.task('build:extensions:core', function() {
   const extensionClasses = getDirectories(__dirname + '/extensions/');
 
@@ -65,7 +80,7 @@ gulp.task('build:extensions:core', function() {
         replacement: extensionClasses.join("', '")
       }]
     }))
-    .pipe(gulp.dest('browser/Chrome/assets'));
+    .pipe(gulp.dest('staging/assets'));
 });
 
 gulp.task('build:extensions:copy', function() {
@@ -73,28 +88,50 @@ gulp.task('build:extensions:copy', function() {
     'extensions/**/*',
     '!extensions/**/*.scss',
     '!extensions/**/code.js'
-  ]).pipe(gulp.dest('browser/Chrome/extensions'));
+  ]).pipe(gulp.dest('staging/extensions'));
 });
 
 gulp.task('build:extensions:css', function() {
   return gulp.src('extensions/**/*.scss')
     .pipe(sass().on('error', sass.logError))
     .pipe(autoprefixer())
-    .pipe(gulp.dest('browser/Chrome/extensions'));
+    .pipe(gulp.dest('staging/extensions'));
 });
 
+/*
+ |--------------------------------------------------------------------------
+ | Distribute Core and Extensions to browser specific folders
+ |--------------------------------------------------------------------------
+ */
+ gulp.task('stage', function() {
+   return gulp.src('staging/**/*')
+     .pipe(gulp.dest('browser/Chrome'))
+     .pipe(gulp.dest('browser/Firefox'));
+ });
+
+/*
+ |--------------------------------------------------------------------------
+ | Compiles browser specific folders into one file
+ |--------------------------------------------------------------------------
+*/
 gulp.task('package', function() {
   console.log('To be written...');
 });
 
+/*
+ |--------------------------------------------------------------------------
+ | Etc.
+ |--------------------------------------------------------------------------
+ */
 gulp.task('watch', ['build'], function() {
   gulp.watch(['core/*.js', '!core/extension.js', '!core/extensions.js'], ['build:core']);
   gulp.watch(['core/extension.js', 'extensions/*/code.js', 'core/extensions.js'], ['build:extensions:core']);
   gulp.watch(['extensions/**/*', '!extensions/**/*.scss', '!extensions/**/code.js'], ['build:extensions:copy']);
   gulp.watch('extensions/**/*.scss', ['build:extensions:css']);
+  gulp.watch('staging/**/*', ['stage']);
 });
 
-gulp.task('build', ['vendor', 'build:core', 'build:extensions']);
+gulp.task('build', ['vendor', 'build:core', 'build:extensions', 'stage']);
 gulp.task('build:extensions', ['build:extensions:core', 'build:extensions:copy', 'build:extensions:css']);
-gulp.task('package', ['build', 'package']);
+gulp.task('pack', ['build', 'package']);
 gulp.task('default', ['build']);
