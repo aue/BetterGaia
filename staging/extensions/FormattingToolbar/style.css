@@ -8,6 +8,15 @@ body #editor {
 body textarea.bbcodable {
   margin-top: 33px !important; }
 
+body.forums #content > #gaia_content #yui-main .yui-b #compose_entry #compose textarea.bbcodable {
+  margin-top: 36px !important; }
+
+body.mail #gaia_content .message_box.bbcodable {
+  margin-top: 36px !important; }
+
+body.community.forums.app-page_posting textarea#textInputArea.bbcodable {
+  margin-top: 46px !important; }
+
 body #editor #format_controls {
   height: 33px;
   width: auto;

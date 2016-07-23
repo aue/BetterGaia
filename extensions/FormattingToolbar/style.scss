@@ -2,6 +2,9 @@
 body div#editor {z-index: 7;}
 body #editor {margin: 128px 0 0;}
 body textarea.bbcodable {margin-top: 33px !important;}
+body.forums #content > #gaia_content #yui-main .yui-b #compose_entry #compose textarea.bbcodable {margin-top: 36px !important;}
+body.mail #gaia_content .message_box.bbcodable {margin-top: 36px !important;}
+body.community.forums.app-page_posting textarea#textInputArea.bbcodable {margin-top: 46px !important;}
 body #editor #format_controls {height: 33px; width: auto; padding: 4px 0; background: linear-gradient(to bottom, #FFF, #F8F8F8) #F8F8F8; border: 1px solid #DDD; border-radius: 5px 5px 0 0; box-sizing: border-box;}
 body #editor #format_controls br {display: none;}
 

@@ -728,7 +728,7 @@ class Forums extends Extension {
 
   static defaultPrefs() {
     return {
-      'forum.externalLinks': true,
+      'forum.instants': true,
       'forum.previewThreads': true,
       'forum.constrain': true,
       'forum.post.optionsBottom': true,
@@ -740,6 +740,48 @@ class Forums extends Extension {
       'forum.threadHeader': '#BF7F40',
       'forum.postHeader': '#CFE6F9'
     };
+  }
+
+  render() {
+    // Adds Instants
+    if (this.getPref('forum.instants') === true) {
+      $('.post .post-options ul').each(function() {
+        if ($(this).find('a.post-quote').length > 0 || $(this).find('a.post-edit').length > 0)
+          $(this).prepend('<div class="bg_instant"><li><a class="bg_instanttext"><span>Instant</span></a></li></div>');
+
+        if ($(this).find('a.post-quote').length > 0)
+          $(this).find('.bg_instant').append('<li><a class="bg_instantquote" data-action="quote"><span>Quote</span></a></li>');
+
+        if ($(this).find('a.post-edit').length > 0)
+          $(this).find('.bg_instant').append('<li><a class="bg_instantedit" data-action="edit"><span>Edit</span></a></li>');
+      });
+
+      $('.post .post-options .bg_instant').on('click.Forums', 'a[data-action]', function() {
+        let message = $(this).closest('.messagecontent'),
+            action = this.getAttribute('data-action');
+
+        if (message.find(`.bg_instantbox.${action}`).length === 0) {
+          message.find('.post-bubble').after(`<div class="bg_instantbox ${action} loading">
+            <span class="bg_spinner"></span>
+          </div>`);
+
+          //get url
+          var url = message.find(`.post-options .post-${action}`).attr('href');
+          $.get(url).done(function(data) {
+            var pageHtml = $('<div>').html(data);
+            pageHtml.find('script').remove();
+
+            message.find(`.bg_instantbox.${action}`).removeClass('loading').html(pageHtml.find('form#compose_entry')[0].outerHTML);
+
+            if (typeof BetterGaia.applyPostFormattingToolbar === 'function')
+              BetterGaia.applyPostFormattingToolbar(message.find(`.bg_instantbox.${action} textarea[name="message"]`)[0]);
+          });
+        }
+        else {
+          $(this).closest('.messagecontent').find(`.bg_instantbox.${action}`).slideToggle('slow');
+        }
+      });
+    }
   }
 
   preMount() {
@@ -805,64 +847,25 @@ class Forums extends Extension {
       });
     }
 
-    // Adds Instants
-    $('body.forums .post .message .messagecontent .post-options ul').each(function() {
-      if ($(this).find('a.post-quote').length > 0 || $(this).find('a.post-edit').length > 0)
-        $(this).prepend('<div class="bg_instant"><li><a class="bg_instanttext"><span>Instant</span></a></li></div>');
+    if (document.querySelector('#topic_header_container #thread_header')) {
+      this.render();
 
-      if ($(this).find('a.post-quote').length > 0)
-        $(this).find('.bg_instant').append('<li><a class="bg_instantquote"><span>Quote</span></a></li>');
-
-      if ($(this).find('a.post-edit').length > 0)
-        $(this).find('.bg_instant').append('<li><a class="bg_instantedit"><span>Edit</span></a></li>');
-    });
-
-    $('.post .post-options .bg_instantquote').click(function() {
-      let message = $(this).closest('.messagecontent');
-
-      if (message.find('.bg_instantbox.quote').length === 0) {
-        message.find('.post-bubble').after(`<div class="bg_instantbox quote loading">
-          <span class="bg_spinner"></span>
-        </div>`);
-
-        //get url
-        var url = message.find('.post-options .post-quote').attr('href');
-        $.get(url).done(function(data) {
-          var pageHtml = $('<div>').html(data);
-          pageHtml.find('script').remove();
-
-          message.find('.bg_instantbox.quote').removeClass('loading').html(pageHtml.find('form#compose_entry')[0].outerHTML);
-          //BGjs.format();
-        });
-      }
-      else {
-        $(this).closest('.messagecontent').find('.bg_instantbox.quote').slideToggle('slow');
-      }
-    });
-
-    $("body.forums .post .message .messagecontent .post-options ul a.bg_instantedit").click( function() {
-        var bubbleThis = $(this).closest('.messagecontent');
-
-        if (bubbleThis.find(".bg_instantbox.edit").length === 0) {
-            bubbleThis.find(".post-bubble").after("<div class='bg_instantbox edit loading'></div>");
-
-            //get url
-            var url = bubbleThis.find(".post-options a.post-edit").attr("href");
-            $.get(url).done(function(data) {
-                var pageHtml = $('<div>').html(data);
-                pageHtml.find('script').remove();
-
-                bubbleThis.find(".bg_instantbox.edit").removeClass("loading").html(pageHtml.find("form#compose_entry")[0].outerHTML);
-            });
-        }
-        else {
-            $(this).closest('.messagecontent').find('.bg_instantbox.edit').slideToggle('slow');
-        }
-    });
+      // For ajax thread calls
+      this.observer = new window.MutationObserver(() => {
+        this.render();
+      });
+      this.observer.observe(document.getElementById('content-padding'), {
+        attributes: false,
+        childList: true,
+        characterData: false
+      });
+    }
   }
 
   unMount() {
     this.removeCSS();
+    $('.post .post-options .bg_instantquote, .post .post-options .bg_instantedit').off('click.Forums');
+    $('.bg_instant, .bg_instantbox').remove();
   }
 }
 
@@ -1079,6 +1082,7 @@ class Personalize extends Extension {
 class PostFormatting extends Extension {
   constructor() {
     super('PostFormatting');
+    this.toolbarHTML = null;
   }
 
   static info() {
@@ -1093,7 +1097,7 @@ class PostFormatting extends Extension {
       match: []
     };
 
-    if (this.getPrefForId('format.forums', 'PostFormatting') === true) info.match.push('/forum/compose/**');
+    if (this.getPrefForId('format.forums', 'PostFormatting') === true) info.match.push('/forum/**');
     if (this.getPrefForId('format.guildForums', 'PostFormatting') === true) info.match.push('/guilds/posting.php*mode=@(newtopic|reply|quote)*');
     if (this.getPrefForId('format.pms', 'PostFormatting') === true) info.match.push('/profile/privmsg.php*mode=@(post|reply|forward)*');
     if (this.getPrefForId('format.profileComments', 'PostFormatting') === true) info.match.push('/profiles/*/*/*@(mode=addcomment)*');
@@ -1109,10 +1113,10 @@ class PostFormatting extends Extension {
       'format.profileComments': true,
 
       'format.list': [
-          ['Blank', '', 0],
           ['Past Lives', "%5Bcolor=#003040%5D%E2%96%8C%5B/color%5D%5Bb%5D%5Bsize=11%5D%5Bcolor=#777%5DA%20SHIP%20IS%20SAFE%20IN%20HARBOR,%5B/color%5D%5B/size%5D%5B/b%5D%0A%5Bcolor=#276B91%5D%E2%96%8C%5B/color%5D%5Bb%5D%5Bsize=11%5D%5Bcolor=#777%5DBUT%20THAT'S%20NOT%20WHAT%20SHIPS%20ARE%20FOR.%5B/color%5D%5B/size%5D%5B/b%5D%0A%0A%0A%0A%5Balign=right%5D%5Bb%5DWelcome%20to%20%5Burl=http://bettergaia.com/%5DBetterGaia%5B/url%5D.%5B/b%5D%0A%5Bi%5DNeed%20help?%20%5Burl=http://www.gaiaonline.com/forum/t.45053993/%5DSee%20our%20thread%5B/url%5D%20and%20visit%20%5Burl=http://bettergaia.com/%5DBetterGaia.com%5B/url%5D.%5B/i%5D%5B/align%5D", 0],
           ['Godfellas', "%5Bcolor=#F08080%5D%5Bsize=20%5D%E2%9D%9D%5B/size%5D%5B/color%5D%0A%5Bb%5D%5Bcolor=#8B8878%5D%5Bsize=10%5DWHEN%20YOU%20DO%20THINGS%20RIGHT,%0APEOPLE%20WON'T%20BE%20SURE%20YOU'VE%20DONE%20ANYTHING%20AT%20ALL.%5B/size%5D%5B/color%5D%5B/b%5D%0A%5Bcolor=#F08080%5D%5Bsize=20%5D%20%E2%9D%9E%5B/size%5D%5B/color%5D%0A%0A%0A%0A%5Balign=right%5D%5Bb%5DWelcome%20to%20%5Burl=http://bettergaia.com/%5DBetterGaia%5B/url%5D.%5B/b%5D%0A%5Bi%5DNeed%20help?%20%5Burl=http://www.gaiaonline.com/forum/t.45053993/%5DSee%20our%20thread%5B/url%5D%20and%20visit%20%5Burl=http://bettergaia.com/%5DBetterGaia.com%5B/url%5D.%5B/i%5D%5B/align%5D", 0],
-          ['Alice', "%E2%99%A6%20%5Bcolor=#222222%5D%5Bsize=11%5D%5Bi%5DWhat%20road%20do%20I%20take?%5B/i%5D%5B/size%5D%5B/color%5D%0A%E2%99%A3%20%5Bb%5D%5Bcolor=brown%5D%22Where%20do%20you%20want%20to%20go?%22%5B/color%5D%5B/b%5D%0A%E2%99%A5%20%5Bcolor=#222222%5D%5Bsize=11%5D%5Bi%5DI%20don't%20know.%5B/i%5D%5B/size%5D%5B/color%5D%0A%E2%99%A0%20%5Bb%5D%5Bcolor=brown%5D%22Then,%20it%20really%20doesn't%20matter,%20does%20it?%22%5B/color%5D%5B/b%5D%0A%0A%0A%0A%5Balign=right%5D%5Bb%5DWelcome%20to%20%5Burl=http://bettergaia.com/%5DBetterGaia%5B/url%5D.%5B/b%5D%0A%5Bi%5DNeed%20help?%20%5Burl=http://www.gaiaonline.com/forum/t.45053993/%5DSee%20our%20thread%5B/url%5D%20and%20visit%20%5Burl=http://bettergaia.com/%5DBetterGaia.com%5B/url%5D.%5B/i%5D%5B/align%5D", 0]
+          ['Alice', "%E2%99%A6%20%5Bcolor=#222222%5D%5Bsize=11%5D%5Bi%5DWhat%20road%20do%20I%20take?%5B/i%5D%5B/size%5D%5B/color%5D%0A%E2%99%A3%20%5Bb%5D%5Bcolor=brown%5D%22Where%20do%20you%20want%20to%20go?%22%5B/color%5D%5B/b%5D%0A%E2%99%A5%20%5Bcolor=#222222%5D%5Bsize=11%5D%5Bi%5DI%20don't%20know.%5B/i%5D%5B/size%5D%5B/color%5D%0A%E2%99%A0%20%5Bb%5D%5Bcolor=brown%5D%22Then,%20it%20really%20doesn't%20matter,%20does%20it?%22%5B/color%5D%5B/b%5D%0A%0A%0A%0A%5Balign=right%5D%5Bb%5DWelcome%20to%20%5Burl=http://bettergaia.com/%5DBetterGaia%5B/url%5D.%5B/b%5D%0A%5Bi%5DNeed%20help?%20%5Burl=http://www.gaiaonline.com/forum/t.45053993/%5DSee%20our%20thread%5B/url%5D%20and%20visit%20%5Burl=http://bettergaia.com/%5DBetterGaia.com%5B/url%5D.%5B/i%5D%5B/align%5D", 0],
+          ['Blank', '', 0]
       ],
       'format.list.recent': 'default',
       'format.list.useRecent': true,
@@ -1124,113 +1128,153 @@ class PostFormatting extends Extension {
     };
   }
 
+  repeatText(text, n) {
+    let a = [];
+    n = parseInt(n, 10);
+
+    while (a.length < n) {
+      a.push(text);
+    }
+    return a.join('');
+  }
+
+  generateToolbar() {
+    // Generate toolbar
+    const toolbarTemplate = Handlebars.compile(`<div class="bg_pf">
+      {{#each formats}}
+      <a data-name="{{this.[0]}}" data-code="{{this.[1]}}" data-poststyle="{{this.[2]}}">{{this.[0]}}</a>
+      {{/each}}
+    </div>`);
+
+    // Save
+    this.toolbarHTML = toolbarTemplate({
+      formats: this.getPref('format.list')
+    });
+  }
+
+  applyToolbar(textbox) {
+    if (this.toolbarHTML === null) this.generateToolbar();
+    let identity = Date.now();
+
+    // Add necessary elements
+    $(textbox).add('select[name=basic_type]:not([data-identity])').attr('data-identity', identity);
+    if ($.isEmptyObject(this.getPref('format.list'))) return; // Check if list is empty
+    $(this.toolbarHTML)
+      .attr('data-identity', identity)
+      .insertAfter(textbox)
+      .on('click.PostFormatting', 'a:not(.current)', (event) => {
+        this.toolbarHandler(event.target);
+      });
+
+    // Find default/current format to apply
+    let format = '', postStyle = 0;
+    let recentFormat = this.getPref('format.list.recent');
+    let recent = document.querySelector(`.bg_pf[data-identity="${identity}"] a[data-name="${recentFormat}"]`);
+
+    if (recentFormat !== 'default'
+      && this.getPref('format.list.useRecent') === true
+      && recent !== null
+    ) {
+      recent.classList.add('current');
+      format = recent.getAttribute('data-code');
+      postStyle = recent.getAttribute('data-poststyle');
+    }
+    else {
+      recent = document.querySelector(`.bg_pf[data-identity="${identity}"] a`);
+      recent.classList.add('current');
+      format = recent.getAttribute('data-code');
+      postStyle = recent.getAttribute('data-poststyle');
+    }
+
+    /*
+     * Apply format
+     */
+
+    // Quoting
+    if (textbox.value.substr(0,8) == '[quote="' && textbox.value.replace(/\n\s*/g,'').substr(-8) == '[/quote]') {
+      if (this.getPref('format.quote.removeFormatting') === true)
+        textbox.value = textbox.value.replace(/\[\/?(?:b|i|u|strike|code|url|color|size|align|img|imgleft|imgright|imgmap|youtube|spoiler).*?\]/img, '');
+
+      if (this.getPref('format.quote.spoilerWrap') === true) {
+        let newPost = textbox.value.slice(0,-8);
+        newPost += '[/spoiler][/quote]';
+        newPost = newPost.replace(/\[quote=(.+?)\]/, '[quote=$1][spoiler]');
+        textbox.value = newPost;
+      }
+
+      if (this.getPref('format.quote.endOfFormat') === true)
+        textbox.value = decodeURI(format) + '\n' + this.repeatText('\n', this.getPref('format.quote.rangeNumber')) + textbox.value;
+      else
+        textbox.value = textbox.value + '\n' + this.repeatText('\n', this.getPref('format.quote.rangeNumber')) + decodeURI(format);
+    }
+
+    // Normal posting
+    else if (textbox.value.length === 0)
+      textbox.value = decodeURI(format);
+
+    // Apply post style
+    if (postStyle !== 0)
+      $(`select[name=basic_type][data-identity="${identity}"]`).val(postStyle);
+  }
+
+  toolbarHandler(button) {
+    let currentButton = button.parentNode.querySelector('.current'),
+        identity = button.parentNode.getAttribute('data-identity'),
+        textbox = document.querySelector(`textarea[data-identity="${identity}"]`);
+
+    let formatName = button.getAttribute('data-name'),
+        formatCode = button.getAttribute('data-code'),
+        formatPostStyle = button.getAttribute('data-poststyle');
+
+    // Insert format code
+    let encodedTextboxValue = encodeURI(textbox.value);
+    if (encodedTextboxValue === currentButton.getAttribute('data-code'))
+      textbox.value = decodeURI(formatCode);
+    else {
+      // Textbox has a quote
+      if (encodedTextboxValue.indexOf(currentButton.getAttribute('data-code')) !== -1) {
+        let content = encodedTextboxValue
+          .replace(currentButton.getAttribute('data-code'), '')
+          .replace('%0A' + this.repeatText('%0A', this.getPref('format.quote.rangeNumber')), '');
+        textbox.value = decodeURI(content);
+      }
+
+      if (this.getPref('format.quote.endOfFormat') === true)
+        textbox.value = decodeURI(formatCode) + '\n' + this.repeatText('\n', this.getPref('format.quote.rangeNumber')) + textbox.value;
+      else
+        textbox.value = textbox.value + '\n' + this.repeatText('\n', this.getPref('format.quote.rangeNumber')) + decodeURI(formatCode);
+    }
+
+    // Apply post style
+    if (formatPostStyle !== 0)
+      $(`select[name=basic_type][data-identity="${identity}"]`).val(formatPostStyle);
+
+    // Set format as last used
+    currentButton.classList.remove('current');
+    button.classList.add('current');
+
+    if (button.previousElementSibling !== null)
+      this.setPref('format.list.recent', formatName);
+    else
+      this.removePref('format.list.recent');
+  }
+
   preMount() {
     this.addStyleSheet('style');
   }
 
   mount() {
-    // for adding new lines
-    function repeat(s, n) {var a = []; while(a.length < n) {a.push(s);} return a.join('');}
-    let that = this;
+    BetterGaia.applyPostFormattingToolbar = this.applyToolbar.bind(this);
 
     // Run formatter
-    $('textarea[name="message"]:not([identity]), textarea[name="comment"]:not([identity])').each(function() {
-        // bbcode editor
-        //$(this).wysibb();
-
-        var identity = Date.now();
-        var post = $(this);
-
-        // Makes sure this code runs on fresh textboxes
-        $(this).add("select[name=basic_type]:not([identity])").attr("identity", identity);
-
-        // Adds formatting bar
-        var formattingbar = '';
-
-        // check if recent is set
-        var defaultFormatSet = false;
-        if (that.getPref('format.list.recent') != 'default' && that.getPref('format.list.useRecent') === true) {
-            for (var i=0; i < that.getPref('format.list').length; i++) {
-                if (that.getPref('format.list')[i][0] == that.getPref('format.list.recent')) {
-                    defaultFormatSet = true;
-                    break;
-                }
-            }
-        }
-
-        $.each(that.getPref('format.list'), function(index, format) {
-            if ((index === 0 && !defaultFormatSet) ||
-                (defaultFormatSet && (format[0] == prefs['format.list.recent']))) {
-                formattingbar += '<a code="' + format[1] + '" poststyle="' + format[2] + '" class="current">' + format[0] + '</a>';
-
-                // if quote
-                if (post.val().substr(0,8) == '[quote="' && post.val().replace(/\n\s*/g,'').substr(-8) == '[/quote]') {
-                    if (that.getPref('format.quote.removeFormatting') === true) post.val(post.val().replace(/\[\/?(?:b|i|u|strike|code|url|color|size|align|img|imgleft|imgright|imgmap|youtube|spoiler).*?\]/img, ''));
-
-                    if (that.getPref('format.quote.spoilerWrap') === true) {
-                        var newPost = post.val().slice(0,-8);
-                        newPost += '[/spoiler][/quote]';
-                        newPost = newPost.replace(/\[quote=(.+?)\]/, '[quote=$1][spoiler]');
-                        post.val(newPost);
-                    }
-
-                    if (that.getPref('format.quote.endOfFormat') === true) post.val(decodeURI(format[1]) + '\n' + repeat('\n', parseInt(prefs['format.quote.rangeNumber'], 10)) + post.val());
-                    else post.val(post.val() + '\n' + repeat('\n', parseInt(that.getPref('format.quote.rangeNumber'), 10)) + decodeURI(format[1]));
-                }
-
-                // If blank
-                else if (post.val().length === 0) post.val(decodeURI(format[1]));
-
-                // In the end
-                $('select[name=basic_type][identity="' + identity + '"]').val(format[2]);
-            }
-
-            // Not first
-            else formattingbar += '<a code="' + format[1] + '" poststyle="' + format[2] + '">' + format[0] + '</a>';
-        });
-
-        $(this).after('<div id="bg_formatter" identity="' + identity + '">' + formattingbar + '</div>');
-    });
-
-    // Set button functions
-    $('#bg_formatter > a').on('click', function() {
-        if (!$(this).hasClass('current')) {
-            var format = decodeURI($(this).attr('code')),
-            identity = $(this).parent().attr('identity'),
-            post = $('textarea[identity="' + identity + '"]');
-
-            if (encodeURI(post.val()) == $(this).siblings('a.current').attr('code')) post.val(format);
-            else {
-                // Textbox has quote
-                if (encodeURI(post.val()).indexOf($(this).siblings('a.current').attr('code')) != -1) {
-                    var content = encodeURI(post.val()).replace($(this).siblings('a.current').attr('code'), '');
-                    content = content.replace('%0A' + repeat('%0A', parseInt(that.getPref('format.quote.rangeNumber'), 10)), '');
-                    post.val(decodeURI(content));
-                }
-
-                if (that.getPref('format.quote.endOfFormat') === true) post.val(format + '\n' + repeat('\n', parseInt(prefs['format.quote.rangeNumber'], 10)) + post.val());
-                else post.val(post.val() + '\n' + repeat('\n', parseInt(that.getPref('format.quote.rangeNumber'), 10)) + format);
-            }
-
-            $('select[name=basic_type][identity="' + identity + '"]').val($(this).attr('poststyle'));
-            $(this).siblings('a.current').removeClass('current');
-            $(this).addClass('current');
-
-            // set as last used
-            if ($(this).index() !== 0) {
-                that.setPref('format.list.recent', $(this).text());
-            }
-            else {
-                that.removePref('format.list.recent');
-            }
-        }
-
-        return false;
+    $('textarea[name="message"], textarea[name="comment"]').each((index, el) => {
+      this.applyToolbar(el);
     });
   }
 
   unMount() {
     this.removeCSS();
+    $('.bg_pf').remove();
   }
 }
 
@@ -1408,11 +1452,7 @@ class UserTags extends Extension {
     };
   }
 
-  preMount() {
-    this.addStyleSheet('style');
-  }
-
-  mount() {
+  render() {
     // Get userid and add tag links
     $('body.forums .post .user_info_wrapper .user_info .user_name').each(function() {
         if ($(this).siblings('.bgUserTag').length === 0) {
@@ -1426,12 +1466,6 @@ class UserTags extends Extension {
     // Add stored tags
     var tags = this.getPref('usertags.list');
 
-    // Idenitfy me, special [color=#FEFEF0][size=1].[/size][/color]
-    $('.bgUserTag a[userid="8152358"]').each(function() {
-        if ($(this).closest('.postcontent').find('.message .post-bubble span[style="color: #FEFEF0"] span[style="font-size: 1px"]').length != 1)
-            $(this).attr({href: '/forum/t.96293729/'}).text('BetterGaia Creator');
-    });
-
     if (!$.isEmptyObject(tags)) {
         $.each(tags, function(key, tag){
             if ($('.bgUserTag a[userid="' + key + '"]')) {
@@ -1442,7 +1476,7 @@ class UserTags extends Extension {
         });
     }
 
-    $('body.forums .post .user_info_wrapper .user_info .bgUserTag > span').on('click', function(){
+    $('body.forums .post .user_info_wrapper .user_info .bgUserTag > span').on('click.UserTags', function(){
         if (!$(this).closest('.post').hasClass('bgut_loaded')) {
             var tagvalue = '', urlvalue = $(this).closest('.postcontent').find('.post-directlink a').attr('href');
 
@@ -1451,7 +1485,7 @@ class UserTags extends Extension {
                 if ($(this).siblings('a').attr('href')) urlvalue = $(this).siblings('a').attr('href');
             }
 
-            $(this).after('<div><h2>Tag ' +    $(this).closest('.user_info').find('.user_name').text() + '<a class="bgclose"></a></h2><form>\
+            $(this).after('<div><h2>Tag ' + $(this).closest('.user_info').find('.user_name').text() + '<a class="bgclose"></a></h2><form>\
                 <label for="bgut_tagtag">Tag</label>\
                 <input type="text" id="bgut_tagtag" maxlength="50" placeholder="Notes and comments" value="' + tagvalue + '">\
                 <label for="bgut_idtag">User ID</label>\
@@ -1469,11 +1503,12 @@ class UserTags extends Extension {
         $(this).parent().find('#bgut_tagtag').focus();
     });
 
-    $('body.forums .post .user_info_wrapper .user_info').on('click', '.bgUserTag a.bgclose', function(){
+    $('body.forums .post .user_info_wrapper .user_info').on('click.UserTags', '.bgUserTag a.bgclose', function(){
         $(this).closest('.post').removeClass('bgut_open');
     });
 
-    $('body.forums .post .user_info_wrapper .user_info').on('click', '.bgUserTag a.bgut_save', function(){
+    let that = this;
+    $('body.forums .post .user_info_wrapper .user_info').on('click.UserTags', '.bgUserTag a.bgut_save', function() {
         var letsSave = false,
         username = $(this).closest('.user_info').find('.user_name').text(),
         tag = $(this).siblings('#bgut_tagtag'),
@@ -1493,19 +1528,42 @@ class UserTags extends Extension {
 
         // Save
         if (letsSave) {
-            prefs['usertags.list'][userid.val()] = [username, tag.val(), url.val(), Date.now()];
+          let tags = that.getPref('usertags.list');
+          tags[userid.val()] = [username, tag.val(), url.val(), Date.now()];
+          that.setPref('usertags.list', tags);
 
-            // Save
-            BGjs.set('usertags.list', prefs['usertags.list']);
-            $('body.forums .post .user_info_wrapper .user_info .bgUserTag a[userid="' + userid.val() + '"]').attr({href: url.val()}).text(tag.val());
-            tag.closest('.post').removeClass('bgut_loaded bgut_open');
-            tag.closest('div').remove();
+          $('body.forums .post .user_info_wrapper .user_info .bgUserTag a[userid="' + userid.val() + '"]').attr({href: url.val()}).text(tag.val());
+          tag.closest('.post').removeClass('bgut_loaded bgut_open');
+          tag.closest('div').remove();
         }
     });
   }
 
+  preMount() {
+    this.addStyleSheet('style');
+  }
+
+  mount() {
+    if (document.querySelector('#topic_header_container #thread_header')) {
+      this.render();
+
+      // For ajax thread calls
+      this.observer = new window.MutationObserver(() => {
+        this.render();
+      });
+      this.observer.observe(document.getElementById('content-padding'), {
+        attributes: false,
+        childList: true,
+        characterData: false
+      });
+    }
+  }
+
   unMount() {
     this.removeCSS();
+    $('body.forums .post .user_info_wrapper .user_info .bgUserTag > span, body.forums .post .user_info_wrapper .user_info').off('click.UserTags');
+    this.observer.disconnect();
+    $('.bgUserTag').remove();
   }
 }
 

@@ -1,0 +1,180 @@
+/* User Tags */
+body .bgUserTag {
+  -webkit-user-select: none;
+  -moz-user-select: none; }
+
+body .bgUserTag:after {
+  display: table;
+  content: '';
+  clear: both; }
+
+body .bgUserTag > a {
+  font-size: 11px;
+  background: #FFF;
+  padding: 4px 7px 0;
+  border-radius: 20px 0 0 20px;
+  text-decoration: none;
+  height: 20px; }
+
+body .bgUserTag > a[href]:hover {
+  text-decoration: underline;
+  cursor: pointer; }
+
+body .bgUserTag > a[href]:active {
+  background: rgba(255, 255, 255, 0.5); }
+
+body .bgUserTag > a:empty {
+  display: none; }
+
+body .bgUserTag > a:empty + span {
+  border-radius: 20px;
+  margin-left: 0; }
+
+body .bgUserTag > span {
+  cursor: pointer;
+  background: #FFF;
+  border-radius: 0 20px 20px 0;
+  width: 20px;
+  height: 20px;
+  line-height: 21px;
+  padding: 0 4px;
+  text-align: left;
+  margin-left: 1px; }
+
+body .bgUserTag > span:before {
+  font-family: 'Glyphicons Halflings';
+  content: '\e041';
+  font-size: 13px; }
+
+body .bgUserTag > span:hover {
+  width: auto; }
+
+body .bgUserTag > span:hover:after {
+  content: 'Tag this User';
+  font-size: 11px;
+  padding: 0 5px;
+  position: relative;
+  top: -3px; }
+
+body .bgUserTag > span:active {
+  opacity: 0.5; }
+
+body .bgUserTag > a, body .bgUserTag > span {
+  display: block;
+  float: left; }
+
+body .bgUserTag div {
+  display: none;
+  background: #FFF;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.07);
+  border: 2px solid #BBB;
+  position: absolute;
+  z-index: 10;
+  padding: 10px;
+  width: 250px;
+  top: 70px;
+  margin: 0 0 0 -125px;
+  left: 50%;
+  word-wrap: break-word; }
+
+body .bgUserTag div h2 {
+  color: #5AC8FA;
+  text-align: center;
+  padding: 0;
+  margin: 0;
+  font-size: 14px; }
+
+body .bgUserTag div h2 a.bgclose {
+  cursor: pointer;
+  height: 16px;
+  width: 16px;
+  position: absolute;
+  right: 4px;
+  top: 10px;
+  overflow: visible;
+  background: none !important;
+  border: 0; }
+
+body .bgUserTag div h2 a.bgclose:after {
+  content: "\00D7";
+  color: #BBB;
+  width: 20px;
+  height: 20px;
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  text-align: center;
+  border-radius: 15px;
+  font: bold 24px/20px Arial, Helvetica, sans-serif;
+  text-shadow: none;
+  text-indent: 0; }
+
+body .bgUserTag div h2 a.bgclose:hover:after {
+  background: #BBB;
+  color: #FFF; }
+
+body .bgUserTag div form label, body .bgUserTag div form input {
+  margin-bottom: 5px;
+  height: 20px; }
+
+body .bgUserTag div form label {
+  float: left;
+  width: 80px;
+  padding: 0 5px 0 0;
+  line-height: 21px;
+  text-align: left; }
+
+body .bgUserTag div form input {
+  float: right;
+  width: 145px; }
+
+body .bgUserTag div form label.bgerror {
+  color: #F00; }
+
+body .bgUserTag div form label.bgerror + input {
+  border: 1px solid #F00; }
+
+body .bgUserTag div form label[for='bgut_idtag'], body .bgUserTag div form input#bgut_idtag {
+  display: none; }
+
+body .bgUserTag div form p {
+  float: left;
+  font-size: 10px !important;
+  margin: 5px 0 0 !important;
+  text-align: left;
+  width: 170px; }
+
+body .bgUserTag div form .bgut_save {
+  float: right;
+  padding: 2px 5px;
+  background: #FFF;
+  border-radius: 4px;
+  color: #222;
+  font: normal 12px Arial, Helvetica, sans-serif;
+  border: 2px solid #5AC8FA;
+  cursor: pointer;
+  margin: 5px 0 0; }
+
+body .bgUserTag div form .bgut_save:hover {
+  background: #5AC8FA;
+  border-color: transparent; }
+
+body .bgUserTag div form .bgut_save:active {
+  background: #FFF;
+  border-color: rgba(0, 0, 0, 0.5); }
+
+body .post.bgut_open .bgUserTag div {
+  display: block; }
+
+body .post.bgut_open.bgpc_hidden .bgUserTag div {
+  display: none; }
+
+body .post.bgut_open .postcontent .message, body .post.bgut_open .postcontent .post-signature {
+  opacity: 0.9;
+  -webkit-transition: opacity 1s;
+  transition: opacity 1s;
+  pointer-events: none;
+  -webkit-user-select: none;
+  -moz-user-select: none; }

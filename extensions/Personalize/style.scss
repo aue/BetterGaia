@@ -66,10 +66,10 @@ body #gaia_header .header_content .goldMessage {right: 0; z-index: 191;}
 
 /* Navigation */
 body #gaia_menu_bar {z-index: 190; position: relative;}
-body #gaia_menu_bar #newmenu {width: 100%;}
+body #gaia_menu_bar #newmenu {width: 100% !important;}
 body #gaia_menu_bar #nav {width: 1140px; margin: 0 auto;}
 body #gaia_menu_bar #nav:after {content: ''; display: table; clear: both;}
-body #gaia_menu_bar #mygaia_menu:not(.panel-open) .megamenu-section-trigger {border-left: 1px solid #020203; box-shadow: 1px 0 0px #7795ab inset;}
+body #gaia_menu_bar #mygaia_menu:not(.panel-open) .megamenu-section-trigger {border-left: 1px solid #020203; box-shadow: 1px 0 0 rgba(255,255,255,0.25) inset;}
 
 // Theme
 #gaia_menu_bar, #gaia_header #user_account {filter: hue-rotate(100deg);}

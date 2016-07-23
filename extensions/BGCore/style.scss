@@ -73,7 +73,7 @@ body {height: 100% !important; min-height: 100% !important;}
 #bg_settings .bgs_page .card h1 {margin: 0.3em 0 0.7em;}
 
 #bg_settings .bgs_page.myextensions {height: 100%;}
-#bg_settings .bgs_page.myextensions .list {width: 35%; padding: 1em; overflow-y: auto;}
+#bg_settings .bgs_page.myextensions .list {width: 35%; padding: 1em 1em 0; overflow-y: auto;}
 #bg_settings .bgs_page.myextensions .list li {list-style: none; padding: 1em; margin: 0; box-shadow: 0 0 1em rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.15); border-bottom-width: 0; cursor: pointer; transition: background 0.25s ease;}
 #bg_settings .bgs_page.myextensions .list li:last-child {border-bottom-width: 1px; margin-bottom: 1em;}
 #bg_settings .bgs_page.myextensions .list li:hover {background: rgba(177,30,149,0.1);}

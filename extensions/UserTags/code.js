@@ -24,11 +24,7 @@ class UserTags extends Extension {
     };
   }
 
-  preMount() {
-    this.addStyleSheet('style');
-  }
-
-  mount() {
+  render() {
     // Get userid and add tag links
     $('body.forums .post .user_info_wrapper .user_info .user_name').each(function() {
         if ($(this).siblings('.bgUserTag').length === 0) {
@@ -42,12 +38,6 @@ class UserTags extends Extension {
     // Add stored tags
     var tags = this.getPref('usertags.list');
 
-    // Idenitfy me, special [color=#FEFEF0][size=1].[/size][/color]
-    $('.bgUserTag a[userid="8152358"]').each(function() {
-        if ($(this).closest('.postcontent').find('.message .post-bubble span[style="color: #FEFEF0"] span[style="font-size: 1px"]').length != 1)
-            $(this).attr({href: '/forum/t.96293729/'}).text('BetterGaia Creator');
-    });
-
     if (!$.isEmptyObject(tags)) {
         $.each(tags, function(key, tag){
             if ($('.bgUserTag a[userid="' + key + '"]')) {
@@ -58,7 +48,7 @@ class UserTags extends Extension {
         });
     }
 
-    $('body.forums .post .user_info_wrapper .user_info .bgUserTag > span').on('click', function(){
+    $('body.forums .post .user_info_wrapper .user_info .bgUserTag > span').on('click.UserTags', function(){
         if (!$(this).closest('.post').hasClass('bgut_loaded')) {
             var tagvalue = '', urlvalue = $(this).closest('.postcontent').find('.post-directlink a').attr('href');
 
@@ -67,7 +57,7 @@ class UserTags extends Extension {
                 if ($(this).siblings('a').attr('href')) urlvalue = $(this).siblings('a').attr('href');
             }
 
-            $(this).after('<div><h2>Tag ' +    $(this).closest('.user_info').find('.user_name').text() + '<a class="bgclose"></a></h2><form>\
+            $(this).after('<div><h2>Tag ' + $(this).closest('.user_info').find('.user_name').text() + '<a class="bgclose"></a></h2><form>\
                 <label for="bgut_tagtag">Tag</label>\
                 <input type="text" id="bgut_tagtag" maxlength="50" placeholder="Notes and comments" value="' + tagvalue + '">\
                 <label for="bgut_idtag">User ID</label>\
@@ -85,11 +75,12 @@ class UserTags extends Extension {
         $(this).parent().find('#bgut_tagtag').focus();
     });
 
-    $('body.forums .post .user_info_wrapper .user_info').on('click', '.bgUserTag a.bgclose', function(){
+    $('body.forums .post .user_info_wrapper .user_info').on('click.UserTags', '.bgUserTag a.bgclose', function(){
         $(this).closest('.post').removeClass('bgut_open');
     });
 
-    $('body.forums .post .user_info_wrapper .user_info').on('click', '.bgUserTag a.bgut_save', function(){
+    let that = this;
+    $('body.forums .post .user_info_wrapper .user_info').on('click.UserTags', '.bgUserTag a.bgut_save', function() {
         var letsSave = false,
         username = $(this).closest('.user_info').find('.user_name').text(),
         tag = $(this).siblings('#bgut_tagtag'),
@@ -109,18 +100,41 @@ class UserTags extends Extension {
 
         // Save
         if (letsSave) {
-            prefs['usertags.list'][userid.val()] = [username, tag.val(), url.val(), Date.now()];
+          let tags = that.getPref('usertags.list');
+          tags[userid.val()] = [username, tag.val(), url.val(), Date.now()];
+          that.setPref('usertags.list', tags);
 
-            // Save
-            BGjs.set('usertags.list', prefs['usertags.list']);
-            $('body.forums .post .user_info_wrapper .user_info .bgUserTag a[userid="' + userid.val() + '"]').attr({href: url.val()}).text(tag.val());
-            tag.closest('.post').removeClass('bgut_loaded bgut_open');
-            tag.closest('div').remove();
+          $('body.forums .post .user_info_wrapper .user_info .bgUserTag a[userid="' + userid.val() + '"]').attr({href: url.val()}).text(tag.val());
+          tag.closest('.post').removeClass('bgut_loaded bgut_open');
+          tag.closest('div').remove();
         }
     });
   }
 
+  preMount() {
+    this.addStyleSheet('style');
+  }
+
+  mount() {
+    if (document.querySelector('#topic_header_container #thread_header')) {
+      this.render();
+
+      // For ajax thread calls
+      this.observer = new window.MutationObserver(() => {
+        this.render();
+      });
+      this.observer.observe(document.getElementById('content-padding'), {
+        attributes: false,
+        childList: true,
+        characterData: false
+      });
+    }
+  }
+
   unMount() {
     this.removeCSS();
+    $('body.forums .post .user_info_wrapper .user_info .bgUserTag > span, body.forums .post .user_info_wrapper .user_info').off('click.UserTags');
+    this.observer.disconnect();
+    $('.bgUserTag').remove();
   }
 }

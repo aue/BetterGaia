@@ -17,7 +17,7 @@ class Forums extends Extension {
 
   static defaultPrefs() {
     return {
-      'forum.externalLinks': true,
+      'forum.instants': true,
       'forum.previewThreads': true,
       'forum.constrain': true,
       'forum.post.optionsBottom': true,
@@ -29,6 +29,48 @@ class Forums extends Extension {
       'forum.threadHeader': '#BF7F40',
       'forum.postHeader': '#CFE6F9'
     };
+  }
+
+  render() {
+    // Adds Instants
+    if (this.getPref('forum.instants') === true) {
+      $('.post .post-options ul').each(function() {
+        if ($(this).find('a.post-quote').length > 0 || $(this).find('a.post-edit').length > 0)
+          $(this).prepend('<div class="bg_instant"><li><a class="bg_instanttext"><span>Instant</span></a></li></div>');
+
+        if ($(this).find('a.post-quote').length > 0)
+          $(this).find('.bg_instant').append('<li><a class="bg_instantquote" data-action="quote"><span>Quote</span></a></li>');
+
+        if ($(this).find('a.post-edit').length > 0)
+          $(this).find('.bg_instant').append('<li><a class="bg_instantedit" data-action="edit"><span>Edit</span></a></li>');
+      });
+
+      $('.post .post-options .bg_instant').on('click.Forums', 'a[data-action]', function() {
+        let message = $(this).closest('.messagecontent'),
+            action = this.getAttribute('data-action');
+
+        if (message.find(`.bg_instantbox.${action}`).length === 0) {
+          message.find('.post-bubble').after(`<div class="bg_instantbox ${action} loading">
+            <span class="bg_spinner"></span>
+          </div>`);
+
+          //get url
+          var url = message.find(`.post-options .post-${action}`).attr('href');
+          $.get(url).done(function(data) {
+            var pageHtml = $('<div>').html(data);
+            pageHtml.find('script').remove();
+
+            message.find(`.bg_instantbox.${action}`).removeClass('loading').html(pageHtml.find('form#compose_entry')[0].outerHTML);
+
+            if (typeof BetterGaia.applyPostFormattingToolbar === 'function')
+              BetterGaia.applyPostFormattingToolbar(message.find(`.bg_instantbox.${action} textarea[name="message"]`)[0]);
+          });
+        }
+        else {
+          $(this).closest('.messagecontent').find(`.bg_instantbox.${action}`).slideToggle('slow');
+        }
+      });
+    }
   }
 
   preMount() {
@@ -94,63 +136,24 @@ class Forums extends Extension {
       });
     }
 
-    // Adds Instants
-    $('body.forums .post .message .messagecontent .post-options ul').each(function() {
-      if ($(this).find('a.post-quote').length > 0 || $(this).find('a.post-edit').length > 0)
-        $(this).prepend('<div class="bg_instant"><li><a class="bg_instanttext"><span>Instant</span></a></li></div>');
+    if (document.querySelector('#topic_header_container #thread_header')) {
+      this.render();
 
-      if ($(this).find('a.post-quote').length > 0)
-        $(this).find('.bg_instant').append('<li><a class="bg_instantquote"><span>Quote</span></a></li>');
-
-      if ($(this).find('a.post-edit').length > 0)
-        $(this).find('.bg_instant').append('<li><a class="bg_instantedit"><span>Edit</span></a></li>');
-    });
-
-    $('.post .post-options .bg_instantquote').click(function() {
-      let message = $(this).closest('.messagecontent');
-
-      if (message.find('.bg_instantbox.quote').length === 0) {
-        message.find('.post-bubble').after(`<div class="bg_instantbox quote loading">
-          <span class="bg_spinner"></span>
-        </div>`);
-
-        //get url
-        var url = message.find('.post-options .post-quote').attr('href');
-        $.get(url).done(function(data) {
-          var pageHtml = $('<div>').html(data);
-          pageHtml.find('script').remove();
-
-          message.find('.bg_instantbox.quote').removeClass('loading').html(pageHtml.find('form#compose_entry')[0].outerHTML);
-          //BGjs.format();
-        });
-      }
-      else {
-        $(this).closest('.messagecontent').find('.bg_instantbox.quote').slideToggle('slow');
-      }
-    });
-
-    $("body.forums .post .message .messagecontent .post-options ul a.bg_instantedit").click( function() {
-        var bubbleThis = $(this).closest('.messagecontent');
-
-        if (bubbleThis.find(".bg_instantbox.edit").length === 0) {
-            bubbleThis.find(".post-bubble").after("<div class='bg_instantbox edit loading'></div>");
-
-            //get url
-            var url = bubbleThis.find(".post-options a.post-edit").attr("href");
-            $.get(url).done(function(data) {
-                var pageHtml = $('<div>').html(data);
-                pageHtml.find('script').remove();
-
-                bubbleThis.find(".bg_instantbox.edit").removeClass("loading").html(pageHtml.find("form#compose_entry")[0].outerHTML);
-            });
-        }
-        else {
-            $(this).closest('.messagecontent').find('.bg_instantbox.edit').slideToggle('slow');
-        }
-    });
+      // For ajax thread calls
+      this.observer = new window.MutationObserver(() => {
+        this.render();
+      });
+      this.observer.observe(document.getElementById('content-padding'), {
+        attributes: false,
+        childList: true,
+        characterData: false
+      });
+    }
   }
 
   unMount() {
     this.removeCSS();
+    $('.post .post-options .bg_instantquote, .post .post-options .bg_instantedit').off('click.Forums');
+    $('.bg_instant, .bg_instantbox').remove();
   }
 }

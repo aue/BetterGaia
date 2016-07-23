@@ -6,61 +6,125 @@ let BetterGaia = {
   mounted: false,
   extensions: [],
 
+  isEmptyObject: function(obj) {
+    return Object.keys(obj).length === 0 && obj.constructor === Object;
+  },
+
   pref: {
     // Only accessed by BetterGaia
     storage: {},
     defaults: {
-      disabledExtensions: [],
-      extensions: {}
+      disabledExtensions: []
     },
 
     // Extensions allowed to use these
     get: function(key, extensionId) {
-      if (typeof extensionId === 'undefined') {
-        if (BetterGaia.pref.storage.hasOwnProperty(key)) {
-          return BetterGaia.pref.storage[key];
+      // Extension called this
+      if (typeof extensionId === 'string') {
+        if (BetterGaia.pref.storage.hasOwnProperty(`extension.${extensionId}`)
+          && BetterGaia.pref.storage[`extension.${extensionId}`].hasOwnProperty(key)
+        ) {
+          let pref = BetterGaia.pref.storage[`extension.${extensionId}`][key];
+          if (typeof pref === 'object') return JSON.parse(JSON.stringify(pref));
+          else return pref;
         }
-        else if (BetterGaia.pref.defaults.hasOwnProperty(key)) {
-          return BetterGaia.pref.defaults[key];
+        else if (BetterGaia.pref.defaults.hasOwnProperty(`extension.${extensionId}`)
+          && BetterGaia.pref.defaults[`extension.${extensionId}`].hasOwnProperty(key)
+        ) {
+          let pref = BetterGaia.pref.defaults[`extension.${extensionId}`][key];
+          if (typeof pref === 'object') return JSON.parse(JSON.stringify(pref));
+          else return pref;
         }
         else {
-          console.warn(`BetterGaia: preference with key not found, ${key}`);
-          return;
+          console.warn(`BetterGaia: preference with key not found for extension ${extensionId}, ${key}`);
         }
       }
+
+      // Generic call
+      else if (BetterGaia.pref.storage.hasOwnProperty(key)) {
+        let pref = BetterGaia.pref.storage[key];
+        if (typeof pref === 'object') return JSON.parse(JSON.stringify(pref));
+        else return pref;
+      }
+      else if (BetterGaia.pref.defaults.hasOwnProperty(key)) {
+        let pref = BetterGaia.pref.defaults[key];
+        if (typeof pref === 'object') return JSON.parse(JSON.stringify(pref));
+        else return pref;
+      }
       else {
-        // extension called this
-        if (BetterGaia.pref.storage.hasOwnProperty('extensions') && BetterGaia.pref.storage.extensions.hasOwnProperty(extensionId) && BetterGaia.pref.storage.extensions[extensionId].hasOwnProperty(key)) {
-          // this is awful (above)
-          return BetterGaia.pref.storage.extensions[extensionId][key];
-        }
-        else if (BetterGaia.pref.defaults.extensions[extensionId].hasOwnProperty(key)) {
-          // extension must have default pref object, even if empty
-          return BetterGaia.pref.defaults.extensions[extensionId][key];
-        }
-        else {
-          console.warn(`BetterGaia: preference with key not found, ${extensionId}.${key}`);
-          return;
-        }
+        console.warn(`BetterGaia: preference with key not found, ${key}`);
       }
     },
 
     set: function(key, value, extensionId) {
-      if (BetterGaia.pref.defaults.hasOwnProperty(key)
-          && value === BetterGaia.pref.defaults[key]
-          && BetterGaia.pref.storage.hasOwnProperty(key)) {
-        // if default value, remove from the browsers storage
-        Bridge.storage.remove(key);
-        delete BetterGaia.pref.storage[key];
+      // Extension called this
+      if (typeof extensionId === 'string') {
+        if (BetterGaia.pref.defaults.hasOwnProperty(`extension.${extensionId}`)
+          && BetterGaia.pref.defaults[`extension.${extensionId}`].hasOwnProperty(key)
+          && BetterGaia.pref.defaults[`extension.${extensionId}`][key] === value
+        ) {
+          // Trying to set to default value, remove
+          // remove() will do the checks for us
+          BetterGaia.pref.remove(key, extensionId);
+        }
+        else {
+          // Set normally
+          if (BetterGaia.pref.storage.hasOwnProperty(`extension.${extensionId}`)) {
+            // Use existing key for extension
+            BetterGaia.pref.storage[`extension.${extensionId}`][key] = value;
+            Bridge.storage.set(`extension.${extensionId}`, BetterGaia.pref.storage[`extension.${extensionId}`]);
+          }
+          else {
+            // Create new key for extension
+            let keyVal = {};
+            keyVal[key] = value;
+
+            BetterGaia.pref.storage[`extension.${extensionId}`] = keyVal;
+            Bridge.storage.set(`extension.${extensionId}`, keyVal);
+          }
+        }
+      }
+
+      // Generic call
+      else if (BetterGaia.pref.defaults.hasOwnProperty(key)
+        && BetterGaia.pref.defaults[key] === value
+      ) {
+        // Trying to set to default value, remove
+        // remove() will do the checks for us
+        BetterGaia.pref.remove(key);
       }
       else {
+        // Set normally
         Bridge.storage.set(key, value);
         BetterGaia.pref.storage[key] = value;
       }
     },
 
     remove: function(key, extensionId) {
-      if (BetterGaia.pref.storage.hasOwnProperty(key)) {
+      // Extension called this
+      if (typeof extensionId === 'string') {
+        if (BetterGaia.pref.storage.hasOwnProperty(`extension.${extensionId}`)
+          && BetterGaia.pref.storage[`extension.${extensionId}`].hasOwnProperty(key)
+        ) {
+          delete BetterGaia.pref.storage[`extension.${extensionId}`][key];
+
+          if (BetterGaia.isEmptyObject(BetterGaia.pref.storage[`extension.${extensionId}`])) {
+            // remove the pref completly
+            delete BetterGaia.pref.storage[`extension.${extensionId}`];
+            Bridge.storage.remove(`extension.${extensionId}`);
+          }
+          else {
+            // update the pref
+            Bridge.storage.set(`extension.${extensionId}`, BetterGaia.pref.storage[`extension.${extensionId}`]);
+          }
+        }
+        else {
+          console.warn(`BetterGaia: preference with key was not set in the first place for extension ${extensionId}, ${key}`);
+        }
+      }
+
+      // Generic call
+      else if (BetterGaia.pref.storage.hasOwnProperty(key)) {
         Bridge.storage.remove(key);
         delete BetterGaia.pref.storage[key];
       }
@@ -144,7 +208,7 @@ let BetterGaia = {
       let extension = this.extensionFactory(extensionClassesIds[i]);
       if (extension) {
         // Store the default prefs for the extension
-        BetterGaia.pref.defaults.extensions[extensionClassesIds[i]] = extension.defaultPrefs();
+        BetterGaia.pref.defaults[`extension.${extensionClassesIds[i]}`] = extension.defaultPrefs();
 
         // skip if disabled
         if (disabledExtensions.indexOf(extensionClassesIds[i]) !== -1) continue;

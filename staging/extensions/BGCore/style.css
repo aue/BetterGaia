@@ -324,7 +324,7 @@ body {
 
 #bg_settings .bgs_page.myextensions .list {
   width: 35%;
-  padding: 1em;
+  padding: 1em 1em 0;
   overflow-y: auto; }
 
 #bg_settings .bgs_page.myextensions .list li {

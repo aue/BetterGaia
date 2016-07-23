@@ -162,15 +162,8 @@ body.community.forums.app-page_posting #content > #content-padding {
 body.community.forums.app-page_posting textarea#textInputArea {
   width: 670px !important;
   border: 1px solid #BBB !important;
-  border-width: 0 1px 1px !important;
   padding: 3px 7px !important;
   background: #F6FBFC;
   font: normal 13px/1.7 "Lucida Grande", "Lucida Sans Unicode", Arial, Verdana, sans-serif;
   box-sizing: border-box;
   min-height: 300px; }
-
-body.community.forums.app-page_posting textarea#textInputArea.bbcodable {
-  margin-top: 46px !important; }
-
-body.community.forums.app-page_posting > #editor {
-  margin-left: 0; }
