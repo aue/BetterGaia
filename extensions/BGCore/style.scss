@@ -84,13 +84,26 @@ body {height: 100% !important; min-height: 100% !important;}
 #bg_settings .bgs_page.myextensions .details {flex: 1; overflow: auto;}
 #bg_settings .bgs_page.myextensions .details .detail {height: 0; padding: 0; transition: 0.75s ease opacity; opacity: 0; overflow: hidden;}
 #bg_settings .bgs_page.myextensions .details .detail.bgs_active {padding: 1em 1em 1em 0.75em; opacity: 1; height: auto;}
-#bg_settings .bgs_page.myextensions .details .detail h1, h2 {margin: 0.75em 0; text-align: center;}
-#bg_settings .bgs_page.myextensions .details .detail h2 {font-weight: normal;}
+#bg_settings .bgs_page.myextensions .details .detail h1, h2, h3 {margin: 0.75em 0; text-align: center;}
+#bg_settings .bgs_page.myextensions .details .detail h2 {font-weight: normal; clear: both;}
+
 #bg_settings .bgs_page.myextensions .details .detail .about {margin-left: 0; margin-right: 0;}
 #bg_settings .bgs_page.myextensions .details .detail .about p:last-child {margin-bottom: 0;}
 #bg_settings .bgs_page.myextensions .details .detail .about .button {margin-top: -0.35em; float: right; background: #455a64;}
 #bg_settings .bgs_page.myextensions .details .detail .about .button:hover {background: #546e7a;}
 #bg_settings .bgs_page.myextensions .details .detail .about .button:active {background: #37474f;}
+
+#bg_settings .bgs_page.myextensions .details .detail .settings {margin: 0 1em;}
+#bg_settings .bgs_page.myextensions .details .detail .settings p {text-align: center;}
+#bg_settings .bgs_page.myextensions .details .detail .settings h3 {margin: 1.75em 0 0.5em;}
+#bg_settings .bgs_page.myextensions .details .detail .settings .option {margin: 1em 0;}
+#bg_settings .bgs_page.myextensions .details .detail .settings .option:after {content: ''; display: table; clear: both;}
+#bg_settings .bgs_page.myextensions .details .detail .settings .option label {padding: 0.5em 0;}
+#bg_settings .bgs_page.myextensions .details .detail .settings .option.checkbox input {margin-right: 0.5em;}
+#bg_settings .bgs_page.myextensions .details .detail .settings .option.textbox input {float: right; width: 12em;}
+#bg_settings .bgs_page.myextensions .details .detail .settings .option.selection select {float: right; width: 8em;}
+#bg_settings .bgs_page.myextensions .details .detail .settings .option.hue input {float: right;}
+#bg_settings .bgs_page.myextensions .details .detail .settings .option.list {}
 
 #bg_settings .bgs_page.extensions {padding: 0.5em; overflow: auto; flex-wrap: wrap; justify-content: center;}
 #bg_settings .bgs_page.extensions .card {width: calc(100%/3 - 1em); padding-bottom: 3.75em; position: relative;}

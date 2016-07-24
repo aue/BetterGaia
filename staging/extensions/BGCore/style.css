@@ -375,12 +375,13 @@ body {
   opacity: 1;
   height: auto; }
 
-#bg_settings .bgs_page.myextensions .details .detail h1, h2 {
+#bg_settings .bgs_page.myextensions .details .detail h1, h2, h3 {
   margin: 0.75em 0;
   text-align: center; }
 
 #bg_settings .bgs_page.myextensions .details .detail h2 {
-  font-weight: normal; }
+  font-weight: normal;
+  clear: both; }
 
 #bg_settings .bgs_page.myextensions .details .detail .about {
   margin-left: 0;
@@ -399,6 +400,40 @@ body {
 
 #bg_settings .bgs_page.myextensions .details .detail .about .button:active {
   background: #37474f; }
+
+#bg_settings .bgs_page.myextensions .details .detail .settings {
+  margin: 0 1em; }
+
+#bg_settings .bgs_page.myextensions .details .detail .settings p {
+  text-align: center; }
+
+#bg_settings .bgs_page.myextensions .details .detail .settings h3 {
+  margin: 1.75em 0 0.5em; }
+
+#bg_settings .bgs_page.myextensions .details .detail .settings .option {
+  margin: 1em 0; }
+
+#bg_settings .bgs_page.myextensions .details .detail .settings .option:after {
+  content: '';
+  display: table;
+  clear: both; }
+
+#bg_settings .bgs_page.myextensions .details .detail .settings .option label {
+  padding: 0.5em 0; }
+
+#bg_settings .bgs_page.myextensions .details .detail .settings .option.checkbox input {
+  margin-right: 0.5em; }
+
+#bg_settings .bgs_page.myextensions .details .detail .settings .option.textbox input {
+  float: right;
+  width: 12em; }
+
+#bg_settings .bgs_page.myextensions .details .detail .settings .option.selection select {
+  float: right;
+  width: 8em; }
+
+#bg_settings .bgs_page.myextensions .details .detail .settings .option.hue input {
+  float: right; }
 
 #bg_settings .bgs_page.extensions {
   padding: 0.5em;

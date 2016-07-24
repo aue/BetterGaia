@@ -107,7 +107,7 @@ class PostFormatting extends Extension {
       .attr('data-identity', identity)
       .insertAfter(textbox)
       .on('click.PostFormatting', 'a:not(.current)', (event) => {
-        this.toolbarHandler(event.target);
+        this.toolbarHandler(event.currentTarget);
       });
 
     // Find default/current format to apply

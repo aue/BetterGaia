@@ -103,10 +103,15 @@ class Personalize extends Extension {
       this.addCSS('body div#gaia_header {width: 1140px;}');
 
     // Logo
-    if (this.getPref('header.logo') != 'default')
+    if (this.getPref('logo') !== 'default')
       this.addCSS('body #gaia_header .header_content .gaiaLogo a, body #gaia_header .header_content .gaiaLogo a:hover {background-image: url(' + this.getPref('header.logo') + ');}');
 
     // Navigation hue rotatation
+    if (this.getPref('nav.hue') != '207')
+      this.addCSS(`
+        #gaia_menu_bar, #gaia_header #user_account {filter: hue-rotate(${this.getPref('nav.hue')}deg);}
+        #gaia_menu_bar .main_panel_container .panel-img, #gaia_menu_bar .main_panel_container .new-img, #gaia_menu_bar .main_panel_container .panel-more .arrow, #gaia_menu_bar #menu_search, #gaia_menu_bar .bg_settings_link_msg {filter: hue-rotate(-${this.getPref('nav.hue')}deg);}
+      `);
 
   }
 
