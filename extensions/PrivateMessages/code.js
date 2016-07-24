@@ -15,10 +15,6 @@ class PrivateMessages extends Extension {
     };
   }
 
-  static defaultPrefs() {
-    return {};
-  }
-
   preMount() {
     this.addStyleSheet('style');
   }

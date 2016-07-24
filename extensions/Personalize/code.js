@@ -24,17 +24,48 @@ class Personalize extends Extension {
       'background.position': 'top center',
       'background.float': false,
 
-      'header.float': true,
       'header.background': 'default',
       'header.background.base': 'default',
       'header.background.stretch': true,
+      'header.float': true,
 
-      'header.logo': 'default',
+      'logo': 'default',
 
-      'header.nav': '#5A80A1',
-      'header.nav.hover': '#5EAEC7',
-      'header.nav.current': '#00FFFF'
+      'nav.hue': '207'
     };
+  }
+
+  static settings() {
+    return [
+      {type: 'title', value: 'Background'},
+      {type: 'textbox', pref: 'background.image', description: 'Background image'},
+      {type: 'textbox', pref: 'background.color', description: 'Background color'},
+      {type: 'checkbox', pref: 'background.repeat', description: 'Tile background image'},
+      {type: 'checkbox', pref: 'background.float', description: 'Float background while scrolling'},
+      {type: 'selection', pref: 'background.position', description: 'Position of background image', values: [
+        {name: 'Top Left', value: 'top left'},
+        {name: 'Top Center', value: 'top center'},
+        {name: 'Top Right', value: 'top right'},
+        {name: 'Center Left', value: 'center left'},
+        {name: 'Center Center', value: 'center center'},
+        {name: 'Center Right', value: 'center right'},
+        {name: 'Bottom Left', value: 'bottom left'},
+        {name: 'Bottom Center', value: 'bottom center'},
+        {name: 'Bottom Right', value: 'bottom right'}
+      ]},
+
+      {type: 'title', value: 'Header'},
+      {type: 'textbox', pref: 'header.background', description: 'Header image'},
+      {type: 'textbox', pref: 'header.background.base', description: 'Header image base'},
+      {type: 'checkbox', pref: 'header.background.stretch', description: 'Stretch the header background'},
+      {type: 'checkbox', pref: 'header.float', description: 'Float username and notifications when scrolling'},
+
+      {type: 'title', value: 'Logo'},
+      {type: 'textbox', pref: 'logo', description: 'Logo image'},
+
+      {type: 'title', value: 'Colors'},
+      {type: 'hue', pref: 'nav.hue', description: 'Navigation color'}
+    ];
   }
 
   preMount() {

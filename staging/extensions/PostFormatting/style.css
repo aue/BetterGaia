@@ -40,3 +40,6 @@ body textarea ~ .bg_pf > a.current {
   border-color: transparent;
   color: #FFF !important;
   cursor: default; }
+
+#qr_container .bg_pf {
+  margin: 0 13px 0 15px; }

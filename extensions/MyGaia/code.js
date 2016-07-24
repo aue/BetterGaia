@@ -17,21 +17,29 @@ class MyGaia extends Extension {
 
   static defaultPrefs() {
     return {
-      'showSuggestedContent': true,
-      'showBGChat': true
+      'suggested': true,
+      'bgchat': true
     };
+  }
+
+  static settings() {
+    return [
+      {type: 'title', value: 'General'},
+      {type: 'checkbox', pref: 'suggested', description: 'Hide suggested content'},
+      {type: 'checkbox', pref: 'bgchat', description: 'Stay up to date with BetterGaia'},
+    ];
   }
 
   preMount() {
     this.addStyleSheet('style');
 
     // Show Suggested Content
-    if (this.getPref('showSuggestedContent') === false)
+    if (this.getPref('suggested') === false)
       this.addCSS('body.mygaia #gaia_content #bd .mg_content.suggested {display: block;}');
   }
 
   mount() {
-    if (this.getPref('showBGChat') === true) {
+    if (this.getPref('bgchat') === true) {
       $('body.mygaia #gaia_content.grid_ray_davies #bd #yui-main .yui-g > .left').prepend(`<div id="bg_sidebar" class="mg_content">
         <div class="mg_sprite hd">BetterGaia <small class="bgversion">${BetterGaia.version}<small>
           <a class="bg_expand"></a>

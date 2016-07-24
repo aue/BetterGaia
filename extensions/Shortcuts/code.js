@@ -34,6 +34,12 @@ class Shortcuts extends Extension {
     };
   }
 
+  static settings() {
+    return [
+      {type: 'list', pref: 'links'}
+    ];
+  }
+
   preMount() {
     this.addStyleSheet('style');
   }

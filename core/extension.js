@@ -13,6 +13,9 @@ class Extension {
   static defaultPrefs() {
     return {};
   }
+  static settings() {
+    return {};
+  }
   static getPrefForId(key, id) {
     return BetterGaia.pref.get(key, id);
   }

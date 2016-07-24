@@ -18,10 +18,16 @@ class UserTags extends Extension {
 
   static defaultPrefs() {
     return {
-      'usertags.list': {
+      'tags': {
           //'12345': ['cat', 'He is a cat.', 'http://google.com', 2014]
       }
     };
+  }
+
+  static settings() {
+    return [
+      {type: 'list', pref: 'tags'}
+    ];
   }
 
   render() {
@@ -31,12 +37,12 @@ class UserTags extends Extension {
             var userid = '', avibox = $(this).closest('.postcontent').find('.avatar_wrapper .avi_box');
             if (avibox.find('a.avatar').length === 0) userid = avibox.find('#animated_item > object').attr('onmousedown').replace("window.location='", '').split("/")[5];
             else userid = avibox.find('a.avatar').attr('href').split('/')[5];
-            $(this).after('<div class="bgUserTag"><a target="_blank" title="Tag" userid="' + userid + '"></a><span></span></div>');
+            $(this).after('<div class="bgUserTag"><a target="_blank" title="Tag" userid="' + userid + '"></a><span title="Tag this User"></span></div>');
         }
     });
 
     // Add stored tags
-    var tags = this.getPref('usertags.list');
+    var tags = this.getPref('tags');
 
     if (!$.isEmptyObject(tags)) {
         $.each(tags, function(key, tag){
@@ -48,8 +54,8 @@ class UserTags extends Extension {
         });
     }
 
-    $('body.forums .post .user_info_wrapper .user_info .bgUserTag > span').on('click.UserTags', function(){
-        if (!$(this).closest('.post').hasClass('bgut_loaded')) {
+    $('.post .user_info_wrapper .user_info .bgUserTag > span').on('click.UserTags', function(){
+        if (!$(this).parent().hasClass('bgut_loaded')) {
             var tagvalue = '', urlvalue = $(this).closest('.postcontent').find('.post-directlink a').attr('href');
 
             if ($(this).siblings('a').text().length > 0) {
@@ -57,57 +63,77 @@ class UserTags extends Extension {
                 if ($(this).siblings('a').attr('href')) urlvalue = $(this).siblings('a').attr('href');
             }
 
-            $(this).after('<div><h2>Tag ' + $(this).closest('.user_info').find('.user_name').text() + '<a class="bgclose"></a></h2><form>\
-                <label for="bgut_tagtag">Tag</label>\
-                <input type="text" id="bgut_tagtag" maxlength="50" placeholder="Notes and comments" value="' + tagvalue + '">\
-                <label for="bgut_idtag">User ID</label>\
-                <input type="text" id="bgut_idtag" placeholder="Numerical" value="' + $(this).siblings('a').attr('userid') + '">\
-                <label for="bgut_linktag">Link</label>\
-                <input type="text" id="bgut_linktag" placeholder="URL" value="' + urlvalue + '">\
-                <p>You can manage your tags in your BetterGaia Settings.</p>\
-                <a class="bgut_save">Save</a>\
-            </form></div>');
+            $(this).after(`<div class="bgut_model">
+              <h2>Tag ${$(this).closest('.user_info').find('.user_name').text()}
+                <a class="bgclose"></a>
+              </h2>
+              <form>
+                <label for="bgut_tagtag">Tag</label>
+                <input type="text" id="bgut_tagtag" maxlength="50" placeholder="Notes and comments" value="${tagvalue}">
+                <label for="bgut_idtag">User ID</label>
+                <input type="text" id="bgut_idtag" placeholder="Numerical" value="${$(this).siblings('a').attr('userid')}">
+                <label for="bgut_linktag">Link</label>
+                <input type="text" id="bgut_linktag" placeholder="URL" value="${urlvalue}">
+                <div class="bgut_buttons">
+                  <a class="bgut_delete">Delete</a>
+                  <a class="bgut_save">Save</a>
+                </div>
+            </form></div>`);
 
-            $(this).closest('.post').addClass('bgut_loaded bgut_open');
+            $(this).parent().addClass('bgut_loaded bgut_open');
         }
-        else $(this).closest('.post').toggleClass('bgut_open');
+        else $(this).parent().toggleClass('bgut_open');
 
         $(this).parent().find('#bgut_tagtag').focus();
     });
 
-    $('body.forums .post .user_info_wrapper .user_info').on('click.UserTags', '.bgUserTag a.bgclose', function(){
-        $(this).closest('.post').removeClass('bgut_open');
+    $('.bgUserTag').on('click.UserTags', 'a.bgclose', function() {
+        $(this).closest('.bgUserTag').removeClass('bgut_open');
     });
 
     let that = this;
-    $('body.forums .post .user_info_wrapper .user_info').on('click.UserTags', '.bgUserTag a.bgut_save', function() {
-        var letsSave = false,
-        username = $(this).closest('.user_info').find('.user_name').text(),
-        tag = $(this).siblings('#bgut_tagtag'),
-        userid = $(this).siblings('#bgut_idtag'),
-        url = $(this).siblings('#bgut_linktag');
+    $('.bgUserTag').on('click.UserTags', '.bgut_save', function() {
+      var letsSave = false,
+      username = $(this).closest('.user_info').find('.user_name').text(),
+      tag = $(this).parent().siblings('#bgut_tagtag'),
+      userid = $(this).parent().siblings('#bgut_idtag'),
+      url = $(this).parent().siblings('#bgut_linktag');
 
-        // Tags
-        if (!tag.val().match(/\S/) || tag.val().length < 1) tag.prev('label').addClass('bgerror');
-        else $(this).siblings('label[for="bgut_tagtag"].bgerror').removeClass('bgerror');
+      // Tags
+      if (!tag.val().match(/\S/) || tag.val().length < 1) tag.prev('label').addClass('bgerror');
+      else $(this).siblings('label[for="bgut_tagtag"].bgerror').removeClass('bgerror');
 
-        // User ID
-        if (userid.val().length < 1 || !userid.val().match(/\S/) || !$.isNumeric(userid.val())) userid.prev('label').addClass('bgerror');
-        else $(this).siblings('label[for="bgut_idtag"].bgerror').removeClass('bgerror');
+      // User ID
+      if (userid.val().length < 1 || !userid.val().match(/\S/) || !$.isNumeric(userid.val())) userid.prev('label').addClass('bgerror');
+      else $(this).siblings('label[for="bgut_idtag"].bgerror').removeClass('bgerror');
 
-        // Check
-        if ($(this).siblings('.bgerror').length === 0) letsSave = true;
+      // Check
+      if ($(this).siblings('.bgerror').length === 0) letsSave = true;
 
-        // Save
-        if (letsSave) {
-          let tags = that.getPref('usertags.list');
-          tags[userid.val()] = [username, tag.val(), url.val(), Date.now()];
-          that.setPref('usertags.list', tags);
+      // Save
+      if (letsSave) {
+        let tags = that.getPref('tags');
+        tags[userid.val()] = [username, tag.val(), url.val(), Date.now()];
+        that.setPref('tags', tags);
 
-          $('body.forums .post .user_info_wrapper .user_info .bgUserTag a[userid="' + userid.val() + '"]').attr({href: url.val()}).text(tag.val());
-          tag.closest('.post').removeClass('bgut_loaded bgut_open');
-          tag.closest('div').remove();
-        }
+        $('.bgUserTag a[userid="' + userid.val() + '"]').attr({href: url.val()}).text(tag.val());
+        tag.closest('.bgUserTag').removeClass('bgut_loaded bgut_open');
+        tag.closest('.bgut_model').remove();
+      }
+    });
+
+    $('.bgUserTag').on('click.UserTags', '.bgut_delete', function() {
+      let userid = $(this).parent().siblings('#bgut_idtag'),
+          tags = that.getPref('tags');
+
+      if (tags.hasOwnProperty(userid.val())) {
+        delete tags[userid.val()];
+        that.setPref('tags', tags);
+        $('.bgUserTag a[userid="' + userid.val() + '"]').removeAttr('href').text('');
+      }
+
+      $(this).closest('.bgUserTag').removeClass('bgut_loaded bgut_open');
+      $(this).closest('.bgut_model').remove();
     });
   }
 

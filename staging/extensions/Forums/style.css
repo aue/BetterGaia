@@ -4,19 +4,6 @@ Forums CSS
 Copyright (c) BetterGaia
 */
 /* Background */
-html {
-  background: #12403d; }
-
-body.forums {
-  background: url("http://s.cdn.gaiaonline.com/images/global_bg/bg2.jpg") repeat-x fixed bottom left #12403d;
-  height: auto;
-  min-height: 100%; }
-
-body.forums div#content, body.app-page_forum div#content {
-  background: none;
-  width: 1140px;
-  margin: 0 auto; }
-
 /* Main Page */
 body #gaia_content.grid_billie_holiday #bd {
   width: 750px;
@@ -27,13 +14,9 @@ body #gaia_content.grid_billie_holiday #bd {
 body.forums #content, html body.app-page_forum #content {
   background: none; }
 
-body.forums > #content {
-  width: auto; }
-
 body.forums #content #content-padding {
-  width: 1140px;
   margin: 0 auto;
-  padding: 1em 0;
+  padding: 1em;
   background: none; }
 
 /* Fixes Ads */
@@ -128,12 +111,13 @@ body.forums #gaia_content.grid_billie_holiday > #bd .balloonCallout {
 
 /* Styles Topic Browsing Pages */
 body.forums #gaia_content.ss_2Columns_flexiLeft_wideRight {
-  padding: 1em 0; }
+  padding: 1em;
+  width: calc(100% - 2em) !important;
+  min-width: 0; }
 
 body.forums #gaia_content.ss_2Columns_flexiLeft_wideRight > #yui-main {
   float: none;
-  margin: 0 auto;
-  width: 1140px; }
+  margin: 0; }
 
 body.forums #gaia_content.ss_2Columns_flexiLeft_wideRight > #yui-main > .yui-b {
   margin: 0;
@@ -845,9 +829,6 @@ body.forums #content #post_container .post .postcontent .user_info_wrapper .user
   padding: 0.75em 1em;
   border-radius: 5px 0 0 0; }
 
-body.forums #content #post_container .post.bgpc_hidden .postcontent .user_info_wrapper .user_info .user_name {
-  border-radius: 5px 0 0 5px; }
-
 body.forums #content #post_container .post .postcontent .user_info_wrapper .user_info .user_name[style="color: #996633;"] {
   background-color: #996633;
   color: #FFF !important; }
@@ -1234,6 +1215,9 @@ body.forums #content #post_container .post .postcontent .message .messagecontent
 body.forums #content #post_container .post .postcontent .message .messagecontent .bg_instantbox #post_poll .ft:before {
   content: 'To make changes to your poll, edit your post.'; }
 
+body .bg_instantbox textarea.bbcodable {
+  margin-top: 0 !important; }
+
 /* Post bubble */
 body.forums #content #post_container .post .postcontent .message .messagecontent .post-bubble {
   margin: 0;
@@ -1442,8 +1426,9 @@ body.forums #pjax-overlay h3:nth-of-type(1) {
   margin: -70px 0 0 -60px;
   z-index: 1000;
   background: #0288D1;
-  padding: 0 40px 10px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25); }
+  padding: 0 38px 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  border-radius: 70px; }
 
 body.forums #pjax-overlay h3:nth-of-type(1):before {
   content: '\e030';
@@ -1464,12 +1449,13 @@ body.forums #pjax-overlay h3:nth-of-type(1):before {
 
 /* Styles Posting Page */
 body.forums #gaia_content.grid_dizzie_gillespie {
-  padding: 15px 0 5px;
-  width: 1140px !important;
-  margin: 0 auto; }
+  padding: 15px 1em 5px;
+  margin: 0;
+  width: calc(100% - 2em) !important;
+  min-width: 0; }
 
 body.forums #gaia_content.grid_dizzie_gillespie > #bd {
-  width: 1140px;
+  width: calc(1140px - 2em);
   margin: 0;
   overflow: visible; }
 
@@ -1540,7 +1526,7 @@ body.forums #content > #gaia_content #yui-main .gaia-info .rc_top_left, body.for
 /* Compose Div */
 body.forums #content > #gaia_content #yui-main .yui-b #compose_entry .yui-main .yui-b {
   margin: 0 20px 0 0;
-  width: 840px; }
+  width: calc(840px - 2em); }
 
 body.forums #content > #gaia_content #yui-main .yui-b #compose_entry #compose .form_buttons {
   position: static;
@@ -1620,8 +1606,8 @@ body.forums #content > #gaia_content #yui-main .yui-b #compose_entry #compose in
 body.forums #content > #gaia_content #yui-main .yui-b #compose_entry #compose textarea {
   float: none;
   border: 1px solid #DDD;
-  width: 830px;
-  max-width: 830px;
+  width: 100%;
+  max-width: 100%;
   height: 370px;
   box-sizing: border-box;
   padding: 3px 7px;
@@ -1634,7 +1620,7 @@ body.forums #content > #gaia_content #yui-main .yui-b #compose_entry #compose te
 /* Inline Review */
 body.forums #content > #gaia_content #yui-main .yui-b #inline_review {
   border: 0;
-  width: 840px;
+  width: calc(840px - 2em);
   margin: 20px 0 0; }
 
 body.forums #content > #gaia_content #yui-main .yui-b #inline_review .hd {

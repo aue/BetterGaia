@@ -13,6 +13,9 @@ class Extension {
   static defaultPrefs() {
     return {};
   }
+  static settings() {
+    return {};
+  }
   static getPrefForId(key, id) {
     return BetterGaia.pref.get(key, id);
   }
@@ -206,10 +209,6 @@ class BGCore extends Extension {
       homepage: 'http://www.bettergaia.com/',
       version: '1.0'
     };
-  }
-
-  static defaultPrefs() {
-    return {};
   }
 
   preMount() {
@@ -495,10 +494,6 @@ class DrawAll extends Extension {
     };
   }
 
-  static defaultPrefs() {
-    return {};
-  }
-
   preMount() {
     this.addStyleSheet('style');
   }
@@ -603,10 +598,6 @@ class ExternalLinkRedirect extends Extension {
     };
   }
 
-  static defaultPrefs() {
-    return {};
-  }
-
   preMount() {
     this.addStyleSheet('style');
   }
@@ -675,10 +666,6 @@ class FormattingToolbar extends Extension {
     };
   }
 
-  static defaultPrefs() {
-    return {};
-  }
-
   preMount() {
     this.addStyleSheet('style');
   }
@@ -697,7 +684,7 @@ class FormattingToolbar extends Extension {
       toolbar();
     }
     else {
-      document.addEventListener('load', (event) => {
+      window.addEventListener('load', (event) => {
         toolbar();
       });
     }
@@ -728,23 +715,44 @@ class Forums extends Extension {
 
   static defaultPrefs() {
     return {
-      'forum.instants': true,
-      'forum.previewThreads': true,
-      'forum.constrain': true,
-      'forum.post.optionsBottom': true,
-      'forum.post.bgContainer': false,
-      'forum.pollHide': false,
-      'forum.postOffWhite': false,
-      'forum.reduceTransparency': false,
+      'instants': true,
+      'previewThreads': true,
+      'constrain': true,
+      'pollHide': false,
+      'reduceTransparency': false,
 
-      'forum.threadHeader': '#BF7F40',
-      'forum.postHeader': '#CFE6F9'
+      'post.optionsBottom': true,
+      'post.bgContainer': false,
+      'post.postOffWhite': false,
+
+      'theme.threadHeader': '#BF7F40',
+      'theme.postHeader': '#CFE6F9'
     };
+  }
+
+  static settings() {
+    return [
+      {type: 'title', value: 'General'},
+      {type: 'checkbox', pref: 'instants', description: 'Use instant quoting and editing'},
+      {type: 'checkbox', pref: 'previewThreads', description: 'Use thread preview in thread listings'},
+      {type: 'checkbox', pref: 'constrain', description: 'Constrain width of forums'},
+      {type: 'checkbox', pref: 'pollHide', description: 'Show polls collapsed in threads'},
+      {type: 'checkbox', pref: 'reduceTransparency', description: 'Reduce transparency in forums'},
+
+      {type: 'title', value: 'Posts'},
+      {type: 'checkbox', pref: 'post.optionsBottom', description: 'Show post options at bottom of posts'},
+      {type: 'checkbox', pref: 'post.bgContainer', description: 'Show background around posts'},
+      {type: 'checkbox', pref: 'post.postOffWhite', description: 'Show posts with an off-white background'},
+
+      {type: 'title', value: 'Colors'},
+      {type: 'hue', pref: 'theme.threadHeader', description: 'Main color'},
+      {type: 'hue', pref: 'theme.postHeader', description: 'Posts color'}
+    ];
   }
 
   render() {
     // Adds Instants
-    if (this.getPref('forum.instants') === true) {
+    if (this.getPref('instants') === true) {
       $('.post .post-options ul').each(function() {
         if ($(this).find('a.post-quote').length > 0 || $(this).find('a.post-edit').length > 0)
           $(this).prepend('<div class="bg_instant"><li><a class="bg_instanttext"><span>Instant</span></a></li></div>');
@@ -788,41 +796,48 @@ class Forums extends Extension {
     this.addStyleSheet('style');
 
     // Full page forum width
-    if (this.getPref('forum.constrain') === false)
-    this.addCSS('body.forum div#content, body.forums #content #content-padding, body.app-page_forum div#content, body.forums #gaia_content.ss_2Columns_flexiLeft_wideRight > #yui-main {width: calc(100% - 25px);}');
+    if (this.getPref('constrain') === true)
+    this.addCSS(`
+      body.forums > #content {width: auto;}
+      body.forums #content #content-padding {width: 1140px; padding: 1em 0;}
+      body.forums #gaia_content.ss_2Columns_flexiLeft_wideRight {padding: 1em 0; width: 100% !important;}
+      body.forums #gaia_content.ss_2Columns_flexiLeft_wideRight > #yui-main {float: none; margin: 0 auto; width: 1140px;}
+      body.forums #gaia_content.grid_dizzie_gillespie {padding: 15px 0 5px; width: 1140px !important; margin: 0 auto;}
+      body.forums #gaia_content.grid_dizzie_gillespie > #bd {width: 1140px; margin: 0; overflow: visible;}
+    `);
 
     // Thread Header Color
-    if (this.getPref('forum.threadHeader') !== '#BF7F40')
-    this.addCSS('body.forums #gaia_content:not(.grid_billie_holiday) #forum-header .linklist, body.forums #content #content-padding > .linklist, body.forums #gaia_content .forum-list + #forum_ft_content:before {background-color: ' + this.getPref('forum.threadHeader') + ';}');
+    if (this.getPref('theme.threadHeader') !== '#BF7F40')
+    this.addCSS('body.forums #gaia_content:not(.grid_billie_holiday) #forum-header .linklist, body.forums #content #content-padding > .linklist, body.forums #gaia_content .forum-list + #forum_ft_content:before {background-color: ' + this.getPref('threadHeader') + ';}');
 
     // Poll Drop Down
-    if (this.getPref('forum.pollHide') === true)
+    if (this.getPref('pollHide') === true)
     this.addCSS('body.forums #content #content-padding > #topic_header_container #thread_poll {height: 40px; overflow: hidden;} body.forums #content #content-padding > #topic_header_container #thread_poll:hover {height: auto; overflow: visible;} body.forums #content #content-padding > #topic_header_container #thread_poll:after {content: "\\25BC"; color: rgba(0,0,0,0.35); display: block; position: absolute; top: 9px; right: 8px; font-size: 17px; text-shadow: 0 1px 1px #FFF;} body.forums #content #content-padding > #topic_header_container #thread_poll:hover:after {color: rgba(0,0,0,0.7); content: "\\25B2";}');
 
     // Post Theme
-    if (this.getPref('forum.postHeader') !== '#CFE6F9')
-    this.addCSS('body.forums #content #post_container .post .postcontent .user_info_wrapper {background-color: ' + this.getPref('forum.postHeader') + ';}');
+    if (this.getPref('theme.postHeader') !== '#CFE6F9')
+    this.addCSS('body.forums #content #post_container .post .postcontent .user_info_wrapper {background-color: ' + this.getPref('postHeader') + ';}');
 
     // Add background to posts
-    if (this.getPref('forum.post.bgContainer') === true)
+    if (this.getPref('post.bgContainer') === true)
     this.addCSS('body.forums #content #post_container .post > .postcontent {border-radius: 5px 0 0 0; background-image: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(255,255,255,0.9)); background-size: 130px 130px; background-repeat: repeat-y;} body.forums #content #post_container .post.bgpc_hidden > .postcontent {border-radius: 5px;} body.forums #content #post_container .post .postcontent .user_info_wrapper .user_info .user_name {border-radius: 0;}');
 
     // Make posts off white
-    if (this.getPref('forum.postOffWhite') === true)
+    if (this.getPref('post.postOffWhite') === true)
     this.addCSS('body.forums #content #post_container .post .postcontent .message .messagecontent .post-bubble {background-color: rgba(255,255,255,0.9);} body.forums #content #post_container .post .postcontent .message .messagecontent .post-bubble div.content, body.forums #content #post_container .post .postcontent .message .messagecontent .post-bubble .avi-speech:not(.document) .avi-speech-bd {background-color: transparent;}');
 
     // Make forums all white
-    if (this.getPref('forum.reduceTransparency') === true)
+    if (this.getPref('reduceTransparency') === true)
     this.addCSS('body.forums #content #content-padding > #topic_header_container #thread_header, body.forums #content #content-padding > #topic_header_container #thread_poll, body.forums #content #content-padding > #topic_header_container .detail-navlinks, body.forums #content #post_container .post .postcontent .message .messagecontent .post-options, body.forums #content #post_container .post .postcontent .post-signature, body.forums #content #content-padding > #navlinks_pag {background-color: #FFF;}');
 
     // Put post options on top
-    if (this.getPref('forum.post.optionsBottom') === false)
+    if (this.getPref('post.optionsBottom') === false)
     this.addCSS('body.forums #content #post_container .post .postcontent .message .messagecontent {flex-direction: column-reverse;}');
   }
 
   mount() {
     // Add thread preview
-    if (this.getPref('forum.previewThreads') === true) {
+    if (this.getPref('previewThreads') === true) {
       $("body.forums #gaia_content table.forum-list tr td.title .one-line-title .topic-icon").after('<a class="bgThreadPreview" title="View the first post of this thread">[+]</a>');
       $("body.forums #gaia_content table.forum-list tr td.title .one-line-title a.bgThreadPreview").on("click", function() {
         if ($(this).closest('tr.rowon, tr.rowoff').next('tr.bgThreadPreviewBox').length === 0) {
@@ -886,10 +901,6 @@ class Guilds extends Extension {
     };
   }
 
-  static defaultPrefs() {
-    return {};
-  }
-
   preMount() {
     this.addStyleSheet('style');
   }
@@ -920,21 +931,29 @@ class MyGaia extends Extension {
 
   static defaultPrefs() {
     return {
-      'showSuggestedContent': true,
-      'showBGChat': true
+      'suggested': true,
+      'bgchat': true
     };
+  }
+
+  static settings() {
+    return [
+      {type: 'title', value: 'General'},
+      {type: 'checkbox', pref: 'suggested', description: 'Hide suggested content'},
+      {type: 'checkbox', pref: 'bgchat', description: 'Stay up to date with BetterGaia'},
+    ];
   }
 
   preMount() {
     this.addStyleSheet('style');
 
     // Show Suggested Content
-    if (this.getPref('showSuggestedContent') === false)
+    if (this.getPref('suggested') === false)
       this.addCSS('body.mygaia #gaia_content #bd .mg_content.suggested {display: block;}');
   }
 
   mount() {
-    if (this.getPref('showBGChat') === true) {
+    if (this.getPref('bgchat') === true) {
       $('body.mygaia #gaia_content.grid_ray_davies #bd #yui-main .yui-g > .left').prepend(`<div id="bg_sidebar" class="mg_content">
         <div class="mg_sprite hd">BetterGaia <small class="bgversion">${BetterGaia.version}<small>
           <a class="bg_expand"></a>
@@ -983,17 +1002,48 @@ class Personalize extends Extension {
       'background.position': 'top center',
       'background.float': false,
 
-      'header.float': true,
       'header.background': 'default',
       'header.background.base': 'default',
       'header.background.stretch': true,
+      'header.float': true,
 
-      'header.logo': 'default',
+      'logo': 'default',
 
-      'header.nav': '#5A80A1',
-      'header.nav.hover': '#5EAEC7',
-      'header.nav.current': '#00FFFF'
+      'nav.hue': '207'
     };
+  }
+
+  static settings() {
+    return [
+      {type: 'title', value: 'Background'},
+      {type: 'textbox', pref: 'background.image', description: 'Background image'},
+      {type: 'textbox', pref: 'background.color', description: 'Background color'},
+      {type: 'checkbox', pref: 'background.repeat', description: 'Tile background image'},
+      {type: 'checkbox', pref: 'background.float', description: 'Float background while scrolling'},
+      {type: 'selection', pref: 'background.position', description: 'Position of background image', values: [
+        {name: 'Top Left', value: 'top left'},
+        {name: 'Top Center', value: 'top center'},
+        {name: 'Top Right', value: 'top right'},
+        {name: 'Center Left', value: 'center left'},
+        {name: 'Center Center', value: 'center center'},
+        {name: 'Center Right', value: 'center right'},
+        {name: 'Bottom Left', value: 'bottom left'},
+        {name: 'Bottom Center', value: 'bottom center'},
+        {name: 'Bottom Right', value: 'bottom right'}
+      ]},
+
+      {type: 'title', value: 'Header'},
+      {type: 'textbox', pref: 'header.background', description: 'Header image'},
+      {type: 'textbox', pref: 'header.background.base', description: 'Header image base'},
+      {type: 'checkbox', pref: 'header.background.stretch', description: 'Stretch the header background'},
+      {type: 'checkbox', pref: 'header.float', description: 'Float username and notifications when scrolling'},
+
+      {type: 'title', value: 'Logo'},
+      {type: 'textbox', pref: 'logo', description: 'Logo image'},
+
+      {type: 'title', value: 'Colors'},
+      {type: 'hue', pref: 'nav.hue', description: 'Navigation color'}
+    ];
   }
 
   preMount() {
@@ -1097,35 +1147,60 @@ class PostFormatting extends Extension {
       match: []
     };
 
-    if (this.getPrefForId('format.forums', 'PostFormatting') === true) info.match.push('/forum/**');
-    if (this.getPrefForId('format.guildForums', 'PostFormatting') === true) info.match.push('/guilds/posting.php*mode=@(newtopic|reply|quote)*');
-    if (this.getPrefForId('format.pms', 'PostFormatting') === true) info.match.push('/profile/privmsg.php*mode=@(post|reply|forward)*');
-    if (this.getPrefForId('format.profileComments', 'PostFormatting') === true) info.match.push('/profiles/*/*/*@(mode=addcomment)*');
+    if (this.getPrefForId('forums', 'PostFormatting') === true) info.match.push('/forum/**');
+    if (this.getPrefForId('guildForums', 'PostFormatting') === true) info.match.push('/guilds/posting.php*mode=@(newtopic|reply|quote)*');
+    if (this.getPrefForId('pms', 'PostFormatting') === true) info.match.push('/profile/privmsg.php*mode=@(post|reply|forward)*');
+    if (this.getPrefForId('profileComments', 'PostFormatting') === true) info.match.push('/profiles/*/*/*@(mode=addcomment)*');
 
     return info;
   }
 
   static defaultPrefs() {
     return {
-      'format.forums': true,
-      'format.guildForums': true,
-      'format.pms': true,
-      'format.profileComments': true,
+      'forums': true,
+      'guildForums': true,
+      'pms': true,
+      'profileComments': true,
 
-      'format.list': [
-          ['Past Lives', "%5Bcolor=#003040%5D%E2%96%8C%5B/color%5D%5Bb%5D%5Bsize=11%5D%5Bcolor=#777%5DA%20SHIP%20IS%20SAFE%20IN%20HARBOR,%5B/color%5D%5B/size%5D%5B/b%5D%0A%5Bcolor=#276B91%5D%E2%96%8C%5B/color%5D%5Bb%5D%5Bsize=11%5D%5Bcolor=#777%5DBUT%20THAT'S%20NOT%20WHAT%20SHIPS%20ARE%20FOR.%5B/color%5D%5B/size%5D%5B/b%5D%0A%0A%0A%0A%5Balign=right%5D%5Bb%5DWelcome%20to%20%5Burl=http://bettergaia.com/%5DBetterGaia%5B/url%5D.%5B/b%5D%0A%5Bi%5DNeed%20help?%20%5Burl=http://www.gaiaonline.com/forum/t.45053993/%5DSee%20our%20thread%5B/url%5D%20and%20visit%20%5Burl=http://bettergaia.com/%5DBetterGaia.com%5B/url%5D.%5B/i%5D%5B/align%5D", 0],
-          ['Godfellas', "%5Bcolor=#F08080%5D%5Bsize=20%5D%E2%9D%9D%5B/size%5D%5B/color%5D%0A%5Bb%5D%5Bcolor=#8B8878%5D%5Bsize=10%5DWHEN%20YOU%20DO%20THINGS%20RIGHT,%0APEOPLE%20WON'T%20BE%20SURE%20YOU'VE%20DONE%20ANYTHING%20AT%20ALL.%5B/size%5D%5B/color%5D%5B/b%5D%0A%5Bcolor=#F08080%5D%5Bsize=20%5D%20%E2%9D%9E%5B/size%5D%5B/color%5D%0A%0A%0A%0A%5Balign=right%5D%5Bb%5DWelcome%20to%20%5Burl=http://bettergaia.com/%5DBetterGaia%5B/url%5D.%5B/b%5D%0A%5Bi%5DNeed%20help?%20%5Burl=http://www.gaiaonline.com/forum/t.45053993/%5DSee%20our%20thread%5B/url%5D%20and%20visit%20%5Burl=http://bettergaia.com/%5DBetterGaia.com%5B/url%5D.%5B/i%5D%5B/align%5D", 0],
-          ['Alice', "%E2%99%A6%20%5Bcolor=#222222%5D%5Bsize=11%5D%5Bi%5DWhat%20road%20do%20I%20take?%5B/i%5D%5B/size%5D%5B/color%5D%0A%E2%99%A3%20%5Bb%5D%5Bcolor=brown%5D%22Where%20do%20you%20want%20to%20go?%22%5B/color%5D%5B/b%5D%0A%E2%99%A5%20%5Bcolor=#222222%5D%5Bsize=11%5D%5Bi%5DI%20don't%20know.%5B/i%5D%5B/size%5D%5B/color%5D%0A%E2%99%A0%20%5Bb%5D%5Bcolor=brown%5D%22Then,%20it%20really%20doesn't%20matter,%20does%20it?%22%5B/color%5D%5B/b%5D%0A%0A%0A%0A%5Balign=right%5D%5Bb%5DWelcome%20to%20%5Burl=http://bettergaia.com/%5DBetterGaia%5B/url%5D.%5B/b%5D%0A%5Bi%5DNeed%20help?%20%5Burl=http://www.gaiaonline.com/forum/t.45053993/%5DSee%20our%20thread%5B/url%5D%20and%20visit%20%5Burl=http://bettergaia.com/%5DBetterGaia.com%5B/url%5D.%5B/i%5D%5B/align%5D", 0],
-          ['Blank', '', 0]
+      'list': [
+        ['Blank', '', 0],
+        ['Past Lives', "%5Bcolor=#003040%5D%E2%96%8C%5B/color%5D%5Bb%5D%5Bsize=11%5D%5Bcolor=#777%5DA%20SHIP%20IS%20SAFE%20IN%20HARBOR,%5B/color%5D%5B/size%5D%5B/b%5D%0A%5Bcolor=#276B91%5D%E2%96%8C%5B/color%5D%5Bb%5D%5Bsize=11%5D%5Bcolor=#777%5DBUT%20THAT'S%20NOT%20WHAT%20SHIPS%20ARE%20FOR.%5B/color%5D%5B/size%5D%5B/b%5D%0A%0A%0A%0A%5Balign=right%5D%5Bb%5DWelcome%20to%20%5Burl=http://bettergaia.com/%5DBetterGaia%5B/url%5D.%5B/b%5D%0A%5Bi%5DNeed%20help?%20%5Burl=http://www.gaiaonline.com/forum/t.45053993/%5DSee%20our%20thread%5B/url%5D%20and%20visit%20%5Burl=http://bettergaia.com/%5DBetterGaia.com%5B/url%5D.%5B/i%5D%5B/align%5D", 0],
+        ['Godfellas', "%5Bcolor=#F08080%5D%5Bsize=20%5D%E2%9D%9D%5B/size%5D%5B/color%5D%0A%5Bb%5D%5Bcolor=#8B8878%5D%5Bsize=10%5DWHEN%20YOU%20DO%20THINGS%20RIGHT,%0APEOPLE%20WON'T%20BE%20SURE%20YOU'VE%20DONE%20ANYTHING%20AT%20ALL.%5B/size%5D%5B/color%5D%5B/b%5D%0A%5Bcolor=#F08080%5D%5Bsize=20%5D%20%E2%9D%9E%5B/size%5D%5B/color%5D%0A%0A%0A%0A%5Balign=right%5D%5Bb%5DWelcome%20to%20%5Burl=http://bettergaia.com/%5DBetterGaia%5B/url%5D.%5B/b%5D%0A%5Bi%5DNeed%20help?%20%5Burl=http://www.gaiaonline.com/forum/t.45053993/%5DSee%20our%20thread%5B/url%5D%20and%20visit%20%5Burl=http://bettergaia.com/%5DBetterGaia.com%5B/url%5D.%5B/i%5D%5B/align%5D", 0],
+        ['Alice', "%E2%99%A6%20%5Bcolor=#222222%5D%5Bsize=11%5D%5Bi%5DWhat%20road%20do%20I%20take?%5B/i%5D%5B/size%5D%5B/color%5D%0A%E2%99%A3%20%5Bb%5D%5Bcolor=brown%5D%22Where%20do%20you%20want%20to%20go?%22%5B/color%5D%5B/b%5D%0A%E2%99%A5%20%5Bcolor=#222222%5D%5Bsize=11%5D%5Bi%5DI%20don't%20know.%5B/i%5D%5B/size%5D%5B/color%5D%0A%E2%99%A0%20%5Bb%5D%5Bcolor=brown%5D%22Then,%20it%20really%20doesn't%20matter,%20does%20it?%22%5B/color%5D%5B/b%5D%0A%0A%0A%0A%5Balign=right%5D%5Bb%5DWelcome%20to%20%5Burl=http://bettergaia.com/%5DBetterGaia%5B/url%5D.%5B/b%5D%0A%5Bi%5DNeed%20help?%20%5Burl=http://www.gaiaonline.com/forum/t.45053993/%5DSee%20our%20thread%5B/url%5D%20and%20visit%20%5Burl=http://bettergaia.com/%5DBetterGaia.com%5B/url%5D.%5B/i%5D%5B/align%5D", 0]
       ],
-      'format.list.recent': 'default',
-      'format.list.useRecent': true,
+      'list.recent': 'default',
+      'list.useRecent': true,
 
-      'format.quote.removeFormatting': false,
-      'format.quote.spoilerWrap': false,
-      'format.quote.endOfFormat': false,
-      'format.quote.rangeNumber': '2'
+      'quote.removeFormatting': false,
+      'quote.spoilerWrap': false,
+      'quote.endOfFormat': false,
+      'quote.rangeNumber': '2'
     };
+  }
+
+  static settings() {
+    return [
+      {type: 'list', pref: 'list'},
+      {type: 'title', value: 'General'},
+      {type: 'checkbox', pref: 'list.useRecent', description: 'Set the format last used as the default format'},
+      {type: 'title', value: 'When quoting a post'},
+      {type: 'checkbox', pref: 'quote.endOfFormat', description: 'Place format before the post quoted'},
+      {type: 'checkbox', pref: 'quote.removeFormatting', description: 'Remove BBCode from posts quoted'},
+      {type: 'checkbox', pref: 'quote.spoilerWrap', description: 'Wrap posts quoted in a spoiler tag'},
+      {type: 'selection', pref: 'quote.rangeNumber', description: 'Seperate format and the quote with', values: [
+        {name: 'No lines', value: 0},
+        {name: '1 line', value: 1},
+        {name: '2 lines', value: 2},
+        {name: '3 lines', value: 3},
+        {name: '4 lines', value: 4},
+        {name: '5 lines', value: 5}
+      ]},
+      {type: 'title', value: 'Use in'},
+      {type: 'checkbox', pref: 'forums', description: 'Forums'},
+      {type: 'checkbox', pref: 'guildForums', description: 'Guilds'},
+      {type: 'checkbox', pref: 'pms', description: 'Private Messages'},
+      {type: 'checkbox', pref: 'profileComments', description: 'Profile Comments'}
+    ];
   }
 
   repeatText(text, n) {
@@ -1148,7 +1223,7 @@ class PostFormatting extends Extension {
 
     // Save
     this.toolbarHTML = toolbarTemplate({
-      formats: this.getPref('format.list')
+      formats: this.getPref('list')
     });
   }
 
@@ -1158,7 +1233,7 @@ class PostFormatting extends Extension {
 
     // Add necessary elements
     $(textbox).add('select[name=basic_type]:not([data-identity])').attr('data-identity', identity);
-    if ($.isEmptyObject(this.getPref('format.list'))) return; // Check if list is empty
+    if ($.isEmptyObject(this.getPref('list'))) return; // Check if list is empty
     $(this.toolbarHTML)
       .attr('data-identity', identity)
       .insertAfter(textbox)
@@ -1168,11 +1243,11 @@ class PostFormatting extends Extension {
 
     // Find default/current format to apply
     let format = '', postStyle = 0;
-    let recentFormat = this.getPref('format.list.recent');
+    let recentFormat = this.getPref('list.recent');
     let recent = document.querySelector(`.bg_pf[data-identity="${identity}"] a[data-name="${recentFormat}"]`);
 
     if (recentFormat !== 'default'
-      && this.getPref('format.list.useRecent') === true
+      && this.getPref('list.useRecent') === true
       && recent !== null
     ) {
       recent.classList.add('current');
@@ -1192,20 +1267,20 @@ class PostFormatting extends Extension {
 
     // Quoting
     if (textbox.value.substr(0,8) == '[quote="' && textbox.value.replace(/\n\s*/g,'').substr(-8) == '[/quote]') {
-      if (this.getPref('format.quote.removeFormatting') === true)
+      if (this.getPref('quote.removeFormatting') === true)
         textbox.value = textbox.value.replace(/\[\/?(?:b|i|u|strike|code|url|color|size|align|img|imgleft|imgright|imgmap|youtube|spoiler).*?\]/img, '');
 
-      if (this.getPref('format.quote.spoilerWrap') === true) {
+      if (this.getPref('quote.spoilerWrap') === true) {
         let newPost = textbox.value.slice(0,-8);
         newPost += '[/spoiler][/quote]';
         newPost = newPost.replace(/\[quote=(.+?)\]/, '[quote=$1][spoiler]');
         textbox.value = newPost;
       }
 
-      if (this.getPref('format.quote.endOfFormat') === true)
-        textbox.value = decodeURI(format) + '\n' + this.repeatText('\n', this.getPref('format.quote.rangeNumber')) + textbox.value;
+      if (this.getPref('quote.endOfFormat') === true)
+        textbox.value = decodeURI(format) + '\n' + this.repeatText('\n', this.getPref('quote.rangeNumber')) + textbox.value;
       else
-        textbox.value = textbox.value + '\n' + this.repeatText('\n', this.getPref('format.quote.rangeNumber')) + decodeURI(format);
+        textbox.value = textbox.value + '\n' + this.repeatText('\n', this.getPref('quote.rangeNumber')) + decodeURI(format);
     }
 
     // Normal posting
@@ -1235,14 +1310,14 @@ class PostFormatting extends Extension {
       if (encodedTextboxValue.indexOf(currentButton.getAttribute('data-code')) !== -1) {
         let content = encodedTextboxValue
           .replace(currentButton.getAttribute('data-code'), '')
-          .replace('%0A' + this.repeatText('%0A', this.getPref('format.quote.rangeNumber')), '');
+          .replace('%0A' + this.repeatText('%0A', this.getPref('quote.rangeNumber')), '');
         textbox.value = decodeURI(content);
       }
 
-      if (this.getPref('format.quote.endOfFormat') === true)
-        textbox.value = decodeURI(formatCode) + '\n' + this.repeatText('\n', this.getPref('format.quote.rangeNumber')) + textbox.value;
+      if (this.getPref('quote.endOfFormat') === true)
+        textbox.value = decodeURI(formatCode) + '\n' + this.repeatText('\n', this.getPref('quote.rangeNumber')) + textbox.value;
       else
-        textbox.value = textbox.value + '\n' + this.repeatText('\n', this.getPref('format.quote.rangeNumber')) + decodeURI(formatCode);
+        textbox.value = textbox.value + '\n' + this.repeatText('\n', this.getPref('quote.rangeNumber')) + decodeURI(formatCode);
     }
 
     // Apply post style
@@ -1254,9 +1329,9 @@ class PostFormatting extends Extension {
     button.classList.add('current');
 
     if (button.previousElementSibling !== null)
-      this.setPref('format.list.recent', formatName);
+      this.setPref('list.recent', formatName);
     else
-      this.removePref('format.list.recent');
+      this.removePref('list.recent');
   }
 
   preMount() {
@@ -1269,6 +1344,14 @@ class PostFormatting extends Extension {
     // Run formatter
     $('textarea[name="message"], textarea[name="comment"]').each((index, el) => {
       this.applyToolbar(el);
+    });
+
+    $('.qa_quickreply').on('click.PostFormatting', () => {
+      setTimeout(() => {
+        $('#qr_container #qr_text').removeAttr('data-identity');
+        $('#qr_container .bg_pf').remove();
+        this.applyToolbar(document.querySelector('#qr_container #qr_text'));
+      }, 100);
     });
   }
 
@@ -1293,10 +1376,6 @@ class PrivateMessages extends Extension {
       version: '1.0',
       match: ['/profile/privmsg.php**']
     };
-  }
-
-  static defaultPrefs() {
-    return {};
   }
 
   preMount() {
@@ -1402,6 +1481,12 @@ class Shortcuts extends Extension {
     };
   }
 
+  static settings() {
+    return [
+      {type: 'list', pref: 'links'}
+    ];
+  }
+
   preMount() {
     this.addStyleSheet('style');
   }
@@ -1446,10 +1531,16 @@ class UserTags extends Extension {
 
   static defaultPrefs() {
     return {
-      'usertags.list': {
+      'tags': {
           //'12345': ['cat', 'He is a cat.', 'http://google.com', 2014]
       }
     };
+  }
+
+  static settings() {
+    return [
+      {type: 'list', pref: 'tags'}
+    ];
   }
 
   render() {
@@ -1459,12 +1550,12 @@ class UserTags extends Extension {
             var userid = '', avibox = $(this).closest('.postcontent').find('.avatar_wrapper .avi_box');
             if (avibox.find('a.avatar').length === 0) userid = avibox.find('#animated_item > object').attr('onmousedown').replace("window.location='", '').split("/")[5];
             else userid = avibox.find('a.avatar').attr('href').split('/')[5];
-            $(this).after('<div class="bgUserTag"><a target="_blank" title="Tag" userid="' + userid + '"></a><span></span></div>');
+            $(this).after('<div class="bgUserTag"><a target="_blank" title="Tag" userid="' + userid + '"></a><span title="Tag this User"></span></div>');
         }
     });
 
     // Add stored tags
-    var tags = this.getPref('usertags.list');
+    var tags = this.getPref('tags');
 
     if (!$.isEmptyObject(tags)) {
         $.each(tags, function(key, tag){
@@ -1476,8 +1567,8 @@ class UserTags extends Extension {
         });
     }
 
-    $('body.forums .post .user_info_wrapper .user_info .bgUserTag > span').on('click.UserTags', function(){
-        if (!$(this).closest('.post').hasClass('bgut_loaded')) {
+    $('.post .user_info_wrapper .user_info .bgUserTag > span').on('click.UserTags', function(){
+        if (!$(this).parent().hasClass('bgut_loaded')) {
             var tagvalue = '', urlvalue = $(this).closest('.postcontent').find('.post-directlink a').attr('href');
 
             if ($(this).siblings('a').text().length > 0) {
@@ -1485,57 +1576,77 @@ class UserTags extends Extension {
                 if ($(this).siblings('a').attr('href')) urlvalue = $(this).siblings('a').attr('href');
             }
 
-            $(this).after('<div><h2>Tag ' + $(this).closest('.user_info').find('.user_name').text() + '<a class="bgclose"></a></h2><form>\
-                <label for="bgut_tagtag">Tag</label>\
-                <input type="text" id="bgut_tagtag" maxlength="50" placeholder="Notes and comments" value="' + tagvalue + '">\
-                <label for="bgut_idtag">User ID</label>\
-                <input type="text" id="bgut_idtag" placeholder="Numerical" value="' + $(this).siblings('a').attr('userid') + '">\
-                <label for="bgut_linktag">Link</label>\
-                <input type="text" id="bgut_linktag" placeholder="URL" value="' + urlvalue + '">\
-                <p>You can manage your tags in your BetterGaia Settings.</p>\
-                <a class="bgut_save">Save</a>\
-            </form></div>');
+            $(this).after(`<div class="bgut_model">
+              <h2>Tag ${$(this).closest('.user_info').find('.user_name').text()}
+                <a class="bgclose"></a>
+              </h2>
+              <form>
+                <label for="bgut_tagtag">Tag</label>
+                <input type="text" id="bgut_tagtag" maxlength="50" placeholder="Notes and comments" value="${tagvalue}">
+                <label for="bgut_idtag">User ID</label>
+                <input type="text" id="bgut_idtag" placeholder="Numerical" value="${$(this).siblings('a').attr('userid')}">
+                <label for="bgut_linktag">Link</label>
+                <input type="text" id="bgut_linktag" placeholder="URL" value="${urlvalue}">
+                <div class="bgut_buttons">
+                  <a class="bgut_delete">Delete</a>
+                  <a class="bgut_save">Save</a>
+                </div>
+            </form></div>`);
 
-            $(this).closest('.post').addClass('bgut_loaded bgut_open');
+            $(this).parent().addClass('bgut_loaded bgut_open');
         }
-        else $(this).closest('.post').toggleClass('bgut_open');
+        else $(this).parent().toggleClass('bgut_open');
 
         $(this).parent().find('#bgut_tagtag').focus();
     });
 
-    $('body.forums .post .user_info_wrapper .user_info').on('click.UserTags', '.bgUserTag a.bgclose', function(){
-        $(this).closest('.post').removeClass('bgut_open');
+    $('.bgUserTag').on('click.UserTags', 'a.bgclose', function() {
+        $(this).closest('.bgUserTag').removeClass('bgut_open');
     });
 
     let that = this;
-    $('body.forums .post .user_info_wrapper .user_info').on('click.UserTags', '.bgUserTag a.bgut_save', function() {
-        var letsSave = false,
-        username = $(this).closest('.user_info').find('.user_name').text(),
-        tag = $(this).siblings('#bgut_tagtag'),
-        userid = $(this).siblings('#bgut_idtag'),
-        url = $(this).siblings('#bgut_linktag');
+    $('.bgUserTag').on('click.UserTags', '.bgut_save', function() {
+      var letsSave = false,
+      username = $(this).closest('.user_info').find('.user_name').text(),
+      tag = $(this).parent().siblings('#bgut_tagtag'),
+      userid = $(this).parent().siblings('#bgut_idtag'),
+      url = $(this).parent().siblings('#bgut_linktag');
 
-        // Tags
-        if (!tag.val().match(/\S/) || tag.val().length < 1) tag.prev('label').addClass('bgerror');
-        else $(this).siblings('label[for="bgut_tagtag"].bgerror').removeClass('bgerror');
+      // Tags
+      if (!tag.val().match(/\S/) || tag.val().length < 1) tag.prev('label').addClass('bgerror');
+      else $(this).siblings('label[for="bgut_tagtag"].bgerror').removeClass('bgerror');
 
-        // User ID
-        if (userid.val().length < 1 || !userid.val().match(/\S/) || !$.isNumeric(userid.val())) userid.prev('label').addClass('bgerror');
-        else $(this).siblings('label[for="bgut_idtag"].bgerror').removeClass('bgerror');
+      // User ID
+      if (userid.val().length < 1 || !userid.val().match(/\S/) || !$.isNumeric(userid.val())) userid.prev('label').addClass('bgerror');
+      else $(this).siblings('label[for="bgut_idtag"].bgerror').removeClass('bgerror');
 
-        // Check
-        if ($(this).siblings('.bgerror').length === 0) letsSave = true;
+      // Check
+      if ($(this).siblings('.bgerror').length === 0) letsSave = true;
 
-        // Save
-        if (letsSave) {
-          let tags = that.getPref('usertags.list');
-          tags[userid.val()] = [username, tag.val(), url.val(), Date.now()];
-          that.setPref('usertags.list', tags);
+      // Save
+      if (letsSave) {
+        let tags = that.getPref('tags');
+        tags[userid.val()] = [username, tag.val(), url.val(), Date.now()];
+        that.setPref('tags', tags);
 
-          $('body.forums .post .user_info_wrapper .user_info .bgUserTag a[userid="' + userid.val() + '"]').attr({href: url.val()}).text(tag.val());
-          tag.closest('.post').removeClass('bgut_loaded bgut_open');
-          tag.closest('div').remove();
-        }
+        $('.bgUserTag a[userid="' + userid.val() + '"]').attr({href: url.val()}).text(tag.val());
+        tag.closest('.bgUserTag').removeClass('bgut_loaded bgut_open');
+        tag.closest('.bgut_model').remove();
+      }
+    });
+
+    $('.bgUserTag').on('click.UserTags', '.bgut_delete', function() {
+      let userid = $(this).parent().siblings('#bgut_idtag'),
+          tags = that.getPref('tags');
+
+      if (tags.hasOwnProperty(userid.val())) {
+        delete tags[userid.val()];
+        that.setPref('tags', tags);
+        $('.bgUserTag a[userid="' + userid.val() + '"]').removeAttr('href').text('');
+      }
+
+      $(this).closest('.bgUserTag').removeClass('bgut_loaded bgut_open');
+      $(this).closest('.bgut_model').remove();
     });
   }
 

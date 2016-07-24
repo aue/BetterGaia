@@ -14,10 +14,6 @@ class FormattingToolbar extends Extension {
     };
   }
 
-  static defaultPrefs() {
-    return {};
-  }
-
   preMount() {
     this.addStyleSheet('style');
   }
@@ -36,7 +32,7 @@ class FormattingToolbar extends Extension {
       toolbar();
     }
     else {
-      document.addEventListener('load', (event) => {
+      window.addEventListener('load', (event) => {
         toolbar();
       });
     }

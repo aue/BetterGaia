@@ -14,10 +14,6 @@ class BGCore extends Extension {
     };
   }
 
-  static defaultPrefs() {
-    return {};
-  }
-
   preMount() {
     this.addStyleSheet('font');
     this.addStyleSheet('style');

@@ -15,10 +15,6 @@ class ExternalLinkRedirect extends Extension {
     };
   }
 
-  static defaultPrefs() {
-    return {};
-  }
-
   preMount() {
     this.addStyleSheet('style');
   }

@@ -24,6 +24,7 @@ body #editor #format_controls {
   background: -webkit-linear-gradient(top, #FFF, #F8F8F8) #F8F8F8;
   background: linear-gradient(to bottom, #FFF, #F8F8F8) #F8F8F8;
   border: 1px solid #DDD;
+  border-width: 1px 1px 0;
   border-radius: 5px 5px 0 0;
   box-sizing: border-box; }
 

@@ -1,16 +1,29 @@
 /* Stretch Page, Remove BG */
 body > #content {
-  width: 1140px;
   border: none;
   background: none;
   margin-left: auto;
   margin-right: auto; }
+
+body:not(.forums) > #content {
+  width: 1140px; }
+
+body.forums #gaia_content.grid_dizzie_gillespie > #bd {
+  margin: 0 auto; }
 
 body #gaia_content, body #gaia_content.grid_madonna, body #gaia_content.grid_billie_holiday {
   background: none; }
 
 body #gaia_content.grid_billie_holiday #menu_shadow {
   display: none; }
+
+html {
+  background: #12403d; }
+
+body.guilds, body.forums {
+  background: url("http://s.cdn.gaiaonline.com/images/global_bg/bg2.jpg") repeat-x fixed bottom left #12403d;
+  height: auto;
+  min-height: 100%; }
 
 /* Reset Page Background */
 body.app-page_legal #content, body.app-page_giftgiving.mygaia div#content, body.app-page_exchange.shopping #content, body.app-page_games_fishing #content, body.contribute.givetogaia.app-page_donate #content, body.orderhistory #content, body.community.app-page_community #gaia_content.grid_paul_mccartney {
@@ -85,7 +98,6 @@ body #gaia_header #user_account .avatarName {
   overflow: hidden; }
 
 body #gaia_header #user_account .avatarName span {
-  width: 100%;
   font-size: 14px;
   display: inline-block;
   margin-right: -4px;
