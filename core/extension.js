@@ -19,6 +19,12 @@ class Extension {
   static getPrefForId(key, id) {
     return BetterGaia.pref.get(key, id);
   }
+  static getDefaultPrefForId(key, id) {
+    return BetterGaia.pref.getDefault(key, id);
+  }
+  static setPrefForId(key, value, id) {
+    BetterGaia.pref.set(key, value, id);
+  }
 
   getPref(key) {
     return BetterGaia.pref.get(key, this.id);

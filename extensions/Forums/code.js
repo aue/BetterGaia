@@ -27,8 +27,8 @@ class Forums extends Extension {
       'post.bgContainer': false,
       'post.postOffWhite': false,
 
-      'theme.threadHeader': '#BF7F40',
-      'theme.postHeader': '#CFE6F9'
+      'theme.threadHeader': '30',
+      'theme.postHeader': '207'
     };
   }
 
@@ -108,21 +108,17 @@ class Forums extends Extension {
       body.forums #gaia_content.grid_dizzie_gillespie > #bd {width: 1140px; margin: 0; overflow: visible;}
     `);
 
-    // Thread Header Color
-    if (this.getPref('theme.threadHeader') !== '#BF7F40')
-    this.addCSS('body.forums #gaia_content:not(.grid_billie_holiday) #forum-header .linklist, body.forums #content #content-padding > .linklist, body.forums #gaia_content .forum-list + #forum_ft_content:before {background-color: ' + this.getPref('threadHeader') + ';}');
-
     // Poll Drop Down
     if (this.getPref('pollHide') === true)
     this.addCSS('body.forums #content #content-padding > #topic_header_container #thread_poll {height: 40px; overflow: hidden;} body.forums #content #content-padding > #topic_header_container #thread_poll:hover {height: auto; overflow: visible;} body.forums #content #content-padding > #topic_header_container #thread_poll:after {content: "\\25BC"; color: rgba(0,0,0,0.35); display: block; position: absolute; top: 9px; right: 8px; font-size: 17px; text-shadow: 0 1px 1px #FFF;} body.forums #content #content-padding > #topic_header_container #thread_poll:hover:after {color: rgba(0,0,0,0.7); content: "\\25B2";}');
 
-    // Post Theme
-    if (this.getPref('theme.postHeader') !== '#CFE6F9')
-    this.addCSS('body.forums #content #post_container .post .postcontent .user_info_wrapper {background-color: ' + this.getPref('postHeader') + ';}');
-
     // Add background to posts
     if (this.getPref('post.bgContainer') === true)
-    this.addCSS('body.forums #content #post_container .post > .postcontent {border-radius: 5px 0 0 0; background-image: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(255,255,255,0.9)); background-size: 130px 130px; background-repeat: repeat-y;} body.forums #content #post_container .post.bgpc_hidden > .postcontent {border-radius: 5px;} body.forums #content #post_container .post .postcontent .user_info_wrapper .user_info .user_name {border-radius: 0;}');
+    this.addCSS(`
+      body.forums #content #post_container .post > .postcontent {border-radius: 5px 0 0 0; background-image: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(255,255,255,0.9)); background-size: 130px 130px; background-repeat: repeat-y;}
+      body.forums #content #post_container .post.bgpc_hidden > .postcontent {border-radius: 5px;}
+      body.forums #content #post_container .post .postcontent .user_info_wrapper .user_info .user_name, body.forums #content #post_container .post .postcontent .user_info_wrapper {border-top-left-radius: 0;}
+    `);
 
     // Make posts off white
     if (this.getPref('post.postOffWhite') === true)
@@ -135,6 +131,14 @@ class Forums extends Extension {
     // Put post options on top
     if (this.getPref('post.optionsBottom') === false)
     this.addCSS('body.forums #content #post_container .post .postcontent .message .messagecontent {flex-direction: column-reverse;}');
+
+    // Thread Header Color
+    if (this.getPref('theme.threadHeader') != '30')
+    this.addCSS(`body.forums #gaia_content:not(.grid_billie_holiday) #forum-header .linklist, body.forums #content #content-padding > .linklist, body.forums #gaia_content .forum-list + #forum_ft_content:before {background-color: hsl(${this.getPref('theme.threadHeader')}, 50%, 42%);}`);
+
+    // Post Theme
+    if (this.getPref('theme.postHeader') != '207')
+    this.addCSS(`body.forums #content #post_container .post .postcontent .user_info_wrapper {background-color: hsl(${this.getPref('theme.postHeader')}, 78%, 89%);}`);
   }
 
   mount() {

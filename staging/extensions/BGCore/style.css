@@ -432,7 +432,25 @@ body {
   float: right;
   width: 8em; }
 
-#bg_settings .bgs_page.myextensions .details .detail .settings .option.hue input {
+#bg_settings .bgs_page.myextensions .details .detail .settings .option.hue input[type="button"] {
+  margin-left: 0.5em; }
+
+#bg_settings .bgs_page.myextensions .details .detail .settings .option.hue div {
+  float: right; }
+
+#bg_settings .bgs_page.myextensions .details .detail .settings .option.hue div .hg {
+  width: 12em;
+  height: 0.75em;
+  margin-bottom: 0.25em;
+  background: -webkit-linear-gradient(left, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
+  background: linear-gradient(to right, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
+  border-radius: 1em;
+  display: block; }
+
+#bg_settings .bgs_page.myextensions .details .detail .settings .option.hue div input[type="range"] {
+  width: 12em; }
+
+#bg_settings .bgs_page.myextensions .details .detail .settings .option.color input {
   float: right; }
 
 #bg_settings .bgs_page.extensions {

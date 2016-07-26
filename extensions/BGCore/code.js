@@ -119,7 +119,7 @@ class BGCore extends Extension {
         {{#if_eq type "checkbox"}}
         <div class="option checkbox">
           <label for="{{@root.info.id}}.{{pref}}">
-            <input id="{{@root.info.id}}.{{pref}}" data-pref="{{pref}}" type="checkbox"> {{description}}
+            <input id="{{@root.info.id}}.{{pref}}" data-pref="{{pref}}" data-extensionid="{{@root.info.id}}" type="checkbox"> {{description}}
           </label>
         </div>
         {{/if_eq}}
@@ -127,7 +127,7 @@ class BGCore extends Extension {
         {{#if_eq type "selection"}}
         <div class="option selection">
           <label for="{{@root.info.id}}.{{pref}}">{{description}}</label>
-          <select id="{{@root.info.id}}.{{pref}}" data-pref="{{pref}}">
+          <select id="{{@root.info.id}}.{{pref}}" data-pref="{{pref}}" data-extensionid="{{@root.info.id}}">
             {{#each values}}
             <option value="{{value}}">{{name}}</option>
             {{/each}}
@@ -138,21 +138,32 @@ class BGCore extends Extension {
         {{#if_eq type "hue"}}
         <div class="option hue">
           <label for="{{@root.info.id}}.{{pref}}">{{description}}</label>
-          <input id="{{@root.info.id}}.{{pref}}" data-pref="{{pref}}" type="color">
+          <input data-reset-pref="{{pref}}" data-extensionid="{{@root.info.id}}" type="button" value="Set to default">
+          <div>
+            <span class="hg"></span>
+            <input id="{{@root.info.id}}.{{pref}}" data-pref="{{pref}}" data-extensionid="{{@root.info.id}}" type="range" min="0" max="360">
+          </div>
+        </div>
+        {{/if_eq}}
+
+        {{#if_eq type "color"}}
+        <div class="option color">
+          <label for="{{@root.info.id}}.{{pref}}">{{description}}</label>
+          <input id="{{@root.info.id}}.{{pref}}" data-pref="{{pref}}" data-extensionid="{{@root.info.id}}" type="color">
         </div>
         {{/if_eq}}
 
         {{#if_eq type "textbox"}}
-        <div class="option textbox">
-          <label for="{{@root.info.id}}.{{pref}}"{{#if hidden}} hidden{{/if}}>{{description}}</label>
-          <input id="{{@root.info.id}}.{{pref}}" data-pref="{{pref}}" type="text" placeholder="{{description}}"{{#if hidden}} hidden{{/if}}>
+        <div class="option textbox{{#if hidden}} hidden{{/if}}">
+          <label for="{{@root.info.id}}.{{pref}}">{{description}}</label>
+          <input id="{{@root.info.id}}.{{pref}}" data-pref="{{pref}}" data-extensionid="{{@root.info.id}}" type="text" placeholder="{{description}}">
         </div>
         {{/if_eq}}
 
         {{#if_eq type "list"}}
         <div class="option list">
           <label for="{{@root.info.id}}.{{pref}}"{{#if hidden}} hidden{{/if}}>{{pref}}</label>
-          <input id="{{@root.info.id}}.{{pref}}" data-pref="{{pref}}" type="text" placeholder="{{pref}}"{{#if hidden}} hidden{{/if}}>
+          <input id="{{@root.info.id}}.{{pref}}" data-pref="{{pref}}" data-extensionid="{{@root.info.id}}" type="text" placeholder="{{pref}}"{{#if hidden}} hidden{{/if}}>
         </div>
         {{/if_eq}}
 
@@ -227,7 +238,7 @@ class BGCore extends Extension {
         })).appendTo('#bg_settings .myextensions .details');
 
         // Prefill values for options
-        detail.find('.settings input[type="text"][data-pref], .settings input[type="checkbox"][data-pref], .settings select[data-pref]').each((i, option) => {
+        detail.find('.settings *[data-pref]').each((i, option) => {
           let pref = option.getAttribute('data-pref'),
               value = Extension.getPrefForId(pref, extensionId);
 
@@ -249,6 +260,60 @@ class BGCore extends Extension {
 
       document.querySelector('#bg_settings .myextensions .details').scrollTop = 0;
       detail.addClass('bgs_active');
+    });
+
+    // Save prefs on change
+    $('#bg_settings .myextensions .details').on('change', '.detail.bgs_active *[data-pref]', (event) => {
+      let optionTag = event.currentTarget,
+          extensionId = optionTag.getAttribute('data-extensionid'),
+          pref = optionTag.getAttribute('data-pref'),
+          value = (optionTag.getAttribute('type') === 'checkbox')? optionTag.checked : optionTag.value;
+
+      // Preview
+      if (extensionId === 'Personalize' && pref === 'nav.hue') {
+        let hue = parseInt(value, 10);
+        hue -= 207;
+        if (hue < 0) hue += 360;
+        this.addCSS(`
+          #gaia_menu_bar, #gaia_header #user_account {-webkit-filter: hue-rotate(${hue}deg) !important; filter: hue-rotate(${hue}deg) !important;}
+          #gaia_menu_bar .main_panel_container .panel-img, #gaia_menu_bar .main_panel_container .new-img, #gaia_menu_bar .main_panel_container .panel-more .arrow, #gaia_menu_bar #menu_search, #gaia_menu_bar .bg_settings_link_msg {-webkit-filter: hue-rotate(-${hue}deg) !important; filter: hue-rotate(-${hue}deg) !important;}
+        `);
+      }
+
+      /* Preview
+      else if (pref == 'background.repeat') {
+        if (save[pref] === false) $('#preview').css('background-repeat', 'no-repeat');
+        else $('#preview').css('background-repeat', 'repeat');
+      }
+      else if (pref == 'background.position') $('#preview').css('background-position', save[pref]);
+      else if (pref == 'background.color') $('#preview').css('background-color', save[pref]);
+      else if (pref == 'header.nav') $('#preview .nav, #preview .header .wrap .username').css('background-color', save[pref]);
+      else if (pref == 'header.nav.hover') $('#preview .nav a:nth-of-type(3)').css('background-image', 'radial-gradient(ellipse at bottom center, ' + save[pref] + ', transparent 95%)');
+      else if (pref == 'header.nav.current') $('#preview .nav a:first-child').css('background-image', 'radial-gradient(ellipse at bottom center, ' + save[pref] + ', transparent 95%)');
+      else if (pref == 'forum.threadHeader') $('#preview .body .linklist').css('background-color', save[pref]);
+      else if (pref == 'forum.postHeader') $('#preview .body .username').css('background-color', save[pref]);*/
+
+      // Save to storage
+      Extension.setPrefForId(pref, value, extensionId);
+    });
+
+    // Reset button functionality
+    $('#bg_settings .myextensions .details').on('click', '.detail.bgs_active input[data-reset-pref]', (event) => {
+      let buttonTag = event.currentTarget,
+          extensionId = buttonTag.getAttribute('data-extensionid'),
+          pref = buttonTag.getAttribute('data-reset-pref'),
+          optionTag = buttonTag.parentNode.querySelector(`*[data-pref="${pref}"]`);
+
+      // Get default value from storage
+      let value = Extension.getDefaultPrefForId(pref, extensionId);
+
+      // Set option
+      if (optionTag.getAttribute('type') === 'checkbox')
+        optionTag.checked = value;
+      else
+        optionTag.value = value;
+
+      $(optionTag).trigger('change');
     });
 
     // Disable active extension

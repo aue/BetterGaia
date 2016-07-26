@@ -12,7 +12,7 @@ class DrawAll extends Extension {
       author: 'The BetterGaia Team',
       homepage: 'http://www.bettergaia.com/',
       version: '1.0',
-      match: ['/', '/@(mygaia|market|forum|world|games|payments|gofusion)/']
+      match: ['/', '/?login_success=*', '/@(mygaia|market|forum|world|games|payments|gofusion)/']
     };
   }
 

@@ -19,6 +19,12 @@ class Extension {
   static getPrefForId(key, id) {
     return BetterGaia.pref.get(key, id);
   }
+  static getDefaultPrefForId(key, id) {
+    return BetterGaia.pref.getDefault(key, id);
+  }
+  static setPrefForId(key, value, id) {
+    BetterGaia.pref.set(key, value, id);
+  }
 
   getPref(key) {
     return BetterGaia.pref.get(key, this.id);
@@ -316,7 +322,7 @@ class BGCore extends Extension {
         {{#if_eq type "checkbox"}}
         <div class="option checkbox">
           <label for="{{@root.info.id}}.{{pref}}">
-            <input id="{{@root.info.id}}.{{pref}}" data-pref="{{pref}}" type="checkbox"> {{description}}
+            <input id="{{@root.info.id}}.{{pref}}" data-pref="{{pref}}" data-extensionid="{{@root.info.id}}" type="checkbox"> {{description}}
           </label>
         </div>
         {{/if_eq}}
@@ -324,7 +330,7 @@ class BGCore extends Extension {
         {{#if_eq type "selection"}}
         <div class="option selection">
           <label for="{{@root.info.id}}.{{pref}}">{{description}}</label>
-          <select id="{{@root.info.id}}.{{pref}}" data-pref="{{pref}}">
+          <select id="{{@root.info.id}}.{{pref}}" data-pref="{{pref}}" data-extensionid="{{@root.info.id}}">
             {{#each values}}
             <option value="{{value}}">{{name}}</option>
             {{/each}}
@@ -335,21 +341,32 @@ class BGCore extends Extension {
         {{#if_eq type "hue"}}
         <div class="option hue">
           <label for="{{@root.info.id}}.{{pref}}">{{description}}</label>
-          <input id="{{@root.info.id}}.{{pref}}" data-pref="{{pref}}" type="color">
+          <input data-reset-pref="{{pref}}" data-extensionid="{{@root.info.id}}" type="button" value="Set to default">
+          <div>
+            <span class="hg"></span>
+            <input id="{{@root.info.id}}.{{pref}}" data-pref="{{pref}}" data-extensionid="{{@root.info.id}}" type="range" min="0" max="360">
+          </div>
+        </div>
+        {{/if_eq}}
+
+        {{#if_eq type "color"}}
+        <div class="option color">
+          <label for="{{@root.info.id}}.{{pref}}">{{description}}</label>
+          <input id="{{@root.info.id}}.{{pref}}" data-pref="{{pref}}" data-extensionid="{{@root.info.id}}" type="color">
         </div>
         {{/if_eq}}
 
         {{#if_eq type "textbox"}}
-        <div class="option textbox">
-          <label for="{{@root.info.id}}.{{pref}}"{{#if hidden}} hidden{{/if}}>{{description}}</label>
-          <input id="{{@root.info.id}}.{{pref}}" data-pref="{{pref}}" type="text" placeholder="{{description}}"{{#if hidden}} hidden{{/if}}>
+        <div class="option textbox{{#if hidden}} hidden{{/if}}">
+          <label for="{{@root.info.id}}.{{pref}}">{{description}}</label>
+          <input id="{{@root.info.id}}.{{pref}}" data-pref="{{pref}}" data-extensionid="{{@root.info.id}}" type="text" placeholder="{{description}}">
         </div>
         {{/if_eq}}
 
         {{#if_eq type "list"}}
         <div class="option list">
           <label for="{{@root.info.id}}.{{pref}}"{{#if hidden}} hidden{{/if}}>{{pref}}</label>
-          <input id="{{@root.info.id}}.{{pref}}" data-pref="{{pref}}" type="text" placeholder="{{pref}}"{{#if hidden}} hidden{{/if}}>
+          <input id="{{@root.info.id}}.{{pref}}" data-pref="{{pref}}" data-extensionid="{{@root.info.id}}" type="text" placeholder="{{pref}}"{{#if hidden}} hidden{{/if}}>
         </div>
         {{/if_eq}}
 
@@ -424,7 +441,7 @@ class BGCore extends Extension {
         })).appendTo('#bg_settings .myextensions .details');
 
         // Prefill values for options
-        detail.find('.settings input[type="text"][data-pref], .settings input[type="checkbox"][data-pref], .settings select[data-pref]').each((i, option) => {
+        detail.find('.settings *[data-pref]').each((i, option) => {
           let pref = option.getAttribute('data-pref'),
               value = Extension.getPrefForId(pref, extensionId);
 
@@ -446,6 +463,60 @@ class BGCore extends Extension {
 
       document.querySelector('#bg_settings .myextensions .details').scrollTop = 0;
       detail.addClass('bgs_active');
+    });
+
+    // Save prefs on change
+    $('#bg_settings .myextensions .details').on('change', '.detail.bgs_active *[data-pref]', (event) => {
+      let optionTag = event.currentTarget,
+          extensionId = optionTag.getAttribute('data-extensionid'),
+          pref = optionTag.getAttribute('data-pref'),
+          value = (optionTag.getAttribute('type') === 'checkbox')? optionTag.checked : optionTag.value;
+
+      // Preview
+      if (extensionId === 'Personalize' && pref === 'nav.hue') {
+        let hue = parseInt(value, 10);
+        hue -= 207;
+        if (hue < 0) hue += 360;
+        this.addCSS(`
+          #gaia_menu_bar, #gaia_header #user_account {-webkit-filter: hue-rotate(${hue}deg) !important; filter: hue-rotate(${hue}deg) !important;}
+          #gaia_menu_bar .main_panel_container .panel-img, #gaia_menu_bar .main_panel_container .new-img, #gaia_menu_bar .main_panel_container .panel-more .arrow, #gaia_menu_bar #menu_search, #gaia_menu_bar .bg_settings_link_msg {-webkit-filter: hue-rotate(-${hue}deg) !important; filter: hue-rotate(-${hue}deg) !important;}
+        `);
+      }
+
+      /* Preview
+      else if (pref == 'background.repeat') {
+        if (save[pref] === false) $('#preview').css('background-repeat', 'no-repeat');
+        else $('#preview').css('background-repeat', 'repeat');
+      }
+      else if (pref == 'background.position') $('#preview').css('background-position', save[pref]);
+      else if (pref == 'background.color') $('#preview').css('background-color', save[pref]);
+      else if (pref == 'header.nav') $('#preview .nav, #preview .header .wrap .username').css('background-color', save[pref]);
+      else if (pref == 'header.nav.hover') $('#preview .nav a:nth-of-type(3)').css('background-image', 'radial-gradient(ellipse at bottom center, ' + save[pref] + ', transparent 95%)');
+      else if (pref == 'header.nav.current') $('#preview .nav a:first-child').css('background-image', 'radial-gradient(ellipse at bottom center, ' + save[pref] + ', transparent 95%)');
+      else if (pref == 'forum.threadHeader') $('#preview .body .linklist').css('background-color', save[pref]);
+      else if (pref == 'forum.postHeader') $('#preview .body .username').css('background-color', save[pref]);*/
+
+      // Save to storage
+      Extension.setPrefForId(pref, value, extensionId);
+    });
+
+    // Reset button functionality
+    $('#bg_settings .myextensions .details').on('click', '.detail.bgs_active input[data-reset-pref]', (event) => {
+      let buttonTag = event.currentTarget,
+          extensionId = buttonTag.getAttribute('data-extensionid'),
+          pref = buttonTag.getAttribute('data-reset-pref'),
+          optionTag = buttonTag.parentNode.querySelector(`*[data-pref="${pref}"]`);
+
+      // Get default value from storage
+      let value = Extension.getDefaultPrefForId(pref, extensionId);
+
+      // Set option
+      if (optionTag.getAttribute('type') === 'checkbox')
+        optionTag.checked = value;
+      else
+        optionTag.value = value;
+
+      $(optionTag).trigger('change');
     });
 
     // Disable active extension
@@ -564,7 +635,7 @@ class DrawAll extends Extension {
       author: 'The BetterGaia Team',
       homepage: 'http://www.bettergaia.com/',
       version: '1.0',
-      match: ['/', '/@(mygaia|market|forum|world|games|payments|gofusion)/']
+      match: ['/', '/?login_success=*', '/@(mygaia|market|forum|world|games|payments|gofusion)/']
     };
   }
 
@@ -655,75 +726,6 @@ class DrawAll extends Extension {
   }
 }
 
-class ExternalLinkRedirect extends Extension {
-  constructor() {
-    super('ExternalLinkRedirect');
-  }
-
-  static info() {
-    return {
-      id: 'ExternalLinkRedirect',
-      title: 'External Link Redirect',
-      description: 'External link redirects, now with warnings on the same page.',
-      author: 'The BetterGaia Team',
-      homepage: 'http://www.bettergaia.com/',
-      version: '1.0',
-      match: ['/forum/**', '/news/**', '/guilds/**']
-    };
-  }
-
-  preMount() {
-    this.addStyleSheet('style');
-  }
-
-  mount() {
-    $("body.forums .post a[href^='http://www.gaiaonline.com/gaia/redirect.php?r=']").on('click.ExternalLinkRedirect', function(e){
-      if ($(this).prop("href").match(/gaiaonline/g).length > 1 || e.ctrlKey || e.which == 2) {
-        return true;
-      }
-      else {
-        $("body").append($("<div class='bgredirect'></div>"));
-        var thisurl = $(this).prop("href");
-        if ($(this).children('img').attr('ismap')) {
-          thisurl += "?" + e.offsetX + "," + e.offsetY;
-        }
-
-        $.ajax({
-          type: 'GET',
-          url: thisurl,
-          dataType: 'html'
-        }).done(function(data) {
-          var pageHtml = $('<div>').html(data);
-
-          if (pageHtml.find('.warn_block').length === 1) {
-            $('.bgredirect').html(pageHtml.find('.warn_block')[0].outerHTML);
-            $('.bgredirect table.warn_block #warn_block #warn_head').append('<a class="bgclose" title="close"></a>');
-            $('.bgredirect a').attr('target', '_blank');
-            $('.bgredirect a.link_display, .bgredirect a.bgclose').on('click', function(){
-              $('.bgredirect').remove();
-            });
-          }
-          else {
-            $('.bgredirect').remove();
-            window.open(thisurl);
-          }
-        }).fail(function() {
-          $('.bgredirect').remove();
-          window.open(thisurl);
-        });
-
-        return false;
-      }
-    });
-  }
-
-  unMount() {
-    this.removeCSS();
-    $("body.forums .post a[href^='http://www.gaiaonline.com/gaia/redirect.php?r=']").off('click.ExternalLinkRedirect');
-    $('.bgredirect').remove();
-  }
-}
-
 class FormattingToolbar extends Extension {
   constructor() {
     super('FormattingToolbar');
@@ -799,8 +801,8 @@ class Forums extends Extension {
       'post.bgContainer': false,
       'post.postOffWhite': false,
 
-      'theme.threadHeader': '#BF7F40',
-      'theme.postHeader': '#CFE6F9'
+      'theme.threadHeader': '30',
+      'theme.postHeader': '207'
     };
   }
 
@@ -880,21 +882,17 @@ class Forums extends Extension {
       body.forums #gaia_content.grid_dizzie_gillespie > #bd {width: 1140px; margin: 0; overflow: visible;}
     `);
 
-    // Thread Header Color
-    if (this.getPref('theme.threadHeader') !== '#BF7F40')
-    this.addCSS('body.forums #gaia_content:not(.grid_billie_holiday) #forum-header .linklist, body.forums #content #content-padding > .linklist, body.forums #gaia_content .forum-list + #forum_ft_content:before {background-color: ' + this.getPref('threadHeader') + ';}');
-
     // Poll Drop Down
     if (this.getPref('pollHide') === true)
     this.addCSS('body.forums #content #content-padding > #topic_header_container #thread_poll {height: 40px; overflow: hidden;} body.forums #content #content-padding > #topic_header_container #thread_poll:hover {height: auto; overflow: visible;} body.forums #content #content-padding > #topic_header_container #thread_poll:after {content: "\\25BC"; color: rgba(0,0,0,0.35); display: block; position: absolute; top: 9px; right: 8px; font-size: 17px; text-shadow: 0 1px 1px #FFF;} body.forums #content #content-padding > #topic_header_container #thread_poll:hover:after {color: rgba(0,0,0,0.7); content: "\\25B2";}');
 
-    // Post Theme
-    if (this.getPref('theme.postHeader') !== '#CFE6F9')
-    this.addCSS('body.forums #content #post_container .post .postcontent .user_info_wrapper {background-color: ' + this.getPref('postHeader') + ';}');
-
     // Add background to posts
     if (this.getPref('post.bgContainer') === true)
-    this.addCSS('body.forums #content #post_container .post > .postcontent {border-radius: 5px 0 0 0; background-image: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(255,255,255,0.9)); background-size: 130px 130px; background-repeat: repeat-y;} body.forums #content #post_container .post.bgpc_hidden > .postcontent {border-radius: 5px;} body.forums #content #post_container .post .postcontent .user_info_wrapper .user_info .user_name {border-radius: 0;}');
+    this.addCSS(`
+      body.forums #content #post_container .post > .postcontent {border-radius: 5px 0 0 0; background-image: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(255,255,255,0.9)); background-size: 130px 130px; background-repeat: repeat-y;}
+      body.forums #content #post_container .post.bgpc_hidden > .postcontent {border-radius: 5px;}
+      body.forums #content #post_container .post .postcontent .user_info_wrapper .user_info .user_name, body.forums #content #post_container .post .postcontent .user_info_wrapper {border-top-left-radius: 0;}
+    `);
 
     // Make posts off white
     if (this.getPref('post.postOffWhite') === true)
@@ -907,6 +905,14 @@ class Forums extends Extension {
     // Put post options on top
     if (this.getPref('post.optionsBottom') === false)
     this.addCSS('body.forums #content #post_container .post .postcontent .message .messagecontent {flex-direction: column-reverse;}');
+
+    // Thread Header Color
+    if (this.getPref('theme.threadHeader') != '30')
+    this.addCSS(`body.forums #gaia_content:not(.grid_billie_holiday) #forum-header .linklist, body.forums #content #content-padding > .linklist, body.forums #gaia_content .forum-list + #forum_ft_content:before {background-color: hsl(${this.getPref('theme.threadHeader')}, 50%, 42%);}`);
+
+    // Post Theme
+    if (this.getPref('theme.postHeader') != '207')
+    this.addCSS(`body.forums #content #post_container .post .postcontent .user_info_wrapper {background-color: hsl(${this.getPref('theme.postHeader')}, 78%, 89%);}`);
   }
 
   mount() {
@@ -955,6 +961,75 @@ class Forums extends Extension {
     this.removeCSS();
     $('.post .post-options .bg_instantquote, .post .post-options .bg_instantedit').off('click.Forums');
     $('.bg_instant, .bg_instantbox').remove();
+  }
+}
+
+class ExternalLinkRedirect extends Extension {
+  constructor() {
+    super('ExternalLinkRedirect');
+  }
+
+  static info() {
+    return {
+      id: 'ExternalLinkRedirect',
+      title: 'External Link Redirect',
+      description: 'External link redirects, now with warnings on the same page.',
+      author: 'The BetterGaia Team',
+      homepage: 'http://www.bettergaia.com/',
+      version: '1.0',
+      match: ['/forum/**', '/news/**', '/guilds/**']
+    };
+  }
+
+  preMount() {
+    this.addStyleSheet('style');
+  }
+
+  mount() {
+    $("body.forums .post a[href^='http://www.gaiaonline.com/gaia/redirect.php?r=']").on('click.ExternalLinkRedirect', function(e){
+      if ($(this).prop("href").match(/gaiaonline/g).length > 1 || e.ctrlKey || e.which == 2) {
+        return true;
+      }
+      else {
+        $("body").append($("<div class='bgredirect'></div>"));
+        var thisurl = $(this).prop("href");
+        if ($(this).children('img').attr('ismap')) {
+          thisurl += "?" + e.offsetX + "," + e.offsetY;
+        }
+
+        $.ajax({
+          type: 'GET',
+          url: thisurl,
+          dataType: 'html'
+        }).done(function(data) {
+          var pageHtml = $('<div>').html(data);
+
+          if (pageHtml.find('.warn_block').length === 1) {
+            $('.bgredirect').html(pageHtml.find('.warn_block')[0].outerHTML);
+            $('.bgredirect table.warn_block #warn_block #warn_head').append('<a class="bgclose" title="close"></a>');
+            $('.bgredirect a').attr('target', '_blank');
+            $('.bgredirect a.link_display, .bgredirect a.bgclose').on('click', function(){
+              $('.bgredirect').remove();
+            });
+          }
+          else {
+            $('.bgredirect').remove();
+            window.open(thisurl);
+          }
+        }).fail(function() {
+          $('.bgredirect').remove();
+          window.open(thisurl);
+        });
+
+        return false;
+      }
+    });
+  }
+
+  unMount() {
+    this.removeCSS();
+    $("body.forums .post a[href^='http://www.gaiaonline.com/gaia/redirect.php?r=']").off('click.ExternalLinkRedirect');
+    $('.bgredirect').remove();
   }
 }
 
@@ -1090,8 +1165,29 @@ class Personalize extends Extension {
   static settings() {
     return [
       {type: 'title', value: 'Background'},
-      {type: 'textbox', pref: 'background.image', description: 'Background image'},
-      {type: 'textbox', pref: 'background.color', description: 'Background color'},
+      {type: 'selection', pref: 'background.image', description: 'Background image', values: [
+        {name: 'Default', value: 'default'},
+        {name: 'Legacy', value: 'http://i.imgur.com/cPghNcY.jpg'},
+        {name: 'Four Point', value: 'http://i.imgur.com/vg2mlt5.jpg'},
+        {name: 'Clean', value: 'http://i.imgur.com/33a4gwZ.jpg'},
+        {name: 'Growth', value: 'http://i.imgur.com/vODSvML.png'},
+        {name: 'Wander', value: 'http://i.imgur.com/885Yrc6.png'},
+        {name: 'Passing', value: 'http://i.imgur.com/yh7mFwK.gif'},
+        {name: 'Formal', value: 'http://i.imgur.com/M4y8Ox1.png'},
+        {name: 'Gray', value: 'http://i.imgur.com/HRpwvio.png'},
+        {name: 'Cerveza', value: 'http://i.imgur.com/6c0kqCL.jpg'},
+        {name: 'Old Oak', value: 'http://i.imgur.com/d9EC8Uq.jpg'},
+        {name: 'Orange', value: 'http://i.imgur.com/f5BpliR.jpg'},
+        {name: 'Flower', value: 'http://i.imgur.com/TKgE1Ks.png'},
+        {name: 'Watercolor', value: 'http://i.imgur.com/BrOY6Dz.jpg'},
+        {name: 'Cats', value: 'http://i.imgur.com/jYvc0Ze.png'},
+        {name: 'Dogs', value: 'http://i.imgur.com/slxNu0L.png'},
+        {name: 'Leprechaun', value: 'http://i.imgur.com/nbS4mjN.png'},
+        {name: 'Christmas', value: 'http://i.imgur.com/4LpzJUe.jpg'},
+        {name: 'Bokeh', value: 'http://i.imgur.com/YK8asbD.jpg'},
+        {name: 'From a URL', value: ''}
+      ]},
+      {type: 'color', pref: 'background.color', description: 'Background color'},
       {type: 'checkbox', pref: 'background.repeat', description: 'Tile background image'},
       {type: 'checkbox', pref: 'background.float', description: 'Float background while scrolling'},
       {type: 'selection', pref: 'background.position', description: 'Position of background image', values: [
@@ -1107,16 +1203,21 @@ class Personalize extends Extension {
       ]},
 
       {type: 'title', value: 'Header'},
-      {type: 'textbox', pref: 'header.background', description: 'Header image'},
-      {type: 'textbox', pref: 'header.background.base', description: 'Header image base'},
+      {type: 'textbox', pref: 'header.background', description: 'Header image', hidden: true},
+      {type: 'textbox', pref: 'header.background.base', description: 'Header image base', hidden: true},
       {type: 'checkbox', pref: 'header.background.stretch', description: 'Stretch the header background'},
       {type: 'checkbox', pref: 'header.float', description: 'Float username and notifications when scrolling'},
 
       {type: 'title', value: 'Logo'},
-      {type: 'textbox', pref: 'logo', description: 'Logo image'},
+      {type: 'selection', pref: 'logo', description: 'Logo image', values: [
+        {name: 'Default', value: 'default'},
+        {name: 'Golden Gaia', value: 'http://i.imgur.com/ziQQdEx.png'},
+        {name: 'OmniDrink', value: 'http://i.imgur.com/7opBViV.png'},
+        {name: 'From a URL', value: ''}
+      ]},
 
-      {type: 'title', value: 'Colors'},
-      {type: 'hue', pref: 'nav.hue', description: 'Navigation color'}
+      {type: 'title', value: 'Theme'},
+      {type: 'hue', pref: 'nav.hue', description: 'Navigation'}
     ];
   }
 
@@ -1156,15 +1257,18 @@ class Personalize extends Extension {
 
     // Logo
     if (this.getPref('logo') !== 'default')
-      this.addCSS('body #gaia_header .header_content .gaiaLogo a, body #gaia_header .header_content .gaiaLogo a:hover {background-image: url(' + this.getPref('header.logo') + ');}');
+      this.addCSS('body #gaia_header .header_content .gaiaLogo a, body #gaia_header .header_content .gaiaLogo a:hover {background-image: url(' + this.getPref('logo') + ');}');
 
     // Navigation hue rotatation
-    if (this.getPref('nav.hue') != '207')
+    let hue = parseInt(this.getPref('nav.hue'), 10);
+    if (hue !== 207) {
+      hue -= 207;
+      if (hue < 0) hue += 360;
       this.addCSS(`
-        #gaia_menu_bar, #gaia_header #user_account {filter: hue-rotate(${this.getPref('nav.hue')}deg);}
-        #gaia_menu_bar .main_panel_container .panel-img, #gaia_menu_bar .main_panel_container .new-img, #gaia_menu_bar .main_panel_container .panel-more .arrow, #gaia_menu_bar #menu_search, #gaia_menu_bar .bg_settings_link_msg {filter: hue-rotate(-${this.getPref('nav.hue')}deg);}
+        #gaia_menu_bar, #gaia_header #user_account {-webkit-filter: hue-rotate(${hue}deg); filter: hue-rotate(${hue}deg);}
+        #gaia_menu_bar .main_panel_container .panel-img, #gaia_menu_bar .main_panel_container .new-img, #gaia_menu_bar .main_panel_container .panel-more .arrow, #gaia_menu_bar #menu_search, #gaia_menu_bar .bg_settings_link_msg {-webkit-filter: hue-rotate(-${hue}deg); filter: hue-rotate(-${hue}deg);}
       `);
-
+    }
   }
 
   mount() {
@@ -1524,72 +1628,6 @@ class PrivateMessages extends Extension {
   }
 }
 
-class Shortcuts extends Extension {
-  constructor() {
-    super('Shortcuts');
-  }
-
-  static info() {
-    return {
-      id: 'Shortcuts',
-      title: 'Shortcuts',
-      description: 'Have your own links to use on every page.',
-      extendedDescription: `Manage the shortcuts next by your username.`,
-      author: 'The BetterGaia Team',
-      homepage: 'http://www.bettergaia.com/',
-      version: '1.0'
-    };
-  }
-
-  static defaultPrefs() {
-    return {
-      'links': [
-        ['MyGaia', '/mygaia/'],
-        ['Private Messages', '/profile/privmsg.php'],
-        ['Forums', '/forum/'],
-        ['My Posts', '/forum/myposts/'],
-        ['My Topics', '/forum/mytopics/'],
-        ['Subscribed Threads', '/forum/subscription/'],
-        ['Shops', '/market/'],
-        ['Trades', '/gaia/bank.php'],
-        ['Marketplace', '/marketplace/'],
-        ['Guilds', '/guilds/'],
-        ['Top of Page', '#'],
-        ['Bottom of Page', '#bg_bottomofpage']
-      ]
-    };
-  }
-
-  static settings() {
-    return [
-      {type: 'list', pref: 'links'}
-    ];
-  }
-
-  preMount() {
-    this.addStyleSheet('style');
-  }
-
-  mount() {
-    let links = this.getPref('links');
-    if (!$.isEmptyObject(links)) {
-      $('#gaia_header #user_dropdown_menu').prepend(`<ul id="bg_shortcuts">
-        <li class="dropdown-list-item"><a class="bg_shortcuts_link">Shortcuts</a></li>
-        <ul></ul>
-      </ul>`);
-
-      $(links).each(function(index, data){
-        $('#bg_shortcuts ul').append('<li><a href="' + data[1] + '">' + data[0] + '</a></li>');
-      });
-    }
-  }
-
-  unMount() {
-    this.removeCSS();
-    $('#gaia_header #user_dropdown_menu #bg_shortcuts').remove();
-  }
-}
-
 class UserTags extends Extension {
   constructor() {
     super('UserTags');
@@ -1754,6 +1792,72 @@ class UserTags extends Extension {
     $('body.forums .post .user_info_wrapper .user_info .bgUserTag > span, body.forums .post .user_info_wrapper .user_info').off('click.UserTags');
     this.observer.disconnect();
     $('.bgUserTag').remove();
+  }
+}
+
+class Shortcuts extends Extension {
+  constructor() {
+    super('Shortcuts');
+  }
+
+  static info() {
+    return {
+      id: 'Shortcuts',
+      title: 'Shortcuts',
+      description: 'Have your own links to use on every page.',
+      extendedDescription: `Manage the shortcuts next by your username.`,
+      author: 'The BetterGaia Team',
+      homepage: 'http://www.bettergaia.com/',
+      version: '1.0'
+    };
+  }
+
+  static defaultPrefs() {
+    return {
+      'links': [
+        ['MyGaia', '/mygaia/'],
+        ['Private Messages', '/profile/privmsg.php'],
+        ['Forums', '/forum/'],
+        ['My Posts', '/forum/myposts/'],
+        ['My Topics', '/forum/mytopics/'],
+        ['Subscribed Threads', '/forum/subscription/'],
+        ['Shops', '/market/'],
+        ['Trades', '/gaia/bank.php'],
+        ['Marketplace', '/marketplace/'],
+        ['Guilds', '/guilds/'],
+        ['Top of Page', '#'],
+        ['Bottom of Page', '#bg_bottomofpage']
+      ]
+    };
+  }
+
+  static settings() {
+    return [
+      {type: 'list', pref: 'links'}
+    ];
+  }
+
+  preMount() {
+    this.addStyleSheet('style');
+  }
+
+  mount() {
+    let links = this.getPref('links');
+    if (!$.isEmptyObject(links)) {
+      $('#gaia_header #user_dropdown_menu').prepend(`<ul id="bg_shortcuts">
+        <li class="dropdown-list-item"><a class="bg_shortcuts_link">Shortcuts</a></li>
+        <ul></ul>
+      </ul>`);
+
+      $(links).each(function(index, data){
+        $('#bg_shortcuts ul').append('<li><a href="' + data[1] + '">' + data[0] + '</a></li>');
+      });
+    }
+  }
+
+  unMount() {
+    this.removeCSS();
+    $('#gaia_header #user_dropdown_menu #bg_shortcuts').remove();
   }
 }
 

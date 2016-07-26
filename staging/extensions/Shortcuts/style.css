@@ -8,9 +8,7 @@ body #gaia_header #user_dropdown_menu {
   text-decoration: none !important; }
 
 #bg_shortcuts ul {
-  background: #FFF;
   color: #222;
-  border-radius: 3px;
   padding: 0 !important;
   margin-right: 20px !important; }
 
@@ -18,7 +16,8 @@ body #gaia_header #user_dropdown_menu {
   margin-right: 0 !important; }
 
 #bg_shortcuts ul li {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05); }
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  background: #FFF; }
 
 #bg_shortcuts ul li a {
   display: block;

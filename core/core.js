@@ -56,6 +56,32 @@ let BetterGaia = {
       }
     },
 
+    getDefault: function(key, extensionId) {
+      // Extension called this
+      if (typeof extensionId === 'string') {
+        if (BetterGaia.pref.defaults.hasOwnProperty(`extension.${extensionId}`)
+          && BetterGaia.pref.defaults[`extension.${extensionId}`].hasOwnProperty(key)
+        ) {
+          let pref = BetterGaia.pref.defaults[`extension.${extensionId}`][key];
+          if (typeof pref === 'object') return JSON.parse(JSON.stringify(pref));
+          else return pref;
+        }
+        else {
+          console.warn(`BetterGaia: default preference with key not found for extension ${extensionId}, ${key}`);
+        }
+      }
+
+      // Generic call
+      else if (BetterGaia.pref.defaults.hasOwnProperty(key)) {
+        let pref = BetterGaia.pref.defaults[key];
+        if (typeof pref === 'object') return JSON.parse(JSON.stringify(pref));
+        else return pref;
+      }
+      else {
+        console.warn(`BetterGaia: default preference with key not found, ${key}`);
+      }
+    },
+
     set: function(key, value, extensionId) {
       // Extension called this
       if (typeof extensionId === 'string') {
@@ -216,6 +242,7 @@ let BetterGaia = {
         // see if matches or excludes current page
         let path = document.location.pathname + document.location.search;
         let info = extension.info();
+        console.log(path);
 
         if (info.hasOwnProperty('match')) {
           if (typeof info.match === 'string') info.match = [info.match];

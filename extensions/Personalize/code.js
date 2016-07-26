@@ -38,8 +38,29 @@ class Personalize extends Extension {
   static settings() {
     return [
       {type: 'title', value: 'Background'},
-      {type: 'textbox', pref: 'background.image', description: 'Background image'},
-      {type: 'textbox', pref: 'background.color', description: 'Background color'},
+      {type: 'selection', pref: 'background.image', description: 'Background image', values: [
+        {name: 'Default', value: 'default'},
+        {name: 'Legacy', value: 'http://i.imgur.com/cPghNcY.jpg'},
+        {name: 'Four Point', value: 'http://i.imgur.com/vg2mlt5.jpg'},
+        {name: 'Clean', value: 'http://i.imgur.com/33a4gwZ.jpg'},
+        {name: 'Growth', value: 'http://i.imgur.com/vODSvML.png'},
+        {name: 'Wander', value: 'http://i.imgur.com/885Yrc6.png'},
+        {name: 'Passing', value: 'http://i.imgur.com/yh7mFwK.gif'},
+        {name: 'Formal', value: 'http://i.imgur.com/M4y8Ox1.png'},
+        {name: 'Gray', value: 'http://i.imgur.com/HRpwvio.png'},
+        {name: 'Cerveza', value: 'http://i.imgur.com/6c0kqCL.jpg'},
+        {name: 'Old Oak', value: 'http://i.imgur.com/d9EC8Uq.jpg'},
+        {name: 'Orange', value: 'http://i.imgur.com/f5BpliR.jpg'},
+        {name: 'Flower', value: 'http://i.imgur.com/TKgE1Ks.png'},
+        {name: 'Watercolor', value: 'http://i.imgur.com/BrOY6Dz.jpg'},
+        {name: 'Cats', value: 'http://i.imgur.com/jYvc0Ze.png'},
+        {name: 'Dogs', value: 'http://i.imgur.com/slxNu0L.png'},
+        {name: 'Leprechaun', value: 'http://i.imgur.com/nbS4mjN.png'},
+        {name: 'Christmas', value: 'http://i.imgur.com/4LpzJUe.jpg'},
+        {name: 'Bokeh', value: 'http://i.imgur.com/YK8asbD.jpg'},
+        {name: 'From a URL', value: ''}
+      ]},
+      {type: 'color', pref: 'background.color', description: 'Background color'},
       {type: 'checkbox', pref: 'background.repeat', description: 'Tile background image'},
       {type: 'checkbox', pref: 'background.float', description: 'Float background while scrolling'},
       {type: 'selection', pref: 'background.position', description: 'Position of background image', values: [
@@ -55,16 +76,21 @@ class Personalize extends Extension {
       ]},
 
       {type: 'title', value: 'Header'},
-      {type: 'textbox', pref: 'header.background', description: 'Header image'},
-      {type: 'textbox', pref: 'header.background.base', description: 'Header image base'},
+      {type: 'textbox', pref: 'header.background', description: 'Header image', hidden: true},
+      {type: 'textbox', pref: 'header.background.base', description: 'Header image base', hidden: true},
       {type: 'checkbox', pref: 'header.background.stretch', description: 'Stretch the header background'},
       {type: 'checkbox', pref: 'header.float', description: 'Float username and notifications when scrolling'},
 
       {type: 'title', value: 'Logo'},
-      {type: 'textbox', pref: 'logo', description: 'Logo image'},
+      {type: 'selection', pref: 'logo', description: 'Logo image', values: [
+        {name: 'Default', value: 'default'},
+        {name: 'Golden Gaia', value: 'http://i.imgur.com/ziQQdEx.png'},
+        {name: 'OmniDrink', value: 'http://i.imgur.com/7opBViV.png'},
+        {name: 'From a URL', value: ''}
+      ]},
 
-      {type: 'title', value: 'Colors'},
-      {type: 'hue', pref: 'nav.hue', description: 'Navigation color'}
+      {type: 'title', value: 'Theme'},
+      {type: 'hue', pref: 'nav.hue', description: 'Navigation'}
     ];
   }
 
@@ -104,15 +130,18 @@ class Personalize extends Extension {
 
     // Logo
     if (this.getPref('logo') !== 'default')
-      this.addCSS('body #gaia_header .header_content .gaiaLogo a, body #gaia_header .header_content .gaiaLogo a:hover {background-image: url(' + this.getPref('header.logo') + ');}');
+      this.addCSS('body #gaia_header .header_content .gaiaLogo a, body #gaia_header .header_content .gaiaLogo a:hover {background-image: url(' + this.getPref('logo') + ');}');
 
     // Navigation hue rotatation
-    if (this.getPref('nav.hue') != '207')
+    let hue = parseInt(this.getPref('nav.hue'), 10);
+    if (hue !== 207) {
+      hue -= 207;
+      if (hue < 0) hue += 360;
       this.addCSS(`
-        #gaia_menu_bar, #gaia_header #user_account {filter: hue-rotate(${this.getPref('nav.hue')}deg);}
-        #gaia_menu_bar .main_panel_container .panel-img, #gaia_menu_bar .main_panel_container .new-img, #gaia_menu_bar .main_panel_container .panel-more .arrow, #gaia_menu_bar #menu_search, #gaia_menu_bar .bg_settings_link_msg {filter: hue-rotate(-${this.getPref('nav.hue')}deg);}
+        #gaia_menu_bar, #gaia_header #user_account {-webkit-filter: hue-rotate(${hue}deg); filter: hue-rotate(${hue}deg);}
+        #gaia_menu_bar .main_panel_container .panel-img, #gaia_menu_bar .main_panel_container .new-img, #gaia_menu_bar .main_panel_container .panel-more .arrow, #gaia_menu_bar #menu_search, #gaia_menu_bar .bg_settings_link_msg {-webkit-filter: hue-rotate(-${hue}deg); filter: hue-rotate(-${hue}deg);}
       `);
-
+    }
   }
 
   mount() {
