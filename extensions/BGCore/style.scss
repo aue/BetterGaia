@@ -97,11 +97,12 @@ body {height: 100% !important; min-height: 100% !important;}
 #bg_settings .bgs_page.myextensions .details .detail .settings p {text-align: center;}
 #bg_settings .bgs_page.myextensions .details .detail .settings h3 {margin: 1.75em 0 0.5em;}
 #bg_settings .bgs_page.myextensions .details .detail .settings .option {margin: 1em 0;}
+#bg_settings .bgs_page.myextensions .details .detail .settings .option.bgs_hidden {display: none;}
 #bg_settings .bgs_page.myextensions .details .detail .settings .option:after {content: ''; display: table; clear: both;}
 #bg_settings .bgs_page.myextensions .details .detail .settings .option label {padding: 0.5em 0;}
 #bg_settings .bgs_page.myextensions .details .detail .settings .option.checkbox input {margin-right: 0.5em;}
 #bg_settings .bgs_page.myextensions .details .detail .settings .option.textbox input {float: right; width: 12em;}
-#bg_settings .bgs_page.myextensions .details .detail .settings .option.selection select {float: right; width: 8em;}
+#bg_settings .bgs_page.myextensions .details .detail .settings .option.selection select {float: right; width: 12em;}
 #bg_settings .bgs_page.myextensions .details .detail .settings .option.hue input[type="button"] {margin-left: 0.5em;}
 #bg_settings .bgs_page.myextensions .details .detail .settings .option.hue div {float: right;}
 #bg_settings .bgs_page.myextensions .details .detail .settings .option.hue div .hg {
@@ -109,7 +110,7 @@ body {height: 100% !important; min-height: 100% !important;}
   height: 0.75em;
   margin-bottom: 0.25em;
   background: linear-gradient(to right, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
-  border-radius: 1em;
+  border-radius: 0.25em;
   display: block;
 }
 #bg_settings .bgs_page.myextensions .details .detail .settings .option.hue div input[type="range"] {width: 12em;}

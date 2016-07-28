@@ -37,7 +37,7 @@ body div#gaia_header {
 
 body div#gaia_header .header_content {
   margin: 0 auto;
-  min-width: 1140px;
+  width: 1140px;
   background-repeat: repeat-y; }
 
 /* Notifications */

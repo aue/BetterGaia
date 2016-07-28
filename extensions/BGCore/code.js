@@ -129,7 +129,15 @@ class BGCore extends Extension {
           <label for="{{@root.info.id}}.{{pref}}">{{description}}</label>
           <select id="{{@root.info.id}}.{{pref}}" data-pref="{{pref}}" data-extensionid="{{@root.info.id}}">
             {{#each values}}
-            <option value="{{value}}">{{name}}</option>
+              {{#if_eq type "group"}}
+                <optgroup label="{{name}}">
+                {{#each values}}
+                  <option value="{{value}}">{{name}}</option>
+                {{/each}}
+                </optgroup>
+              {{else}}
+                <option value="{{value}}">{{name}}</option>
+              {{/if_eq}}
             {{/each}}
           </select>
         </div>
@@ -154,7 +162,7 @@ class BGCore extends Extension {
         {{/if_eq}}
 
         {{#if_eq type "textbox"}}
-        <div class="option textbox{{#if hidden}} hidden{{/if}}">
+        <div class="option textbox{{#if hidden}} bgs_hidden{{/if}}"{{#if hidden}} data-hidden-pref="{{pref}}"{{/if}}>
           <label for="{{@root.info.id}}.{{pref}}">{{description}}</label>
           <input id="{{@root.info.id}}.{{pref}}" data-pref="{{pref}}" data-extensionid="{{@root.info.id}}" type="text" placeholder="{{description}}">
         </div>
@@ -243,15 +251,21 @@ class BGCore extends Extension {
               value = Extension.getPrefForId(pref, extensionId);
 
           // Error Handling
-          if (typeof value === 'undefined') {
-            option.disabled = true;
-            throw('Error: ' + pref + ' is not a valid preference to initialize.');
-          }
+          if (pref === 'header.background.selection') {
+            let front = Extension.getPrefForId('header.background', extensionId),
+                back = Extension.getPrefForId('header.background.base', extensionId);
+            value = front + ',' + back;
 
-          // Checkbox
-          if (option.getAttribute('type') === 'checkbox') option.checked = value;
-          // Select, Textbox
-          else option.value = value;
+            option.value = value;
+          }
+          else if (typeof value === 'undefined') {
+            option.disabled = true;
+            console.warn('Error: ' + pref + ' is not a valid preference to initialize.');
+          }
+          else {
+            if (option.getAttribute('type') === 'checkbox') option.checked = value;
+            else option.value = value;
+          }
         });
 
         // Show
@@ -263,21 +277,56 @@ class BGCore extends Extension {
     });
 
     // Save prefs on change
-    $('#bg_settings .myextensions .details').on('change', '.detail.bgs_active *[data-pref]', (event) => {
+    let save = (event) => {
       let optionTag = event.currentTarget,
           extensionId = optionTag.getAttribute('data-extensionid'),
           pref = optionTag.getAttribute('data-pref'),
           value = (optionTag.getAttribute('type') === 'checkbox')? optionTag.checked : optionTag.value;
 
-      // Preview
-      if (extensionId === 'Personalize' && pref === 'nav.hue') {
-        let hue = parseInt(value, 10);
-        hue -= 207;
-        if (hue < 0) hue += 360;
-        this.addCSS(`
-          #gaia_menu_bar, #gaia_header #user_account {-webkit-filter: hue-rotate(${hue}deg) !important; filter: hue-rotate(${hue}deg) !important;}
-          #gaia_menu_bar .main_panel_container .panel-img, #gaia_menu_bar .main_panel_container .new-img, #gaia_menu_bar .main_panel_container .panel-more .arrow, #gaia_menu_bar #menu_search, #gaia_menu_bar .bg_settings_link_msg {-webkit-filter: hue-rotate(-${hue}deg) !important; filter: hue-rotate(-${hue}deg) !important;}
-        `);
+      console.log(pref + ', ' + value);
+
+      // Personalize extension
+      if (extensionId === 'Personalize') {
+        if (pref === 'nav.hue') {
+          let hue = parseInt(value, 10);
+          hue -= 207;
+          if (hue < 0) hue += 360;
+          this.addCSS(`
+            #gaia_menu_bar, #gaia_header #user_account {-webkit-filter: hue-rotate(${hue}deg) !important; filter: hue-rotate(${hue}deg) !important;}
+            #gaia_menu_bar .main_panel_container .panel-img, #gaia_menu_bar .main_panel_container .new-img, #gaia_menu_bar .main_panel_container .panel-more .arrow, #gaia_menu_bar #menu_search, #gaia_menu_bar .bg_settings_link_msg {-webkit-filter: hue-rotate(-${hue}deg) !important; filter: hue-rotate(-${hue}deg) !important;}
+          `);
+        }
+        else if (pref === 'header.background') {
+          if (value !== 'default')
+          this.addCSS('.time-day div.town-barton .header_content, .time-dawn div.town-barton .header_content, .time-dusk div.town-barton .header_content, .time-night div.town-barton .header_content, .time-day div.town-isledegambino .header_content, .time-dawn div.town-isledegambino .header_content, .time-dusk div.town-isledegambino .header_content, .time-night div.town-isledegambino .header_content, .time-day div.town-aekea .header_content, .time-dawn div.town-aekea .header_content, .time-dusk div.town-aekea .header_content, .time-night div.town-aekea .header_content, .time-day div.town-durem .header_content, .time-dawn div.town-durem .header_content, .time-dusk div.town-durem .header_content, .time-night div.town-durem .header_content, .time-day div.town-basskenlake .header_content, .time-dawn div.town-basskenlake .header_content, .time-dusk div.town-basskenlake .header_content, .time-night div.town-basskenlake .header_content {background-image: url(' + value + ');}');
+          else
+          this.addCSS('.time-day div.town-barton .header_content, .time-dawn div.town-barton .header_content, .time-dusk div.town-barton .header_content, .time-night div.town-barton .header_content, .time-day div.town-isledegambino .header_content, .time-dawn div.town-isledegambino .header_content, .time-dusk div.town-isledegambino .header_content, .time-night div.town-isledegambino .header_content, .time-day div.town-aekea .header_content, .time-dawn div.town-aekea .header_content, .time-dusk div.town-aekea .header_content, .time-night div.town-aekea .header_content, .time-day div.town-durem .header_content, .time-dawn div.town-durem .header_content, .time-dusk div.town-durem .header_content, .time-night div.town-durem .header_content, .time-day div.town-basskenlake .header_content, .time-dawn div.town-basskenlake .header_content, .time-dusk div.town-basskenlake .header_content, .time-night div.town-basskenlake .header_content {background-image: url(//s.cdn.gaiaonline.com/images/gaia_global/gaia_header/new_header/il_header_bg_barton_sprite.jpg);}');
+        }
+        else if (pref === 'header.background.base') {
+          if (value !== 'default')
+          this.addCSS('.time-day div.town-barton, .time-dawn div.town-barton, .time-dusk div.town-barton, .time-night div.town-barton, .time-day div.town-isledegambino, .time-dawn div.town-isledegambino, .time-dusk div.town-isledegambino, .time-night div.town-isledegambino, .time-day div.town-aekea, .time-dawn div.town-aekea, .time-dusk div.town-aekea, .time-night div.town-aekea, .time-day div.town-durem, .time-dawn div.town-durem, .time-dusk div.town-durem, .time-night div.town-durem, .time-day div.town-basskenlake, .time-dawn div.town-basskenlake, .time-dusk div.town-basskenlake, .time-night div.town-basskenlake {background-image: url(' + value + '); background-repeat: repeat;}');
+          else
+          this.addCSS('.time-day div.town-barton, .time-dawn div.town-barton, .time-dusk div.town-barton, .time-night div.town-barton, .time-day div.town-isledegambino, .time-dawn div.town-isledegambino, .time-dusk div.town-isledegambino, .time-night div.town-isledegambino, .time-day div.town-aekea, .time-dawn div.town-aekea, .time-dusk div.town-aekea, .time-night div.town-aekea, .time-day div.town-durem, .time-dawn div.town-durem, .time-dusk div.town-durem, .time-night div.town-durem, .time-day div.town-basskenlake, .time-dawn div.town-basskenlake, .time-dusk div.town-basskenlake, .time-night div.town-basskenlake {background-image: url(//s.cdn.gaiaonline.com/images/gaia_global/gaia_header/new_header/rs_header_bg_barton_tile_sprite.jpg); background-repeat: repeat;}');
+        }
+        else if (pref === 'header.background.selection') {
+          if (value === 'custom') {
+            optionTag.setAttribute('data-state', 'custom');
+            $(optionTag).closest('.settings').find('.option[data-hidden-pref="header.background"]').removeClass('bgs_hidden');
+            $(optionTag).closest('.settings').find('.option[data-hidden-pref="header.background.base"]').removeClass('bgs_hidden');
+          }
+          else {
+            if (optionTag.getAttribute('data-state') === 'custom') {
+              optionTag.setAttribute('data-state', '');
+              $(optionTag).closest('.settings').find('.option[data-hidden-pref="header.background"]').addClass('bgs_hidden');
+              $(optionTag).closest('.settings').find('.option[data-hidden-pref="header.background.base"]').addClass('bgs_hidden');
+            }
+
+            value = value.split(',');
+            $(optionTag).closest('.settings').find('input[data-pref="header.background"]').val(value[0]).trigger('input');
+            $(optionTag).closest('.settings').find('input[data-pref="header.background.base"]').val(value[1]).trigger('input');
+          }
+          return;
+        }
       }
 
       /* Preview
@@ -295,7 +344,10 @@ class BGCore extends Extension {
 
       // Save to storage
       Extension.setPrefForId(pref, value, extensionId);
-    });
+    };
+
+    $('#bg_settings .myextensions .details').on('input', '.detail.bgs_active input[type="text"][data-pref]', save);
+    $('#bg_settings .myextensions .details').on('change', '.detail.bgs_active input[type="checkbox"][data-pref], .detail.bgs_active input[type="range"][data-pref], .detail.bgs_active select[data-pref], .detail.bgs_active input[type="color"][data-pref]', save);
 
     // Reset button functionality
     $('#bg_settings .myextensions .details').on('click', '.detail.bgs_active input[data-reset-pref]', (event) => {
