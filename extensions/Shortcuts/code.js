@@ -36,7 +36,7 @@ class Shortcuts extends Extension {
 
   static settings() {
     return [
-      {type: 'list', pref: 'links'}
+      {type: 'other', pref: 'links'}
     ];
   }
 

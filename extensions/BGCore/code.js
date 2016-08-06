@@ -168,11 +168,21 @@ class BGCore extends Extension {
         </div>
         {{/if_eq}}
 
-        {{#if_eq type "list"}}
-        <div class="option list">
-          <label for="{{@root.info.id}}.{{pref}}"{{#if hidden}} hidden{{/if}}>{{pref}}</label>
-          <input id="{{@root.info.id}}.{{pref}}" data-pref="{{pref}}" data-extensionid="{{@root.info.id}}" type="text" placeholder="{{pref}}"{{#if hidden}} hidden{{/if}}>
-        </div>
+        {{#if_eq type "other"}}
+          {{#if_eq @root.info.id "PostFormatting"}}
+          <div class="option formats">
+            <ul>
+              <li>
+                <label>{{pref}}</label>
+                <input type="button" value="Edit">
+                <input type="button" value="Delete">
+              </li>
+              <li></li>
+            </ul>
+
+            <input type="button" value="Add Format">
+          </div>
+          {{/if_eq}}
         {{/if_eq}}
 
       {{else}}
@@ -256,7 +266,24 @@ class BGCore extends Extension {
                 back = Extension.getPrefForId('header.background.base', extensionId);
             value = front + ',' + back;
 
-            option.value = value;
+            if (option.querySelector(`option[value="${value}"]`)) option.value = value;
+            else {
+              option.value = 'custom';
+              option.setAttribute('data-state', 'custom');
+              $(option).closest('.settings').find('.option[data-hidden-pref="header.background"]').removeClass('bgs_hidden');
+              $(option).closest('.settings').find('.option[data-hidden-pref="header.background.base"]').removeClass('bgs_hidden');
+            }
+          }
+          else if (pref === 'background.image.selection' || pref === 'logo.selection') {
+            let realPref = pref.slice(0, pref.length - 10);
+            value = Extension.getPrefForId(realPref, extensionId);
+
+            if (option.querySelector(`option[value="${value}"]`)) option.value = value;
+            else {
+              option.value = 'custom';
+              option.setAttribute('data-state', 'custom');
+              $(option).closest('.settings').find(`.option[data-hidden-pref="${realPref}"]`).removeClass('bgs_hidden');
+            }
           }
           else if (typeof value === 'undefined') {
             option.disabled = true;
@@ -295,6 +322,23 @@ class BGCore extends Extension {
             #gaia_menu_bar, #gaia_header #user_account {-webkit-filter: hue-rotate(${hue}deg) !important; filter: hue-rotate(${hue}deg) !important;}
             #gaia_menu_bar .main_panel_container .panel-img, #gaia_menu_bar .main_panel_container .new-img, #gaia_menu_bar .main_panel_container .panel-more .arrow, #gaia_menu_bar #menu_search, #gaia_menu_bar .bg_settings_link_msg {-webkit-filter: hue-rotate(-${hue}deg) !important; filter: hue-rotate(-${hue}deg) !important;}
           `);
+        }
+        else if (pref === 'background.image.selection' || pref === 'logo.selection') {
+          let realPref = pref.slice(0, pref.length - 10);
+
+          if (value === 'custom') {
+            optionTag.setAttribute('data-state', 'custom');
+            $(optionTag).closest('.settings').find(`.option[data-hidden-pref="${realPref}"]`).removeClass('bgs_hidden');
+          }
+          else {
+            if (optionTag.getAttribute('data-state') === 'custom') {
+              optionTag.setAttribute('data-state', '');
+              $(optionTag).closest('.settings').find(`.option[data-hidden-pref="${realPref}"]`).addClass('bgs_hidden');
+            }
+            $(optionTag).closest('.settings').find(`input[data-pref="${realPref}"]`).val(value).trigger('input');
+          }
+
+          return;
         }
         else if (pref === 'header.background') {
           if (value !== 'default')

@@ -49,7 +49,7 @@ class PostFormatting extends Extension {
 
   static settings() {
     return [
-      {type: 'list', pref: 'list'},
+      {type: 'other', pref: 'list'},
       {type: 'title', value: 'General'},
       {type: 'checkbox', pref: 'list.useRecent', description: 'Set the format last used as the default format'},
       {type: 'title', value: 'When quoting a post'},

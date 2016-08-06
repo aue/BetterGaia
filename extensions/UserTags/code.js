@@ -26,7 +26,7 @@ class UserTags extends Extension {
 
   static settings() {
     return [
-      {type: 'list', pref: 'tags'}
+      {type: 'other', pref: 'tags'}
     ];
   }
 

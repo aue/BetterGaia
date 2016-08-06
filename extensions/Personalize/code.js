@@ -38,7 +38,7 @@ class Personalize extends Extension {
   static settings() {
     return [
       {type: 'title', value: 'Background'},
-      {type: 'selection', pref: 'background.image', description: 'Background image', values: [
+      {type: 'selection', pref: 'background.image.selection', description: 'Background image', values: [
         {name: 'Default', value: 'default'},
         {name: 'Legacy', value: 'http://i.imgur.com/cPghNcY.jpg'},
         {name: 'Four Point', value: 'http://i.imgur.com/vg2mlt5.jpg'},
@@ -58,8 +58,9 @@ class Personalize extends Extension {
         {name: 'Leprechaun', value: 'http://i.imgur.com/nbS4mjN.png'},
         {name: 'Christmas', value: 'http://i.imgur.com/4LpzJUe.jpg'},
         {name: 'Bokeh', value: 'http://i.imgur.com/YK8asbD.jpg'},
-        {name: 'From a URL', value: ''}
+        {name: 'From a URL', value: 'custom'}
       ]},
+      {type: 'textbox', pref: 'background.image', description: 'Background image URL', hidden: true},
       {type: 'color', pref: 'background.color', description: 'Background color'},
       {type: 'checkbox', pref: 'background.repeat', description: 'Tile background image'},
       {type: 'checkbox', pref: 'background.float', description: 'Float background while scrolling'},
@@ -255,18 +256,19 @@ class Personalize extends Extension {
       	]},
         {name: 'From a URL', value: 'custom'}
       ]},
-      {type: 'textbox', pref: 'header.background', description: 'Header image', hidden: true},
-      {type: 'textbox', pref: 'header.background.base', description: 'Header image base', hidden: true},
+      {type: 'textbox', pref: 'header.background', description: 'Header image URL', hidden: true},
+      {type: 'textbox', pref: 'header.background.base', description: 'Header image base URL', hidden: true},
       {type: 'checkbox', pref: 'header.background.stretch', description: 'Stretch the header background'},
       {type: 'checkbox', pref: 'header.float', description: 'Float username and notifications when scrolling'},
 
       {type: 'title', value: 'Logo'},
-      {type: 'selection', pref: 'logo', description: 'Logo image', values: [
+      {type: 'selection', pref: 'logo.selection', description: 'Logo image', values: [
         {name: 'Default', value: 'default'},
         {name: 'Golden Gaia', value: 'http://i.imgur.com/ziQQdEx.png'},
         {name: 'OmniDrink', value: 'http://i.imgur.com/7opBViV.png'},
-        {name: 'From a URL', value: ''}
+        {name: 'From a URL', value: 'custom'}
       ]},
+      {type: 'textbox', pref: 'logo', description: 'Logo image URL', hidden: true},
 
       {type: 'title', value: 'Theme'},
       {type: 'hue', pref: 'nav.hue', description: 'Navigation'}
