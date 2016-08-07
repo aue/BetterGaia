@@ -104,7 +104,8 @@ class Personalize extends Extension {
           {name: 'Afterschool Life CI', value: ['http://w.cdn.gaiaonline.com/mfs/index/adminupload/b1c8972573cd.jpg', 'http://w.cdn.gaiaonline.com/mfs/index/adminupload/1c3c813b71fb.jpg']},
           {name: 'Memorial Day Sale', value: ['http://w.cdn.gaiaonline.com/mfs/index/adminupload/93bdf88dd6b1.jpg', 'http://w.cdn.gaiaonline.com/mfs/index/adminupload/92db42196485.jpg']},
           {name: 'CONnect CI', value: ['http://w.cdn.gaiaonline.com/mfs/index/adminupload/3a4fe67d3685.jpg', 'http://w.cdn.gaiaonline.com/mfs/index/adminupload/2bd4f8fb50a4.jpg']},
-          {name: 'Apunkalyptic CI', value: ['http://w.cdn.gaiaonline.com/mfs/index/adminupload/41944e01124f.jpg', 'http://w.cdn.gaiaonline.com/mfs/index/adminupload/2786e969f3ec.jpg']}
+          {name: 'Apunkalyptic CI', value: ['http://w.cdn.gaiaonline.com/mfs/index/adminupload/41944e01124f.jpg', 'http://w.cdn.gaiaonline.com/mfs/index/adminupload/2786e969f3ec.jpg']},
+          {name: 'Convert-O-Mayhem', value: ['http://w.cdn.gaiaonline.com/mfs/index/adminupload/3a5dfb894c16.jpg', 'http://w.cdn.gaiaonline.com/mfs/index/adminupload/41f3ceb1efc3.jpg']}
         ]},
         {type: 'group', name: '2015', values: [
           {name: 'New Attitude CI', value: ['http://w.cdn.gaiaonline.com/mfs/index/adminupload/031863aab421.jpg', 'http://w.cdn.gaiaonline.com/mfs/index/adminupload/00cc68fa2feb.jpg']},

@@ -25,7 +25,8 @@ gulp.task('vendor', ['browserify-vendor'], function() {
   return gulp.src([
     'node_modules/jquery/dist/jquery.js',
     'node_modules/handlebars/dist/handlebars.js',
-    'node_modules/minimatch/dist/minimatch.js'
+    'node_modules/minimatch/dist/minimatch.js',
+    'node_modules/sortablejs/Sortable.min.js'
   ]).pipe(concat('vendor.js'))
     .pipe(gulp.dest('staging/assets'));
 });

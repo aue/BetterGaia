@@ -235,7 +235,7 @@ class BGCore extends Extension {
           </div>
           <div class="bgs_pages">
             <div class="bgs_page myextensions bgs_active">
-              <ul class="list"></ul>
+              <div class="sidebar"><ul class="list"></ul></div>
               <div class="details"></div>
             </div>
 
@@ -372,20 +372,7 @@ class BGCore extends Extension {
         {{/if_eq}}
 
         {{#if_eq type "other"}}
-          {{#if_eq @root.info.id "PostFormatting"}}
-          <div class="option formats">
-            <ul>
-              <li>
-                <label>{{pref}}</label>
-                <input type="button" value="Edit">
-                <input type="button" value="Delete">
-              </li>
-              <li></li>
-            </ul>
-
-            <input type="button" value="Add Format">
-          </div>
-          {{/if_eq}}
+        <div class="option other" data-pref="{{pref}}"></div>
         {{/if_eq}}
 
       {{else}}
@@ -393,6 +380,94 @@ class BGCore extends Extension {
       {{/each}}
       </div>
     </div>`);
+
+    const postFormattingTemplate = Handlebars.compile(`
+      <ul>
+        {{#each this}}
+        <li class="format" data-bbcode="{{this.[1]}}" data-poststyle="{{this.[2]}}">
+          <div class="handle">::</div>
+
+          <div class="name">
+            <strong>{{this.[0]}}</strong>
+          </div>
+
+          <div class="buttons">
+            <input type="button" value="Edit">
+            <input type="button" value="Delete">
+          </div>
+        </li>
+        {{/each}}
+      </ul>
+
+      <div class="options">
+        <input type="button" value="Add Format">
+        <input type="button" value="Save Changes">
+      </div>
+    `);
+
+    const shortcutsTemplate = Handlebars.compile(`
+      <ul>
+        {{#each this}}
+        <li class="shortcut">
+          <div class="handle">::</div>
+
+          <div class="name">
+            <label for="name{{@index}}">Name</label>
+            <input id="name{{@index}}" type="text" class="pure-input-1" placeholder="Name" value="{{this.[0]}}">
+          </div>
+
+          <div class="link">
+            <label for="url{{@index}}">URL</label>
+            <input id="url{{@index}}" type="text" class="pure-input-1" placeholder="URL" value="{{this.[1]}}">
+          </div>
+
+          <div class="buttons">
+            <input type="button" value="Delete">
+          </div>
+        </li>
+        {{/each}}
+      </ul>
+
+      <div class="options">
+        <input type="button" value="Add Shortcut">
+        <input type="button" value="Save Changes">
+      </div>
+    `);
+
+    const userTagsTemplate = Handlebars.compile(`
+      <ul>
+        {{#each this}}
+        <li class="usertag" data-userid="{{@key}}" data-tag="{{x "JSON.stringify(this)"}}">
+          <div class="name">
+            <strong>Username</strong>
+            {{this.[0]}}
+          </div>
+
+          <div class="link">
+            <strong>Tag</strong>
+            {{#if this.[2]}}
+            <a href="{{this.[2]}}" target="_blank">{{this.[1]}}</a>
+            {{else}}
+            {{this.[1]}}
+            {{/if}}
+          </div>
+
+          <div class="date">
+            <strong>Added</strong>
+            {{x "new Date(this[3]).toDateString()"}}
+          </div>
+
+          <div class="buttons">
+            <input type="button" value="Delete">
+          </div>
+        </li>
+        {{/each}}
+      </ul>
+
+      <div class="options">
+        <input type="button" value="Save Changes">
+      </div>
+    `);
 
     const availableExtensionsTemplate = Handlebars.compile(`<div class="card" data-id="{{info.id}}">
       <h1>{{info.title}} <small>{{info.version}}</small></h1>
@@ -497,6 +572,22 @@ class BGCore extends Extension {
             else option.value = value;
           }
         });
+
+        // Custom setup for custom settings
+        if (extensionId === 'PostFormatting') {
+          let value = Extension.getPrefForId('list', extensionId);
+          let list = detail.find('.settings .option.other').html(postFormattingTemplate(value));
+          Sortable.create(list.find('ul')[0], {handle: '.handle'});
+        }
+        else if (extensionId === 'Shortcuts') {
+          let value = Extension.getPrefForId('links', extensionId);
+          let links = detail.find('.settings .option.other').html(shortcutsTemplate(value));
+          Sortable.create(links.find('ul')[0], {handle: '.handle'});
+        }
+        else if (extensionId === 'UserTags') {
+          let value = Extension.getPrefForId('tags', extensionId);
+          detail.find('.settings .option.other').html(userTagsTemplate(value));
+        }
 
         // Show
         detail.css('opacity'); // http://stackoverflow.com/questions/24148403/trigger-css-transition-on-appended-element
@@ -1327,7 +1418,8 @@ class Personalize extends Extension {
           {name: 'Afterschool Life CI', value: ['http://w.cdn.gaiaonline.com/mfs/index/adminupload/b1c8972573cd.jpg', 'http://w.cdn.gaiaonline.com/mfs/index/adminupload/1c3c813b71fb.jpg']},
           {name: 'Memorial Day Sale', value: ['http://w.cdn.gaiaonline.com/mfs/index/adminupload/93bdf88dd6b1.jpg', 'http://w.cdn.gaiaonline.com/mfs/index/adminupload/92db42196485.jpg']},
           {name: 'CONnect CI', value: ['http://w.cdn.gaiaonline.com/mfs/index/adminupload/3a4fe67d3685.jpg', 'http://w.cdn.gaiaonline.com/mfs/index/adminupload/2bd4f8fb50a4.jpg']},
-          {name: 'Apunkalyptic CI', value: ['http://w.cdn.gaiaonline.com/mfs/index/adminupload/41944e01124f.jpg', 'http://w.cdn.gaiaonline.com/mfs/index/adminupload/2786e969f3ec.jpg']}
+          {name: 'Apunkalyptic CI', value: ['http://w.cdn.gaiaonline.com/mfs/index/adminupload/41944e01124f.jpg', 'http://w.cdn.gaiaonline.com/mfs/index/adminupload/2786e969f3ec.jpg']},
+          {name: 'Convert-O-Mayhem', value: ['http://w.cdn.gaiaonline.com/mfs/index/adminupload/3a5dfb894c16.jpg', 'http://w.cdn.gaiaonline.com/mfs/index/adminupload/41f3ceb1efc3.jpg']}
         ]},
         {type: 'group', name: '2015', values: [
           {name: 'New Attitude CI', value: ['http://w.cdn.gaiaonline.com/mfs/index/adminupload/031863aab421.jpg', 'http://w.cdn.gaiaonline.com/mfs/index/adminupload/00cc68fa2feb.jpg']},

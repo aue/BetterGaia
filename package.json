@@ -25,6 +25,7 @@
     "jquery": "^3.0.0",
     "merge-stream": "^1.0.0",
     "minimatch": "^3.0.2",
+    "sortablejs": "^1.4.2",
     "vinyl-source-stream": "^1.1.0"
   }
 }

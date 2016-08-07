@@ -322,16 +322,18 @@ body {
 #bg_settings .bgs_page.myextensions {
   height: 100%; }
 
-#bg_settings .bgs_page.myextensions .list {
+#bg_settings .bgs_page.myextensions .sidebar {
   width: 35%;
   padding: 1em 1em 0;
   overflow-y: auto; }
+
+#bg_settings .bgs_page.myextensions .list {
+  box-shadow: 0 0 1em rgba(0, 0, 0, 0.1); }
 
 #bg_settings .bgs_page.myextensions .list li {
   list-style: none;
   padding: 1em;
   margin: 0;
-  box-shadow: 0 0 1em rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(0, 0, 0, 0.15);
   border-bottom-width: 0;
   cursor: pointer;
@@ -455,6 +457,102 @@ body {
 
 #bg_settings .bgs_page.myextensions .details .detail .settings .option.color input {
   float: right; }
+
+#bg_settings .myextensions .detail .option.other ul {
+  margin: 0 -1em;
+  box-shadow: 0 0 1em rgba(0, 0, 0, 0.1); }
+
+#bg_settings .myextensions .detail .option.other li {
+  list-style: none;
+  padding: 1em;
+  margin: 0;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-bottom-width: 0;
+  word-wrap: break-word; }
+
+#bg_settings .myextensions .detail .option.other li:last-child {
+  border-bottom-width: 1px;
+  margin-bottom: 1em; }
+
+#bg_settings .myextensions .detail .option.other .options {
+  text-align: center; }
+
+#bg_settings .myextensions .detail .option.other li:after {
+  display: table;
+  clear: both;
+  content: ''; }
+
+#bg_settings .myextensions .detail .option.other li.sortable-ghost {
+  opacity: 0.2; }
+
+#bg_settings .myextensions .detail .option.other li.sortable-chosen {
+  background: #fff;
+  box-shadow: 0 0 1em rgba(0, 0, 0, 0.1); }
+
+#bg_settings .myextensions .detail .option.other li > div {
+  float: left; }
+
+#bg_settings .myextensions .detail .option.other li .handle {
+  width: 5.5%;
+  cursor: move;
+  margin-left: -3%;
+  text-align: center;
+  padding: 0.5em 0;
+  margin-top: -0.65em; }
+
+#bg_settings .myextensions .detail .option.other li input[type="text"] {
+  display: block;
+  width: 100%; }
+
+#bg_settings .myextensions .detail .option.other .format .name {
+  width: 72%;
+  padding-right: 0.5em; }
+
+#bg_settings .myextensions .detail .option.other .format .name strong:empty:after {
+  content: 'No Name';
+  font-style: italic;
+  color: #777;
+  font-weight: normal; }
+
+#bg_settings .myextensions .detail .option.other .format .buttons {
+  width: 25%;
+  text-align: right; }
+
+#bg_settings .myextensions .detail .option.other .shortcut label {
+  font-weight: bold; }
+
+#bg_settings .myextensions .detail .option.other .shortcut .name {
+  width: 41%;
+  padding-right: 0.5em; }
+
+#bg_settings .myextensions .detail .option.other .shortcut .link {
+  width: 41%;
+  padding-right: 0.5em; }
+
+#bg_settings .myextensions .detail .option.other .shortcut .buttons {
+  width: 15%;
+  text-align: right;
+  padding-top: 1.25em; }
+
+#bg_settings .myextensions .detail .option.other .usertag strong {
+  display: block; }
+
+#bg_settings .myextensions .detail .option.other .usertag .name {
+  width: 32%;
+  padding-right: 0.5em; }
+
+#bg_settings .myextensions .detail .option.other .usertag .link {
+  width: 32%;
+  padding-right: 0.5em; }
+
+#bg_settings .myextensions .detail .option.other .usertag .date {
+  width: 21%;
+  padding-right: 0.5em; }
+
+#bg_settings .myextensions .detail .option.other .usertag .buttons {
+  width: 15%;
+  text-align: right;
+  padding-top: 1.1em; }
 
 #bg_settings .bgs_page.extensions {
   padding: 0.5em;
