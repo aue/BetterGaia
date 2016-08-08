@@ -65,7 +65,10 @@ gulp.task('build:core', function() {
  |--------------------------------------------------------------------------
  */
 gulp.task('build:extensions:core', function() {
-  const extensionClasses = getDirectories(__dirname + '/extensions/');
+  let extensionClasses = getDirectories(__dirname + '/extensions/'),
+      index = extensionClasses.indexOf('BGCore');
+  extensionClasses.splice(index, 1);
+  extensionClasses.unshift('BGCore');
 
   return gulp.src([
     'core/extension.js',

@@ -26,10 +26,16 @@ body #gaia_header #user_dropdown_menu {
   text-decoration: none;
   font-size: 12px; }
 
+#bg_shortcuts ul li a:empty:after {
+  content: 'No Name';
+  font-style: italic;
+  color: #777;
+  font-weight: normal; }
+
 #bg_shortcuts ul li:hover {
   background: #7EACC5; }
 
-#bg_shortcuts ul li:hover a {
+#bg_shortcuts ul li:hover a, #bg_shortcuts ul li:hover a:after {
   color: #FFF; }
 
 #bg_shortcuts ul li:first-of-type {

@@ -167,7 +167,7 @@ let BetterGaia = {
     let confirm = prompt('Resetting will erase all of your personal content and settings for BetterGaia, which cannot be undone.\n\nTo continue, enter "Reset BetterGaia" below.');
 
     if (confirm && confirm.toLowerCase() === 'reset bettergaia') {
-      console.log('Resetting BetterGaia...');
+      console.log('Resetting BetterGaia');
       Bridge.reset();
     }
     else console.log('Reset aborted.');
@@ -214,7 +214,7 @@ let BetterGaia = {
     console.groupCollapsed('Unmounting extensions...');
     for (let i = 0, len = this.extensions.length; i < len; i++) {
       try {
-        console.log(`Unmounting ${extensionClassesIds[i]}...`);
+        console.log(`Unmounting ${extensionClassesIds[i]}`);
         this.extensions[i].unMount();
       } catch(e) {
         console.warn(`BetterGaia: cannot unmount extension, ${this.extensions[i].id}\n`, e);
@@ -242,7 +242,6 @@ let BetterGaia = {
         // see if matches or excludes current page
         let path = document.location.pathname + document.location.search;
         let info = extension.info();
-        console.log(path);
 
         if (info.hasOwnProperty('match')) {
           if (typeof info.match === 'string') info.match = [info.match];
@@ -259,7 +258,7 @@ let BetterGaia = {
 
         // Premount the extensions
         try {
-          console.log(`Mounting ${extensionClassesIds[i]}...`);
+          console.log(`Mounting ${extensionClassesIds[i]}`);
           extension = new extension;
           extension.preMount();
           this.extensions.push(extension);

@@ -159,6 +159,24 @@ body {
           flex: 1 1 auto; }
 
 /* Settings */
+#runway_menu + .megamenu-divider + #menu_search {
+  margin-left: 78.7px; }
+
+#runway_menu + .megamenu-divider + #menu_search:before {
+  margin-left: -78.7px;
+  display: block;
+  content: 'BetterGaia';
+  position: absolute;
+  font-weight: bold;
+  text-align: center;
+  width: 76.7px;
+  color: #fff;
+  line-height: 20px;
+  border-right: 1px solid #020203;
+  box-shadow: 1px 0 0 rgba(255, 255, 255, 0.25);
+  height: 20px;
+  margin-top: 1px; }
+
 .bg_settings_link {
   width: auto !important;
   cursor: pointer;
@@ -182,7 +200,7 @@ body {
 .bg_settings_link:hover .bg_settings_link_msg {
   display: block; }
 
-#bg_settings .bg_model_container {
+#bg_settings > .bg_model_container {
   width: 60em;
   height: 100%;
   display: -webkit-box;
@@ -193,12 +211,12 @@ body {
       -ms-flex-direction: column;
           flex-direction: column; }
 
-#bg_settings .bg_model_header {
+#bg_settings > .bg_model_container > .bg_model_header {
   -webkit-box-flex: 0;
       -ms-flex: 0 0 auto;
           flex: 0 0 auto; }
 
-#bg_settings .bg_model_content {
+#bg_settings > .bg_model_container > .bg_model_content {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -377,7 +395,7 @@ body {
   opacity: 1;
   height: auto; }
 
-#bg_settings .bgs_page.myextensions .details .detail h1, h2, h3 {
+#bg_settings .bgs_page.myextensions .details .detail h1, #bg_settings .bgs_page.myextensions .details .detail h2, #bg_settings .bgs_page.myextensions .details .detail h3 {
   margin: 0.75em 0;
   text-align: center; }
 
@@ -553,6 +571,24 @@ body {
   width: 15%;
   text-align: right;
   padding-top: 1.1em; }
+
+#bg_settings .myextensions .detail .option.other .bg_model h1 {
+  margin: 0; }
+
+#bg_settings .myextensions .detail .option.other .bg_model.bg_pf fieldset {
+  padding: 0.5em 1em;
+  margin: 0; }
+
+#bg_settings .myextensions .detail .option.other .bg_model.bg_pf label, #bg_settings .myextensions .detail .option.other .bg_model.bg_pf input[type="text"], #bg_settings .myextensions .detail .option.other .bg_model.bg_pf select, #bg_settings .myextensions .detail .option.other .bg_model.bg_pf textarea {
+  display: block;
+  width: 30em; }
+
+#bg_settings .myextensions .detail .option.other .bg_model.bg_pf label {
+  font-weight: bold; }
+
+#bg_settings .myextensions .detail .option.other .bg_model.bg_pf .format-save {
+  float: right;
+  margin: 1em 0 0.5em; }
 
 #bg_settings .bgs_page.extensions {
   padding: 0.5em;

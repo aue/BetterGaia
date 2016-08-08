@@ -15,6 +15,8 @@ class BGCore extends Extension {
   }
 
   generateSettings() {
+    // TODO: Refactor this one day
+
     $('body').append(`<div id="bg_settings" class="bg_model">
       <div class="bg_model_container">
         <div class="bg_model_header">
@@ -178,56 +180,90 @@ class BGCore extends Extension {
       </div>
     </div>`);
 
+    const postFormattingItem = `<li class="format" data-bbcode="{{this.[1]}}" data-poststyle="{{this.[2]}}">
+      <div class="handle">::</div>
+
+      <div class="name">
+        <strong>{{this.[0]}}</strong>
+      </div>
+
+      <div class="buttons">
+        <input type="button" value="Edit" data-extensionid="PostFormatting" class="edit">
+        <input type="button" value="Delete" class="delete">
+      </div>
+    </li>`;
+    const postFormattingItemTemplate = Handlebars.compile(postFormattingItem);
     const postFormattingTemplate = Handlebars.compile(`
       <ul>
         {{#each this}}
-        <li class="format" data-bbcode="{{this.[1]}}" data-poststyle="{{this.[2]}}">
-          <div class="handle">::</div>
-
-          <div class="name">
-            <strong>{{this.[0]}}</strong>
-          </div>
-
-          <div class="buttons">
-            <input type="button" value="Edit">
-            <input type="button" value="Delete">
-          </div>
-        </li>
+        ${postFormattingItem}
         {{/each}}
       </ul>
 
       <div class="options">
-        <input type="button" value="Add Format">
-        <input type="button" value="Save Changes">
+        <input type="button" value="Add Format" data-extensionid="PostFormatting" class="add">
+        <input type="button" value="Save Changes" data-extensionid="PostFormatting" class="save">
+      </div>
+
+      <div class="bg_model bg_pf">
+        <div class="bg_model_container">
+          <div class="bg_model_header">
+            <h1>Editing Format</h1>
+            <a class="close" title="Close"></a>
+          </div>
+          <form class="bg_model_content">
+            <fieldset>
+              <label for="format-name">Name</label>
+              <input id="format-name" type="text" placeholder="Name">
+
+              <label for="format-text">Format</label>
+              <textarea id="format-text" placeholder="Format" rows="10"></textarea>
+
+              <label for="format-type">Style</label>
+              <select id="format-type">
+                <option value="0">Say</option>
+                <option value="1">Whisper</option>
+                <option value="2">Shout</option>
+                <option value="3">Think</option>
+                <option value="4">Document</option>
+                <option value="5">Ornate</option>
+              </select>
+
+              <input type="button" value="Save" class="format-save">
+            </fieldset>
+          </form>
+        </div>
       </div>
     `);
 
+    const shortcutsItem = `<li class="shortcut">
+      <div class="handle">::</div>
+
+      <div class="name">
+        <label for="name{{@index}}">Name</label>
+        <input id="name{{@index}}" type="text" class="pure-input-1" placeholder="Name" value="{{this.[0]}}">
+      </div>
+
+      <div class="link">
+        <label for="url{{@index}}">URL</label>
+        <input id="url{{@index}}" type="text" class="pure-input-1" placeholder="URL" value="{{this.[1]}}">
+      </div>
+
+      <div class="buttons">
+        <input type="button" value="Delete" class="delete">
+      </div>
+    </li>`;
+    const shortcutsItemTemplate = Handlebars.compile(shortcutsItem);
     const shortcutsTemplate = Handlebars.compile(`
       <ul>
         {{#each this}}
-        <li class="shortcut">
-          <div class="handle">::</div>
-
-          <div class="name">
-            <label for="name{{@index}}">Name</label>
-            <input id="name{{@index}}" type="text" class="pure-input-1" placeholder="Name" value="{{this.[0]}}">
-          </div>
-
-          <div class="link">
-            <label for="url{{@index}}">URL</label>
-            <input id="url{{@index}}" type="text" class="pure-input-1" placeholder="URL" value="{{this.[1]}}">
-          </div>
-
-          <div class="buttons">
-            <input type="button" value="Delete">
-          </div>
-        </li>
+        ${shortcutsItem}
         {{/each}}
       </ul>
 
       <div class="options">
-        <input type="button" value="Add Shortcut">
-        <input type="button" value="Save Changes">
+        <input type="button" value="Add Shortcut" data-extensionid="Shortcuts" class="add">
+        <input type="button" value="Save Changes" data-extensionid="Shortcuts" class="save">
       </div>
     `);
 
@@ -255,14 +291,14 @@ class BGCore extends Extension {
           </div>
 
           <div class="buttons">
-            <input type="button" value="Delete">
+            <input type="button" value="Delete" class="delete">
           </div>
         </li>
         {{/each}}
       </ul>
 
       <div class="options">
-        <input type="button" value="Save Changes">
+        <input type="button" value="Save Changes" data-extensionid="UserTags" class="save">
       </div>
     `);
 
@@ -401,8 +437,6 @@ class BGCore extends Extension {
           pref = optionTag.getAttribute('data-pref'),
           value = (optionTag.getAttribute('type') === 'checkbox')? optionTag.checked : optionTag.value;
 
-      console.log(pref + ', ' + value);
-
       // Personalize extension
       if (extensionId === 'Personalize') {
         if (pref === 'nav.hue') {
@@ -464,25 +498,112 @@ class BGCore extends Extension {
         }
       }
 
-      /* Preview
-      else if (pref == 'background.repeat') {
-        if (save[pref] === false) $('#preview').css('background-repeat', 'no-repeat');
-        else $('#preview').css('background-repeat', 'repeat');
-      }
-      else if (pref == 'background.position') $('#preview').css('background-position', save[pref]);
-      else if (pref == 'background.color') $('#preview').css('background-color', save[pref]);
-      else if (pref == 'header.nav') $('#preview .nav, #preview .header .wrap .username').css('background-color', save[pref]);
-      else if (pref == 'header.nav.hover') $('#preview .nav a:nth-of-type(3)').css('background-image', 'radial-gradient(ellipse at bottom center, ' + save[pref] + ', transparent 95%)');
-      else if (pref == 'header.nav.current') $('#preview .nav a:first-child').css('background-image', 'radial-gradient(ellipse at bottom center, ' + save[pref] + ', transparent 95%)');
-      else if (pref == 'forum.threadHeader') $('#preview .body .linklist').css('background-color', save[pref]);
-      else if (pref == 'forum.postHeader') $('#preview .body .username').css('background-color', save[pref]);*/
-
       // Save to storage
       Extension.setPrefForId(pref, value, extensionId);
+      console.log(`${extensionId}.${pref}`, value);
     };
 
     $('#bg_settings .myextensions .details').on('input', '.detail.bgs_active input[type="text"][data-pref]', save);
     $('#bg_settings .myextensions .details').on('change', '.detail.bgs_active input[type="checkbox"][data-pref], .detail.bgs_active input[type="range"][data-pref], .detail.bgs_active select[data-pref], .detail.bgs_active input[type="color"][data-pref]', save);
+
+    // Lists buttons functionality
+    $('#bg_settings .myextensions .details').on('click', '.detail.bgs_active .option.other .delete', (event) => {
+      let buttonTag = event.currentTarget,
+          liTag = buttonTag.parentNode.parentNode,
+          parentEl = liTag.parentNode;
+
+      parentEl.removeChild(liTag);
+    });
+
+    $('#bg_settings .myextensions .details').on('click', '.detail.bgs_active .option.other .add', (event) => {
+      let buttonTag = event.currentTarget,
+          extensionId = buttonTag.getAttribute('data-extensionid'),
+          ulTag = buttonTag.parentNode.parentNode.querySelector('ul');
+
+      if (extensionId === 'PostFormatting') ulTag.innerHTML += postFormattingItemTemplate(['', '', 0]);
+      else if (extensionId === 'Shortcuts') ulTag.innerHTML += shortcutsItemTemplate(['', '']);
+    });
+
+    $('#bg_settings .myextensions .details').on('click', '.detail.bgs_active .option.other .edit', (event) => {
+      let buttonTag = event.currentTarget,
+          extensionId = buttonTag.getAttribute('data-extensionid'),
+          liTag = buttonTag.parentNode.parentNode;
+
+      if (extensionId === 'PostFormatting') {
+        let name = liTag.querySelector('.name strong').textContent,
+            bbcode = decodeURI(liTag.getAttribute('data-bbcode')),
+            style = liTag.getAttribute('data-poststyle');
+
+        // Mark tag as editing
+        $(liTag.parentNode).children('li.editing').removeClass('editing');
+        liTag.classList.add('editing');
+
+        // Show editing model
+        const model = liTag.parentNode.parentNode.querySelector('.bg_model.bg_pf');
+        model.querySelector('input[type="text"]').value = name;
+        model.querySelector('textarea').value = bbcode;
+        model.querySelector('select').value = style;
+        model.classList.add('open');
+      }
+    });
+
+    $('#bg_settings .myextensions .details').on('click', '.detail.bgs_active .bg_model.bg_pf .format-save', (event) => {
+      let name = $('.detail.bgs_active .bg_model.bg_pf #format-name').val(),
+          bbcode = encodeURI($('.detail.bgs_active .bg_model.bg_pf #format-text').val()),
+          style = $('.detail.bgs_active .bg_model.bg_pf #format-type').val();
+
+      $('.detail.bgs_active .editing strong').text(name);
+      $('.detail.bgs_active .editing').attr({
+        'data-bbcode': bbcode,
+        'data-poststyle': style
+      });
+
+      $('.detail.bgs_active .editing').removeClass('editing');
+      $('.detail.bgs_active .bg_model.bg_pf').removeClass('open');
+    });
+
+    $('#bg_settings .myextensions .details').on('click', '.detail.bgs_active .option.other .save', (event) => {
+      let buttonTag = event.currentTarget,
+          extensionId = buttonTag.getAttribute('data-extensionid'),
+          liTags = buttonTag.parentNode.parentNode.querySelectorAll('ul li');
+
+      if (extensionId === 'PostFormatting') {
+        let formats = [];
+        liTags.forEach((liTag) => {
+          let name = liTag.querySelector('.name strong').textContent,
+              bbcode = liTag.getAttribute('data-bbcode'),
+              style = liTag.getAttribute('data-poststyle');
+          formats.push([name, bbcode, parseInt(style, 10)]);
+        });
+
+        Extension.setPrefForId('list', formats, extensionId);
+        console.log(`${extensionId}.list`, formats);
+      }
+
+      else if (extensionId === 'Shortcuts') {
+        let links = [];
+        liTags.forEach((liTag) => {
+          let name = liTag.querySelector('.name input').value,
+              url = liTag.querySelector('.link input').value;
+          links.push([name, url]);
+        });
+
+        Extension.setPrefForId('links', links, extensionId);
+        console.log(`${extensionId}.links`, links);
+      }
+
+      else if (extensionId === 'UserTags') {
+        let tags = {};
+        liTags.forEach((liTag) => {
+          let userid = liTag.getAttribute('data-userid'),
+              tag = JSON.parse(decodeURI(liTag.getAttribute('data-tag')));
+          tags[userid] = tag;
+        });
+
+        Extension.setPrefForId('tags', tags, extensionId);
+        console.log(`${extensionId}.tags`, tags);
+      }
+    });
 
     // Reset button functionality
     $('#bg_settings .myextensions .details').on('click', '.detail.bgs_active input[data-reset-pref]', (event) => {
@@ -566,8 +687,10 @@ class BGCore extends Extension {
 
   mount() {
     $('body').on('click.BGCore', '.bg_model.open .bg_model_header .close', function() {
-        $(this).closest('.bg_model.open').removeClass('open');
+      $(this).closest('.bg_model.open').removeClass('open');
+      if (!$(this).closest('.bg_model').hasClass('bg_pf')) {
         $('html').removeClass('bg_noscroll');
+      }
     });
 
     /*
