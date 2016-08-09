@@ -3,20 +3,24 @@
     "id": "bettergaia@bowafishtech.co.cc",
     "strict_min_version": "48.0"
   },
+  "background": {
+    "scripts": ["background.js"]
+  },
   "content_scripts": [ {
     "matches": ["*://*.gaiaonline.com/*"],
     "exclude_globs": [ "*://*.gaiaonline.com/profiles/*/*/", "*://*.gaiaonline.com/launch/*", "*://*.gaiaonline.com/tank/*"],
     "js": ["assets/vendor.js", "assets/bridge.js", "assets/extensions.js", "assets/core.js"],
     "run_at": "document_start"
   }],
+  "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
   "description": "Change the way you experience Gaia.",
   "homepage_url": "https://addons.mozilla.org/en-US/firefox/addon/bettergaia/",
   "icons": {
     "128": "assets/logo.png"
   },
   "manifest_version": 2,
-  "name": "BetaGaia",
+  "name": "BetterGaia",
   "permissions": [ "tabs", "storage", "*://*.gaiaonline.com/*", "*://*.bettergaia.com/*" ],
-  "version": "2016.1",
+  "version": "2016.1b",
   "web_accessible_resources": [ "assets/logo.png", "extensions/*" ]
 }

@@ -569,12 +569,12 @@ class BGCore extends Extension {
 
       if (extensionId === 'PostFormatting') {
         let formats = [];
-        liTags.forEach((liTag) => {
-          let name = liTag.querySelector('.name strong').textContent,
-              bbcode = liTag.getAttribute('data-bbcode'),
-              style = liTag.getAttribute('data-poststyle');
+        for(let i = 0, len = liTags.length; i < len; i++) {
+          let name = liTags[i].querySelector('.name strong').textContent,
+              bbcode = liTags[i].getAttribute('data-bbcode'),
+              style = liTags[i].getAttribute('data-poststyle');
           formats.push([name, bbcode, parseInt(style, 10)]);
-        });
+        }
 
         Extension.setPrefForId('list', formats, extensionId);
         console.log(`${extensionId}.list`, formats);
@@ -582,11 +582,11 @@ class BGCore extends Extension {
 
       else if (extensionId === 'Shortcuts') {
         let links = [];
-        liTags.forEach((liTag) => {
-          let name = liTag.querySelector('.name input').value,
-              url = liTag.querySelector('.link input').value;
+        for(let i = 0, len = liTags.length; i < len; i++) {
+          let name = liTags[i].querySelector('.name input').value,
+              url = liTags[i].querySelector('.link input').value;
           links.push([name, url]);
-        });
+        };
 
         Extension.setPrefForId('links', links, extensionId);
         console.log(`${extensionId}.links`, links);
@@ -594,11 +594,11 @@ class BGCore extends Extension {
 
       else if (extensionId === 'UserTags') {
         let tags = {};
-        liTags.forEach((liTag) => {
-          let userid = liTag.getAttribute('data-userid'),
-              tag = JSON.parse(decodeURI(liTag.getAttribute('data-tag')));
+        for(let i = 0, len = liTags.length; i < len; i++) {
+          let userid = liTags[i].getAttribute('data-userid'),
+              tag = JSON.parse(decodeURI(liTags[i].getAttribute('data-tag')));
           tags[userid] = tag;
-        });
+        };
 
         Extension.setPrefForId('tags', tags, extensionId);
         console.log(`${extensionId}.tags`, tags);

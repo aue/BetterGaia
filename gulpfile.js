@@ -7,6 +7,7 @@ var replace = require('gulp-replace-task');
 var streamify = require('gulp-streamify');
 var uglify = require('gulp-uglify');
 var sass = require('gulp-sass');
+var zip = require('gulp-zip');
 var merge = require('merge-stream');
 var source = require('vinyl-source-stream');
 
@@ -119,7 +120,19 @@ gulp.task('build:extensions:css', function() {
  |--------------------------------------------------------------------------
 */
 gulp.task('package', function() {
-  console.log('To be written...');
+  let chrome = gulp.src([
+    'browser/Chrome/**/*',
+    'LICENSE.md'
+  ]).pipe(zip('Chrome.zip'))
+    .pipe(gulp.dest('dist'));
+
+  let firefox = gulp.src([
+    'browser/Firefox/**/*',
+    'LICENSE.md'
+  ]).pipe(zip('Firefox.zip'))
+    .pipe(gulp.dest('dist'));
+
+  return merge(chrome, firefox);
 });
 
 /*

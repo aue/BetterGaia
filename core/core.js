@@ -14,7 +14,8 @@ let BetterGaia = {
     // Only accessed by BetterGaia
     storage: {},
     defaults: {
-      disabledExtensions: []
+      '2016transfer': false,
+      'disabledExtensions': []
     },
 
     // Extensions allowed to use these
@@ -193,6 +194,10 @@ let BetterGaia = {
     });
   },
 
+  migratePrefs: function() {
+    console.log('Migrating Preferences...');
+  },
+
   match: function(path, matchArray) {
     for (let i = 0, len = matchArray.length; i < len; i++) {
       if (minimatch(path, matchArray[i])) return true;
@@ -225,6 +230,14 @@ let BetterGaia = {
 
   mount: function() {
     if (this.mounted) return;
+
+    let transfer2016 = BetterGaia.pref.get('2016transfer');
+    if (transfer2016 == true) {
+      // Need to migrate to BetterGaia framework base
+      console.log('Need to migrate to BetterGaia framework base');
+      BetterGaia.migratePrefs();
+      //BetterGaia.pref.set('2016transfer', false);
+    }
 
     let disabledExtensions = BetterGaia.pref.get('disabledExtensions');
 

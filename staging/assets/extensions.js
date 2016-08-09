@@ -772,12 +772,12 @@ class BGCore extends Extension {
 
       if (extensionId === 'PostFormatting') {
         let formats = [];
-        liTags.forEach((liTag) => {
-          let name = liTag.querySelector('.name strong').textContent,
-              bbcode = liTag.getAttribute('data-bbcode'),
-              style = liTag.getAttribute('data-poststyle');
+        for(let i = 0, len = liTags.length; i < len; i++) {
+          let name = liTags[i].querySelector('.name strong').textContent,
+              bbcode = liTags[i].getAttribute('data-bbcode'),
+              style = liTags[i].getAttribute('data-poststyle');
           formats.push([name, bbcode, parseInt(style, 10)]);
-        });
+        }
 
         Extension.setPrefForId('list', formats, extensionId);
         console.log(`${extensionId}.list`, formats);
@@ -785,11 +785,11 @@ class BGCore extends Extension {
 
       else if (extensionId === 'Shortcuts') {
         let links = [];
-        liTags.forEach((liTag) => {
-          let name = liTag.querySelector('.name input').value,
-              url = liTag.querySelector('.link input').value;
+        for(let i = 0, len = liTags.length; i < len; i++) {
+          let name = liTags[i].querySelector('.name input').value,
+              url = liTags[i].querySelector('.link input').value;
           links.push([name, url]);
-        });
+        };
 
         Extension.setPrefForId('links', links, extensionId);
         console.log(`${extensionId}.links`, links);
@@ -797,11 +797,11 @@ class BGCore extends Extension {
 
       else if (extensionId === 'UserTags') {
         let tags = {};
-        liTags.forEach((liTag) => {
-          let userid = liTag.getAttribute('data-userid'),
-              tag = JSON.parse(decodeURI(liTag.getAttribute('data-tag')));
+        for(let i = 0, len = liTags.length; i < len; i++) {
+          let userid = liTags[i].getAttribute('data-userid'),
+              tag = JSON.parse(decodeURI(liTags[i].getAttribute('data-tag')));
           tags[userid] = tag;
-        });
+        };
 
         Extension.setPrefForId('tags', tags, extensionId);
         console.log(`${extensionId}.tags`, tags);
@@ -931,75 +931,6 @@ class BGCore extends Extension {
   }
 }
 
-class ExternalLinkRedirect extends Extension {
-  constructor() {
-    super('ExternalLinkRedirect');
-  }
-
-  static info() {
-    return {
-      id: 'ExternalLinkRedirect',
-      title: 'External Link Redirect',
-      description: 'External link redirects, now with warnings on the same page.',
-      author: 'The BetterGaia Team',
-      homepage: 'http://www.bettergaia.com/',
-      version: '1.0',
-      match: ['/forum/**', '/news/**', '/guilds/**']
-    };
-  }
-
-  preMount() {
-    this.addStyleSheet('style');
-  }
-
-  mount() {
-    $("body.forums .post a[href^='http://www.gaiaonline.com/gaia/redirect.php?r=']").on('click.ExternalLinkRedirect', function(e){
-      if ($(this).prop("href").match(/gaiaonline/g).length > 1 || e.ctrlKey || e.which == 2) {
-        return true;
-      }
-      else {
-        $("body").append($("<div class='bgredirect'></div>"));
-        var thisurl = $(this).prop("href");
-        if ($(this).children('img').attr('ismap')) {
-          thisurl += "?" + e.offsetX + "," + e.offsetY;
-        }
-
-        $.ajax({
-          type: 'GET',
-          url: thisurl,
-          dataType: 'html'
-        }).done(function(data) {
-          var pageHtml = $('<div>').html(data);
-
-          if (pageHtml.find('.warn_block').length === 1) {
-            $('.bgredirect').html(pageHtml.find('.warn_block')[0].outerHTML);
-            $('.bgredirect table.warn_block #warn_block #warn_head').append('<a class="bgclose" title="close"></a>');
-            $('.bgredirect a').attr('target', '_blank');
-            $('.bgredirect a.link_display, .bgredirect a.bgclose').on('click', function(){
-              $('.bgredirect').remove();
-            });
-          }
-          else {
-            $('.bgredirect').remove();
-            window.open(thisurl);
-          }
-        }).fail(function() {
-          $('.bgredirect').remove();
-          window.open(thisurl);
-        });
-
-        return false;
-      }
-    });
-  }
-
-  unMount() {
-    this.removeCSS();
-    $("body.forums .post a[href^='http://www.gaiaonline.com/gaia/redirect.php?r=']").off('click.ExternalLinkRedirect');
-    $('.bgredirect').remove();
-  }
-}
-
 class DrawAll extends Extension {
   constructor() {
     super('DrawAll');
@@ -1102,6 +1033,75 @@ class DrawAll extends Extension {
     this.removeCSS();
     $('#dailyReward .bg_drawall, #bg_drawall a[data-candy]').off('click.DrawAll');
     $('#bg_drawall, #bg_drawall + .bg_mask, .bg_drawall').remove();
+  }
+}
+
+class ExternalLinkRedirect extends Extension {
+  constructor() {
+    super('ExternalLinkRedirect');
+  }
+
+  static info() {
+    return {
+      id: 'ExternalLinkRedirect',
+      title: 'External Link Redirect',
+      description: 'External link redirects, now with warnings on the same page.',
+      author: 'The BetterGaia Team',
+      homepage: 'http://www.bettergaia.com/',
+      version: '1.0',
+      match: ['/forum/**', '/news/**', '/guilds/**']
+    };
+  }
+
+  preMount() {
+    this.addStyleSheet('style');
+  }
+
+  mount() {
+    $("body.forums .post a[href^='http://www.gaiaonline.com/gaia/redirect.php?r=']").on('click.ExternalLinkRedirect', function(e){
+      if ($(this).prop("href").match(/gaiaonline/g).length > 1 || e.ctrlKey || e.which == 2) {
+        return true;
+      }
+      else {
+        $("body").append($("<div class='bgredirect'></div>"));
+        var thisurl = $(this).prop("href");
+        if ($(this).children('img').attr('ismap')) {
+          thisurl += "?" + e.offsetX + "," + e.offsetY;
+        }
+
+        $.ajax({
+          type: 'GET',
+          url: thisurl,
+          dataType: 'html'
+        }).done(function(data) {
+          var pageHtml = $('<div>').html(data);
+
+          if (pageHtml.find('.warn_block').length === 1) {
+            $('.bgredirect').html(pageHtml.find('.warn_block')[0].outerHTML);
+            $('.bgredirect table.warn_block #warn_block #warn_head').append('<a class="bgclose" title="close"></a>');
+            $('.bgredirect a').attr('target', '_blank');
+            $('.bgredirect a.link_display, .bgredirect a.bgclose').on('click', function(){
+              $('.bgredirect').remove();
+            });
+          }
+          else {
+            $('.bgredirect').remove();
+            window.open(thisurl);
+          }
+        }).fail(function() {
+          $('.bgredirect').remove();
+          window.open(thisurl);
+        });
+
+        return false;
+      }
+    });
+  }
+
+  unMount() {
+    this.removeCSS();
+    $("body.forums .post a[href^='http://www.gaiaonline.com/gaia/redirect.php?r=']").off('click.ExternalLinkRedirect');
+    $('.bgredirect').remove();
   }
 }
 
@@ -1343,34 +1343,6 @@ class Forums extends Extension {
   }
 }
 
-class Guilds extends Extension {
-  constructor() {
-    super('Guilds');
-  }
-
-  static info() {
-    return {
-      id: 'Guilds',
-      title: 'Guilds',
-      description: 'A more modern Guilds page.',
-      author: 'The BetterGaia Team',
-      homepage: 'http://www.bettergaia.com/',
-      version: '1.0',
-      match: ['/guilds/**']
-    };
-  }
-
-  preMount() {
-    this.addStyleSheet('style');
-  }
-
-  mount() {}
-
-  unMount() {
-    this.removeCSS();
-  }
-}
-
 class MyGaia extends Extension {
   constructor() {
     super('MyGaia');
@@ -1432,6 +1404,34 @@ class MyGaia extends Extension {
     this.removeCSS();
     $('#bg_sidebar .bg_expand').off('click.MyGaia');
     $('#bg_sidebar').remove();
+  }
+}
+
+class Guilds extends Extension {
+  constructor() {
+    super('Guilds');
+  }
+
+  static info() {
+    return {
+      id: 'Guilds',
+      title: 'Guilds',
+      description: 'A more modern Guilds page.',
+      author: 'The BetterGaia Team',
+      homepage: 'http://www.bettergaia.com/',
+      version: '1.0',
+      match: ['/guilds/**']
+    };
+  }
+
+  preMount() {
+    this.addStyleSheet('style');
+  }
+
+  mount() {}
+
+  unMount() {
+    this.removeCSS();
   }
 }
 
@@ -1788,13 +1788,12 @@ class Personalize extends Extension {
     }
 
     // Credits
-    $('body > #gaia_footer > p').append('<span id="bg_credits">\
-      <span>You\'re using <a href="/forum/t.96293729/" target="_blank">BetterGaia <small>' + BetterGaia.version + '</small></a> \
-      by <a href="http://bettergaia.com/" target="_blank">The BetterGaia Team</a>.</span> \
-      <a class="bgtopofpage" href="#">Back to Top</a> \
-      <a name="bg_bottomofpage"></a>\
-      <iframe sandbox="allow-scripts allow-forms allow-same-origin" style="height: 0; width: 1px; border: 0; visibility: hidden;" src="http://www.bettergaia.com/public/update/"></iframe>\
-    </span>');
+    $('body > #gaia_footer > p').append(`<span id="bg_credits">
+      <span>You're using <a href="/forum/t.96293729/" target="_blank">BetterGaia <small>' + BetterGaia.version + '</small></a>
+      by <a href="http://bettergaia.com/" target="_blank">The BetterGaia Team</a>.</span>
+      <a class="bgtopofpage" href="#">Back to Top</a>
+      <a name="bg_bottomofpage"></a>
+    </span>`);
   }
 
   unMount() {
