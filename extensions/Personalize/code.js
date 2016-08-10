@@ -352,7 +352,7 @@ class Personalize extends Extension {
 
     // Credits
     $('body > #gaia_footer > p').append(`<span id="bg_credits">
-      <span>You're using <a href="/forum/t.96293729/" target="_blank">BetterGaia <small>' + BetterGaia.version + '</small></a>
+      <span>You're using <a href="/forum/t.96293729/" target="_blank">BetterGaia <small>${BetterGaia.version}</small></a>
       by <a href="http://bettergaia.com/" target="_blank">The BetterGaia Team</a>.</span>
       <a class="bgtopofpage" href="#">Back to Top</a>
       <a name="bg_bottomofpage"></a>

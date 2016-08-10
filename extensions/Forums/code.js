@@ -25,7 +25,7 @@ class Forums extends Extension {
 
       'post.optionsBottom': true,
       'post.bgContainer': false,
-      'post.postOffWhite': false,
+      'post.offWhite': false,
 
       'theme.threadHeader': '30',
       'theme.postHeader': '207'
@@ -44,7 +44,7 @@ class Forums extends Extension {
       {type: 'title', value: 'Posts'},
       {type: 'checkbox', pref: 'post.optionsBottom', description: 'Show post options at bottom of posts'},
       {type: 'checkbox', pref: 'post.bgContainer', description: 'Show background around posts'},
-      {type: 'checkbox', pref: 'post.postOffWhite', description: 'Show posts with an off-white background'},
+      {type: 'checkbox', pref: 'post.offWhite', description: 'Show posts with an off-white background'},
 
       {type: 'title', value: 'Colors'},
       {type: 'hue', pref: 'theme.threadHeader', description: 'Main color'},
@@ -121,7 +121,7 @@ class Forums extends Extension {
     `);
 
     // Make posts off white
-    if (this.getPref('post.postOffWhite') === true)
+    if (this.getPref('post.offWhite') === true)
     this.addCSS('body.forums #content #post_container .post .postcontent .message .messagecontent .post-bubble {background-color: rgba(255,255,255,0.9);} body.forums #content #post_container .post .postcontent .message .messagecontent .post-bubble div.content, body.forums #content #post_container .post .postcontent .message .messagecontent .post-bubble .avi-speech:not(.document) .avi-speech-bd {background-color: transparent;}');
 
     // Make forums all white

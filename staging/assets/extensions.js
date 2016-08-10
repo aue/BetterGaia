@@ -256,7 +256,11 @@ class BGCore extends Extension {
                   <a class="button" target="_blank" href="http://www.bettergaia.com/">BetterGaia.com</a>
                   <a class="button" target="_blank" href="http://www.bettergaia.com/donate/">Contribute</a>
                   <a class="button reset">Reset</a>
-                  <a class="button" target="_blank" href="http://www.gaiaonline.com/forum/t.96293729/">Support</a>
+                  <a class="button" target="_blank" href="http://www.gaiaonline.com/forum/t.96293729/">Forum Thread</a>
+                  <br>
+                  <br>
+                  <br>
+                  <a class="button transfer">Transfer v2015 Preferences</a>
               </div>
             </div>
           </div>
@@ -879,6 +883,17 @@ class BGCore extends Extension {
       BetterGaia.reset();
     });
 
+    // Transfer button
+    $('#bg_settings .about .transfer').on('click.BGCore', function() {
+      let transfer = prompt('BetterGaia will now try to transfer your v2015 settings. Only use this if your settings have not carried over from a BetterGaia update. \n\nTo continue, enter "Transfer Settings" below.');
+
+      if (transfer && transfer.toLowerCase() === 'transfer settings') {
+        console.log('Starting Transfer');
+        BetterGaia.migratePrefs();
+      }
+      else console.log('Transfer aborted.');
+    });
+
     // Ready to go!
     if (document.querySelector('#bg_settings .myextensions .list li') !== null) $('#bg_settings .myextensions .list li')[0].click();
   }
@@ -1178,7 +1193,7 @@ class Forums extends Extension {
 
       'post.optionsBottom': true,
       'post.bgContainer': false,
-      'post.postOffWhite': false,
+      'post.offWhite': false,
 
       'theme.threadHeader': '30',
       'theme.postHeader': '207'
@@ -1197,7 +1212,7 @@ class Forums extends Extension {
       {type: 'title', value: 'Posts'},
       {type: 'checkbox', pref: 'post.optionsBottom', description: 'Show post options at bottom of posts'},
       {type: 'checkbox', pref: 'post.bgContainer', description: 'Show background around posts'},
-      {type: 'checkbox', pref: 'post.postOffWhite', description: 'Show posts with an off-white background'},
+      {type: 'checkbox', pref: 'post.offWhite', description: 'Show posts with an off-white background'},
 
       {type: 'title', value: 'Colors'},
       {type: 'hue', pref: 'theme.threadHeader', description: 'Main color'},
@@ -1274,7 +1289,7 @@ class Forums extends Extension {
     `);
 
     // Make posts off white
-    if (this.getPref('post.postOffWhite') === true)
+    if (this.getPref('post.offWhite') === true)
     this.addCSS('body.forums #content #post_container .post .postcontent .message .messagecontent .post-bubble {background-color: rgba(255,255,255,0.9);} body.forums #content #post_container .post .postcontent .message .messagecontent .post-bubble div.content, body.forums #content #post_container .post .postcontent .message .messagecontent .post-bubble .avi-speech:not(.document) .avi-speech-bd {background-color: transparent;}');
 
     // Make forums all white
@@ -1343,6 +1358,34 @@ class Forums extends Extension {
   }
 }
 
+class Guilds extends Extension {
+  constructor() {
+    super('Guilds');
+  }
+
+  static info() {
+    return {
+      id: 'Guilds',
+      title: 'Guilds',
+      description: 'A more modern Guilds page.',
+      author: 'The BetterGaia Team',
+      homepage: 'http://www.bettergaia.com/',
+      version: '1.0',
+      match: ['/guilds/**']
+    };
+  }
+
+  preMount() {
+    this.addStyleSheet('style');
+  }
+
+  mount() {}
+
+  unMount() {
+    this.removeCSS();
+  }
+}
+
 class MyGaia extends Extension {
   constructor() {
     super('MyGaia');
@@ -1404,34 +1447,6 @@ class MyGaia extends Extension {
     this.removeCSS();
     $('#bg_sidebar .bg_expand').off('click.MyGaia');
     $('#bg_sidebar').remove();
-  }
-}
-
-class Guilds extends Extension {
-  constructor() {
-    super('Guilds');
-  }
-
-  static info() {
-    return {
-      id: 'Guilds',
-      title: 'Guilds',
-      description: 'A more modern Guilds page.',
-      author: 'The BetterGaia Team',
-      homepage: 'http://www.bettergaia.com/',
-      version: '1.0',
-      match: ['/guilds/**']
-    };
-  }
-
-  preMount() {
-    this.addStyleSheet('style');
-  }
-
-  mount() {}
-
-  unMount() {
-    this.removeCSS();
   }
 }
 
@@ -1789,7 +1804,7 @@ class Personalize extends Extension {
 
     // Credits
     $('body > #gaia_footer > p').append(`<span id="bg_credits">
-      <span>You're using <a href="/forum/t.96293729/" target="_blank">BetterGaia <small>' + BetterGaia.version + '</small></a>
+      <span>You're using <a href="/forum/t.96293729/" target="_blank">BetterGaia <small>${BetterGaia.version}</small></a>
       by <a href="http://bettergaia.com/" target="_blank">The BetterGaia Team</a>.</span>
       <a class="bgtopofpage" href="#">Back to Top</a>
       <a name="bg_bottomofpage"></a>
@@ -2117,72 +2132,6 @@ class PrivateMessages extends Extension {
   }
 }
 
-class Shortcuts extends Extension {
-  constructor() {
-    super('Shortcuts');
-  }
-
-  static info() {
-    return {
-      id: 'Shortcuts',
-      title: 'Shortcuts',
-      description: 'Have your own links to use on every page.',
-      extendedDescription: `Manage the shortcuts next by your username.`,
-      author: 'The BetterGaia Team',
-      homepage: 'http://www.bettergaia.com/',
-      version: '1.0'
-    };
-  }
-
-  static defaultPrefs() {
-    return {
-      'links': [
-        ['MyGaia', '/mygaia/'],
-        ['Private Messages', '/profile/privmsg.php'],
-        ['Forums', '/forum/'],
-        ['My Posts', '/forum/myposts/'],
-        ['My Topics', '/forum/mytopics/'],
-        ['Subscribed Threads', '/forum/subscription/'],
-        ['Shops', '/market/'],
-        ['Trades', '/gaia/bank.php'],
-        ['Marketplace', '/marketplace/'],
-        ['Guilds', '/guilds/'],
-        ['Top of Page', '#'],
-        ['Bottom of Page', '#bg_bottomofpage']
-      ]
-    };
-  }
-
-  static settings() {
-    return [
-      {type: 'other', pref: 'links'}
-    ];
-  }
-
-  preMount() {
-    this.addStyleSheet('style');
-  }
-
-  mount() {
-    let links = this.getPref('links');
-    if (!$.isEmptyObject(links)) {
-      $('#gaia_header #user_dropdown_menu').prepend(`<ul id="bg_shortcuts">
-        <li class="dropdown-list-item"><a class="bg_shortcuts_link">Shortcuts</a></li>
-        <ul></ul>
-      </ul>`);
-
-      $(links).each(function(index, data){
-        $('#bg_shortcuts ul').append('<li><a href="' + data[1] + '">' + data[0] + '</a></li>');
-      });
-    }
-  }
-
-  unMount() {
-    this.removeCSS();
-    $('#gaia_header #user_dropdown_menu #bg_shortcuts').remove();
-  }
-}
-
 class UserTags extends Extension {
   constructor() {
     super('UserTags');
@@ -2347,6 +2296,72 @@ class UserTags extends Extension {
     $('body.forums .post .user_info_wrapper .user_info .bgUserTag > span, body.forums .post .user_info_wrapper .user_info').off('click.UserTags');
     this.observer.disconnect();
     $('.bgUserTag').remove();
+  }
+}
+
+class Shortcuts extends Extension {
+  constructor() {
+    super('Shortcuts');
+  }
+
+  static info() {
+    return {
+      id: 'Shortcuts',
+      title: 'Shortcuts',
+      description: 'Have your own links to use on every page.',
+      extendedDescription: `Manage the shortcuts next by your username.`,
+      author: 'The BetterGaia Team',
+      homepage: 'http://www.bettergaia.com/',
+      version: '1.0'
+    };
+  }
+
+  static defaultPrefs() {
+    return {
+      'links': [
+        ['MyGaia', '/mygaia/'],
+        ['Private Messages', '/profile/privmsg.php'],
+        ['Forums', '/forum/'],
+        ['My Posts', '/forum/myposts/'],
+        ['My Topics', '/forum/mytopics/'],
+        ['Subscribed Threads', '/forum/subscription/'],
+        ['Shops', '/market/'],
+        ['Trades', '/gaia/bank.php'],
+        ['Marketplace', '/marketplace/'],
+        ['Guilds', '/guilds/'],
+        ['Top of Page', '#'],
+        ['Bottom of Page', '#bg_bottomofpage']
+      ]
+    };
+  }
+
+  static settings() {
+    return [
+      {type: 'other', pref: 'links'}
+    ];
+  }
+
+  preMount() {
+    this.addStyleSheet('style');
+  }
+
+  mount() {
+    let links = this.getPref('links');
+    if (!$.isEmptyObject(links)) {
+      $('#gaia_header #user_dropdown_menu').prepend(`<ul id="bg_shortcuts">
+        <li class="dropdown-list-item"><a class="bg_shortcuts_link">Shortcuts</a></li>
+        <ul></ul>
+      </ul>`);
+
+      $(links).each(function(index, data){
+        $('#bg_shortcuts ul').append('<li><a href="' + data[1] + '">' + data[0] + '</a></li>');
+      });
+    }
+  }
+
+  unMount() {
+    this.removeCSS();
+    $('#gaia_header #user_dropdown_menu #bg_shortcuts').remove();
   }
 }
 

@@ -2,13 +2,16 @@ var browserify = require('browserify');
 var fs = require('fs');
 var gulp = require('gulp');
 var autoprefixer = require('gulp-autoprefixer');
+var cleanCSS = require('gulp-clean-css');
 var concat = require('gulp-concat');
+var gulpif = require('gulp-if');
 var replace = require('gulp-replace-task');
 var streamify = require('gulp-streamify');
 var uglify = require('gulp-uglify');
 var sass = require('gulp-sass');
 var zip = require('gulp-zip');
 var merge = require('merge-stream');
+var pump = require('pump');
 var source = require('vinyl-source-stream');
 
 function getDirectories(path) {
@@ -16,6 +19,8 @@ function getDirectories(path) {
     return fs.statSync(path + '/' + file).isDirectory();
   });
 }
+
+var production = true;
 
 /*
  |--------------------------------------------------------------------------
@@ -29,6 +34,7 @@ gulp.task('vendor', ['browserify-vendor'], function() {
     'node_modules/minimatch/dist/minimatch.js',
     'node_modules/sortablejs/Sortable.min.js'
   ]).pipe(concat('vendor.js'))
+    .pipe(gulpif(production, uglify({ mangle: false })))
     .pipe(gulp.dest('staging/assets'));
 });
 
@@ -52,6 +58,7 @@ gulp.task('build:core', function() {
     'core/!(execute)*.js',
     'core/execute.js'
   ]).pipe(concat('core.js'))
+    //.pipe(gulpif(production, uglify({ mangle: false })))
     .pipe(gulp.dest('staging/assets'));
 
   let logo = gulp.src('core/logo.png')
@@ -65,18 +72,20 @@ gulp.task('build:core', function() {
  | Build Extensions into staging
  |--------------------------------------------------------------------------
  */
-gulp.task('build:extensions:core', function() {
+gulp.task('build:extensions:core', function(cb) {
   let extensionClasses = getDirectories(__dirname + '/extensions/'),
       index = extensionClasses.indexOf('BGCore');
   extensionClasses.splice(index, 1);
   extensionClasses.unshift('BGCore');
 
-  return gulp.src([
-    'core/extension.js',
-    'extensions/*/code.js',
-    'core/extensions.js'
-  ]).pipe(concat('extensions.js'))
-    .pipe(replace({
+  pump([
+    gulp.src([
+      'core/extension.js',
+      'extensions/*/code.js',
+      'core/extensions.js'
+    ]),
+    concat('extensions.js'),
+    replace({
       patterns: [{
         match: 'ListOfCommaSeperatedExtensionIdsGoHere',
         replacement: extensionClasses.join(', ')
@@ -84,8 +93,10 @@ gulp.task('build:extensions:core', function() {
         match: 'ListOfCommaSeperatedExtensionIdsWithQuotesGoHere',
         replacement: extensionClasses.join("', '")
       }]
-    }))
-    .pipe(gulp.dest('staging/assets'));
+    }),
+    //gulpif(production, uglify({ mangle: false })),
+    gulp.dest('staging/assets')
+  ], cb);
 });
 
 gulp.task('build:extensions:copy', function() {
@@ -100,6 +111,10 @@ gulp.task('build:extensions:css', function() {
   return gulp.src('extensions/**/*.scss')
     .pipe(sass().on('error', sass.logError))
     .pipe(autoprefixer())
+    .pipe(gulpif(production, cleanCSS({advanced: false, debug: true}, function(details) {
+      let ratio = (details.stats.originalSize - details.stats.minifiedSize) / details.stats.originalSize;
+      console.log(`  ${details.name}: ${details.stats.originalSize/1000}B -> ${details.stats.minifiedSize/1000}B (${parseInt(ratio*100, 10)}% reduction)`);
+    })))
     .pipe(gulp.dest('staging/extensions'));
 });
 

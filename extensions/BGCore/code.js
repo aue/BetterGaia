@@ -53,7 +53,11 @@ class BGCore extends Extension {
                   <a class="button" target="_blank" href="http://www.bettergaia.com/">BetterGaia.com</a>
                   <a class="button" target="_blank" href="http://www.bettergaia.com/donate/">Contribute</a>
                   <a class="button reset">Reset</a>
-                  <a class="button" target="_blank" href="http://www.gaiaonline.com/forum/t.96293729/">Support</a>
+                  <a class="button" target="_blank" href="http://www.gaiaonline.com/forum/t.96293729/">Forum Thread</a>
+                  <br>
+                  <br>
+                  <br>
+                  <a class="button transfer">Transfer v2015 Preferences</a>
               </div>
             </div>
           </div>
@@ -674,6 +678,17 @@ class BGCore extends Extension {
     // Reset button
     $('#bg_settings .about .reset').on('click.BGCore', function() {
       BetterGaia.reset();
+    });
+
+    // Transfer button
+    $('#bg_settings .about .transfer').on('click.BGCore', function() {
+      let transfer = prompt('BetterGaia will now try to transfer your v2015 settings. Only use this if your settings have not carried over from a BetterGaia update. \n\nTo continue, enter "Transfer Settings" below.');
+
+      if (transfer && transfer.toLowerCase() === 'transfer settings') {
+        console.log('Starting Transfer');
+        BetterGaia.migratePrefs();
+      }
+      else console.log('Transfer aborted.');
     });
 
     // Ready to go!

@@ -195,7 +195,77 @@ let BetterGaia = {
   },
 
   migratePrefs: function() {
-    console.log('Migrating Preferences...');
+    console.log('Migrating preferences...');
+    Bridge.storage.get((response) => {
+      let addToTransfer = function(temp, extensionId) {
+        for (let i = 0, len = temp.length; i < len; i++) {
+          if (response.hasOwnProperty(temp[i][0])) {
+            if (!prefsToTransfer.hasOwnProperty(extensionId)) prefsToTransfer[extensionId] = {};
+            prefsToTransfer[extensionId][temp[i][1]] = response[temp[i][0]];
+          }
+        }
+      };
+      let prefsToTransfer = {};
+
+      // extension.Personalize
+      addToTransfer([
+        ['background.image', 'background.image'],
+        ['background.color', 'background.color'],
+        ['background.repeat', 'background.repeat'],
+        ['background.position', 'background.position'],
+        ['background.float', 'background.float'],
+        ['header.float', 'header.float'],
+        ['header.background', 'header.background'],
+        ['header.background.base', 'header.background.base'],
+        ['header.background.stretch', 'header.background.stretch'],
+        ['header.logo', 'logo']
+      ], 'extension.Personalize');
+
+      // extension.Shortcuts
+      addToTransfer([
+        ['header.shortcuts.list', 'links']
+      ], 'extension.Shortcuts');
+
+      // extension.Forums
+      addToTransfer([
+        ['forum.previewThreads', 'previewThreads'],
+        ['forum.constrain', 'constrain'],
+        ['forum.post.optionsBottom', 'post.optionsBottom'],
+        ['forum.post.bgContainer', 'post.bgContainer'],
+        ['forum.pollHide', 'pollHide'],
+        ['forum.postOffWhite', 'post.offWhite'],
+        ['forum.reduceTransparency', 'reduceTransparency']
+      ], 'extension.Forums');
+
+      // extension.PostFormatting
+      addToTransfer([
+        ['format.forums', 'forums'],
+        ['format.guildForums', 'guildForums'],
+        ['format.pms', 'pms'],
+        ['format.profileComments', 'profileComments'],
+        ['format.list', 'list'],
+        ['format.list.recent', 'list.recent'],
+        ['format.list.useRecent', 'list.useRecent'],
+        ['format.quote.removeFormatting', 'quote.removeFormatting'],
+        ['format.quote.spoilerWrap', 'quote.spoilerWrap'],
+        ['format.quote.endOfFormat', 'quote.endOfFormat'],
+        ['format.quote.rangeNumber', 'quote.rangeNumber']
+      ], 'extension.PostFormatting');
+
+      // extension.UserTags
+      addToTransfer([
+        ['usertags.list', 'tags']
+      ], 'extension.UserTags');
+
+      // Save it
+      if (!BetterGaia.isEmptyObject(prefsToTransfer)) {
+        console.log('Preferences to migrate: ', prefsToTransfer);
+        Bridge.storage.set(prefsToTransfer);
+      }
+      else console.log('No preferences to migrate.');
+
+      console.log('Migration finished.');
+    });
   },
 
   match: function(path, matchArray) {
@@ -233,10 +303,9 @@ let BetterGaia = {
 
     let transfer2016 = BetterGaia.pref.get('2016transfer');
     if (transfer2016 == true) {
-      // Need to migrate to BetterGaia framework base
-      console.log('Need to migrate to BetterGaia framework base');
+      // Need to migrate to BetterGaia framework bases
       BetterGaia.migratePrefs();
-      //BetterGaia.pref.set('2016transfer', false);
+      BetterGaia.pref.set('2016transfer', false);
     }
 
     let disabledExtensions = BetterGaia.pref.get('disabledExtensions');

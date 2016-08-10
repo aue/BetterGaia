@@ -8,8 +8,9 @@ const Bridge = {
       });
     },
     set: function(key, value) {
-      var object = {};
-      object[key] = value;
+      let object = {};
+      if (value !== undefined) object[key] = value;
+      else object = key;
       browser.storage.local.set(object);
     },
     remove: function(key) {

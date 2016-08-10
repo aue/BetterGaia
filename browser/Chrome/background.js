@@ -14,6 +14,7 @@ chrome.runtime.onInstalled.addListener(function(details) {
       if (parseInt(details.previousVersion.substring(0,4), 10) < 2016) {
         // Need to migrate to BetterGaia framework base
         settings['2016transfer'] = true;
+        _gaq.push(['_setCustomVar', 1, 'Migrate', `${details.previousVersion} => ${currentVersion}`, 1]);
       }
     } catch(err) {
       console.warn(err);
