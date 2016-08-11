@@ -27,7 +27,7 @@ var production = true;
  | Combine all JS libraries into a single file
  |--------------------------------------------------------------------------
  */
-gulp.task('vendor', ['browserify-vendor'], function() {
+gulp.task('build:vendor', ['build:browserify-vendor'], function() {
   return gulp.src([
     'node_modules/jquery/dist/jquery.js',
     'node_modules/handlebars/dist/handlebars.js',
@@ -38,7 +38,7 @@ gulp.task('vendor', ['browserify-vendor'], function() {
     .pipe(gulp.dest('staging/assets'));
 });
 
-gulp.task('browserify-vendor', function() {
+gulp.task('build:browserify-vendor', function() {
   return browserify()
     .require('minimatch')
     .bundle()
@@ -74,6 +74,8 @@ gulp.task('build:core', function() {
  | Build Extensions into staging
  |--------------------------------------------------------------------------
  */
+gulp.task('build:extensions', ['build:extensions:core', 'build:extensions:copy', 'build:extensions:css']);
+
 gulp.task('build:extensions:core', function(cb) {
   let extensionClasses = getDirectories(__dirname + '/extensions/'),
       index = extensionClasses.indexOf('BGCore');
@@ -125,7 +127,7 @@ gulp.task('build:extensions:css', function() {
  | Distribute Core and Extensions to browser specific folders
  |--------------------------------------------------------------------------
  */
- gulp.task('stage', function() {
+ gulp.task('stage', ['build:vendor', 'build:core', 'build:extensions'], function() {
    return gulp.src('staging/**/*')
      .pipe(gulp.dest('browser/Chrome'))
      .pipe(gulp.dest('browser/Firefox'));
@@ -136,20 +138,20 @@ gulp.task('build:extensions:css', function() {
  | Compiles browser specific folders into one file
  |--------------------------------------------------------------------------
 */
-gulp.task('package', function() {
-  let chrome = gulp.src([
+gulp.task('package', ['build'], function() {
+  let Chrome = gulp.src([
     'browser/Chrome/**/*',
     'LICENSE.md'
   ]).pipe(zip('Chrome.zip'))
     .pipe(gulp.dest('dist'));
 
-  let firefox = gulp.src([
+  let Firefox = gulp.src([
     'browser/Firefox/**/*',
     'LICENSE.md'
   ]).pipe(zip('Firefox.zip'))
     .pipe(gulp.dest('dist'));
 
-  return merge(chrome, firefox);
+  return merge(Chrome, Firefox);
 });
 
 /*
@@ -165,7 +167,6 @@ gulp.task('watch', ['build'], function() {
   gulp.watch('staging/**/*', ['stage']);
 });
 
-gulp.task('build', ['vendor', 'build:core', 'build:extensions', 'stage']);
-gulp.task('build:extensions', ['build:extensions:core', 'build:extensions:copy', 'build:extensions:css']);
-gulp.task('pack', ['build', 'package']);
+gulp.task('build', ['stage']);
+gulp.task('pack', ['package']);
 gulp.task('default', ['build']);
