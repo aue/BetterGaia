@@ -1,4 +1,5 @@
 var browserify = require('browserify');
+var del = require('del');
 var fs = require('fs');
 var gulp = require('gulp');
 var autoprefixer = require('gulp-autoprefixer');
@@ -159,6 +160,19 @@ gulp.task('package', ['build'], function() {
  | Etc.
  |--------------------------------------------------------------------------
  */
+ gulp.task('clean', function() {
+   return del([
+     'staging',
+     'dist',
+     'browser/Chrome/extensions',
+     'browser/Chrome/assets/**/*',
+     '!browser/Chrome/assets/bridge.js',
+     'browser/Firefox/extensions',
+     'browser/Firefox/assets/**/*',
+     '!browser/Firefox/assets/bridge.js'
+   ]);
+ });
+
 gulp.task('watch', ['build'], function() {
   gulp.watch(['core/*.js', '!core/extension.js', '!core/extensions.js'], ['build:core']);
   gulp.watch(['core/extension.js', 'extensions/*/code.js', 'core/extensions.js'], ['build:extensions:core']);

@@ -26,6 +26,6 @@
     "open_in_tab": true
   },
   "permissions": [ "tabs", "storage", "*://*.gaiaonline.com/*", "*://*.bettergaia.com/*" ],
-  "version": "2016.1.1rc",
+  "version": "2016.1.2rc",
   "web_accessible_resources": [ "assets/logo.png", "extensions/*" ]
 }
