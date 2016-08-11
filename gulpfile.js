@@ -61,10 +61,12 @@ gulp.task('build:core', function() {
     //.pipe(gulpif(production, uglify({ mangle: false })))
     .pipe(gulp.dest('staging/assets'));
 
-  let logo = gulp.src('core/logo.png')
-    .pipe(gulp.dest('staging/assets'));
+  let files = gulp.src([
+    '!core/*.js',
+    'core/**/*'
+  ]).pipe(gulp.dest('staging/assets'));
 
-  return merge(core, logo);
+  return merge(core, files);
 });
 
 /*

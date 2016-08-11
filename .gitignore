@@ -7,6 +7,8 @@ browser/Firefox/assets/*
 !browser/Firefox/assets/bridge.js
 browser/Firefox/extensions/*
 
+staging
+
 ### Windows ###
 # Windows image file caches
 Thumbs.db

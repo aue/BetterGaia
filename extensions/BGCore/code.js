@@ -14,6 +14,15 @@ class BGCore extends Extension {
     };
   }
 
+  launchSettings() {
+    if ($('#bg_settings').length < 1) {
+      this.generateSettings();
+    }
+
+    $('#bg_settings').addClass('open');
+    $('html').addClass('bg_noscroll');
+  }
+
   generateSettings() {
     // TODO: Refactor this one day
 
@@ -724,13 +733,12 @@ class BGCore extends Extension {
 
     // Click events
     $('.bg_settings_link').on('click.BGCore', () => {
-      if ($('#bg_settings').length < 1) {
-        this.generateSettings();
-      }
-
-      $('#bg_settings').addClass('open');
-      $('html').addClass('bg_noscroll');
+      this.launchSettings();
     });
+
+    // launch on settings page
+    if (document.location.pathname + document.location.search + document.location.hash === '/guilds/viewtopic.php?t=24997285#bg:settings')
+      this.launchSettings();
   }
 
   unMount() {

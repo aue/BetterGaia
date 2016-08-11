@@ -217,6 +217,15 @@ class BGCore extends Extension {
     };
   }
 
+  launchSettings() {
+    if ($('#bg_settings').length < 1) {
+      this.generateSettings();
+    }
+
+    $('#bg_settings').addClass('open');
+    $('html').addClass('bg_noscroll');
+  }
+
   generateSettings() {
     // TODO: Refactor this one day
 
@@ -927,13 +936,12 @@ class BGCore extends Extension {
 
     // Click events
     $('.bg_settings_link').on('click.BGCore', () => {
-      if ($('#bg_settings').length < 1) {
-        this.generateSettings();
-      }
-
-      $('#bg_settings').addClass('open');
-      $('html').addClass('bg_noscroll');
+      this.launchSettings();
     });
+
+    // launch on settings page
+    if (document.location.pathname + document.location.search + document.location.hash === '/guilds/viewtopic.php?t=24997285#bg:settings')
+      this.launchSettings();
   }
 
   unMount() {
@@ -1557,7 +1565,8 @@ class Personalize extends Extension {
           {name: 'Memorial Day Sale', value: ['http://w.cdn.gaiaonline.com/mfs/index/adminupload/93bdf88dd6b1.jpg', 'http://w.cdn.gaiaonline.com/mfs/index/adminupload/92db42196485.jpg']},
           {name: 'CONnect CI', value: ['http://w.cdn.gaiaonline.com/mfs/index/adminupload/3a4fe67d3685.jpg', 'http://w.cdn.gaiaonline.com/mfs/index/adminupload/2bd4f8fb50a4.jpg']},
           {name: 'Apunkalyptic CI', value: ['http://w.cdn.gaiaonline.com/mfs/index/adminupload/41944e01124f.jpg', 'http://w.cdn.gaiaonline.com/mfs/index/adminupload/2786e969f3ec.jpg']},
-          {name: 'Convert-O-Mayhem', value: ['http://w.cdn.gaiaonline.com/mfs/index/adminupload/3a5dfb894c16.jpg', 'http://w.cdn.gaiaonline.com/mfs/index/adminupload/41f3ceb1efc3.jpg']}
+          {name: 'Convert-O-Mayhem', value: ['http://w.cdn.gaiaonline.com/mfs/index/adminupload/3a5dfb894c16.jpg', 'http://w.cdn.gaiaonline.com/mfs/index/adminupload/41f3ceb1efc3.jpg']},
+          {name: 'Lucid Dreams CI', value: ['//w.cdn.gaiaonline.com/mfs/index/adminupload/26c88e5cc160.jpg', '//w.cdn.gaiaonline.com/mfs/index/adminupload/371ea37c60f4.jpg']}
         ]},
         {type: 'group', name: '2015', values: [
           {name: 'New Attitude CI', value: ['http://w.cdn.gaiaonline.com/mfs/index/adminupload/031863aab421.jpg', 'http://w.cdn.gaiaonline.com/mfs/index/adminupload/00cc68fa2feb.jpg']},
@@ -2132,6 +2141,72 @@ class PrivateMessages extends Extension {
   }
 }
 
+class Shortcuts extends Extension {
+  constructor() {
+    super('Shortcuts');
+  }
+
+  static info() {
+    return {
+      id: 'Shortcuts',
+      title: 'Shortcuts',
+      description: 'Have your own links to use on every page.',
+      extendedDescription: `Manage the shortcuts next by your username.`,
+      author: 'The BetterGaia Team',
+      homepage: 'http://www.bettergaia.com/',
+      version: '1.0'
+    };
+  }
+
+  static defaultPrefs() {
+    return {
+      'links': [
+        ['MyGaia', '/mygaia/'],
+        ['Private Messages', '/profile/privmsg.php'],
+        ['Forums', '/forum/'],
+        ['My Posts', '/forum/myposts/'],
+        ['My Topics', '/forum/mytopics/'],
+        ['Subscribed Threads', '/forum/subscription/'],
+        ['Shops', '/market/'],
+        ['Trades', '/gaia/bank.php'],
+        ['Marketplace', '/marketplace/'],
+        ['Guilds', '/guilds/'],
+        ['Top of Page', '#'],
+        ['Bottom of Page', '#bg_bottomofpage']
+      ]
+    };
+  }
+
+  static settings() {
+    return [
+      {type: 'other', pref: 'links'}
+    ];
+  }
+
+  preMount() {
+    this.addStyleSheet('style');
+  }
+
+  mount() {
+    let links = this.getPref('links');
+    if (!$.isEmptyObject(links)) {
+      $('#gaia_header #user_dropdown_menu').prepend(`<ul id="bg_shortcuts">
+        <li class="dropdown-list-item"><a class="bg_shortcuts_link">Shortcuts</a></li>
+        <ul></ul>
+      </ul>`);
+
+      $(links).each(function(index, data){
+        $('#bg_shortcuts ul').append('<li><a href="' + data[1] + '">' + data[0] + '</a></li>');
+      });
+    }
+  }
+
+  unMount() {
+    this.removeCSS();
+    $('#gaia_header #user_dropdown_menu #bg_shortcuts').remove();
+  }
+}
+
 class UserTags extends Extension {
   constructor() {
     super('UserTags');
@@ -2296,72 +2371,6 @@ class UserTags extends Extension {
     $('body.forums .post .user_info_wrapper .user_info .bgUserTag > span, body.forums .post .user_info_wrapper .user_info').off('click.UserTags');
     this.observer.disconnect();
     $('.bgUserTag').remove();
-  }
-}
-
-class Shortcuts extends Extension {
-  constructor() {
-    super('Shortcuts');
-  }
-
-  static info() {
-    return {
-      id: 'Shortcuts',
-      title: 'Shortcuts',
-      description: 'Have your own links to use on every page.',
-      extendedDescription: `Manage the shortcuts next by your username.`,
-      author: 'The BetterGaia Team',
-      homepage: 'http://www.bettergaia.com/',
-      version: '1.0'
-    };
-  }
-
-  static defaultPrefs() {
-    return {
-      'links': [
-        ['MyGaia', '/mygaia/'],
-        ['Private Messages', '/profile/privmsg.php'],
-        ['Forums', '/forum/'],
-        ['My Posts', '/forum/myposts/'],
-        ['My Topics', '/forum/mytopics/'],
-        ['Subscribed Threads', '/forum/subscription/'],
-        ['Shops', '/market/'],
-        ['Trades', '/gaia/bank.php'],
-        ['Marketplace', '/marketplace/'],
-        ['Guilds', '/guilds/'],
-        ['Top of Page', '#'],
-        ['Bottom of Page', '#bg_bottomofpage']
-      ]
-    };
-  }
-
-  static settings() {
-    return [
-      {type: 'other', pref: 'links'}
-    ];
-  }
-
-  preMount() {
-    this.addStyleSheet('style');
-  }
-
-  mount() {
-    let links = this.getPref('links');
-    if (!$.isEmptyObject(links)) {
-      $('#gaia_header #user_dropdown_menu').prepend(`<ul id="bg_shortcuts">
-        <li class="dropdown-list-item"><a class="bg_shortcuts_link">Shortcuts</a></li>
-        <ul></ul>
-      </ul>`);
-
-      $(links).each(function(index, data){
-        $('#bg_shortcuts ul').append('<li><a href="' + data[1] + '">' + data[0] + '</a></li>');
-      });
-    }
-  }
-
-  unMount() {
-    this.removeCSS();
-    $('#gaia_header #user_dropdown_menu #bg_shortcuts').remove();
   }
 }
 
