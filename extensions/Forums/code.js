@@ -18,6 +18,7 @@ class Forums extends Extension {
   static defaultPrefs() {
     return {
       'instants': true,
+      'fontSizer': true,
       'previewThreads': true,
       'constrain': true,
       'pollHide': false,
@@ -36,6 +37,7 @@ class Forums extends Extension {
     return [
       {type: 'title', value: 'General'},
       {type: 'checkbox', pref: 'instants', description: 'Use instant quoting and editing'},
+      {type: 'checkbox', pref: 'fontSizer', description: 'Add a font size changer in posts'},
       {type: 'checkbox', pref: 'previewThreads', description: 'Use thread preview in thread listings'},
       {type: 'checkbox', pref: 'constrain', description: 'Constrain width of forums'},
       {type: 'checkbox', pref: 'pollHide', description: 'Show polls collapsed in threads'},
@@ -90,6 +92,44 @@ class Forums extends Extension {
         else {
           $(this).closest('.messagecontent').find(`.bg_instantbox.${action}`).slideToggle('slow');
         }
+      });
+    }
+
+    // Font Sizer
+    if (this.getPref('fontSizer') === true) {
+      $('.post .post-options ul').each(function() {
+        $(this).append(`<li class="bg_fontsizer" data-scale="default">
+          <a class="decrease"><span></span></a>
+          <a class="size"><span>100%</span></a>
+          <a class="increase"><span></span></a>
+          </a>
+        </li>`);
+      });
+
+      $('.post .post-options .bg_fontsizer').on('click.Forums', 'a.decrease, a.increase', function() {
+        let scale = this.parentNode.getAttribute('data-scale');
+
+        if (scale === 'default') {
+          $(this).closest('.messagecontent').children('.post-bubble').find('span[style^="font-size"]').each(function() {
+            let size = parseInt($(this).css('font-size').replace('px', ''), 10);
+            $(this).css('font-size', `${size/13}em`);
+          });
+          scale = 100;
+        }
+        else scale = parseInt(scale, 10);
+
+        if (this.classList.contains('decrease')) {
+          if (scale <= 25) return;
+          else scale -= 25;
+        }
+        else {
+          if (scale >= 300) return;
+          else scale += 25;
+        }
+
+        this.parentNode.setAttribute('data-scale', scale);
+        $(this).siblings('.size').text(`${scale}%`);
+        $(this).closest('.messagecontent').children('.post-bubble').css('font-size', `${scale}%`);
       });
     }
   }

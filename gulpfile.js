@@ -174,6 +174,8 @@ gulp.task('package', ['build'], function() {
  });
 
 gulp.task('watch', ['build'], function() {
+  production = false;
+
   gulp.watch(['core/*.js', '!core/extension.js', '!core/extensions.js'], ['build:core']);
   gulp.watch(['core/extension.js', 'extensions/*/code.js', 'core/extensions.js'], ['build:extensions:core']);
   gulp.watch(['extensions/**/*', '!extensions/**/*.scss', '!extensions/**/code.js'], ['build:extensions:copy']);

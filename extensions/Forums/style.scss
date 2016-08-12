@@ -177,7 +177,7 @@ body.forums #content #content-padding {}
 		body.forums #content #content-padding > #topic_header_container #thread_poll #poll h3:before {content: 'Poll: '; font-weight: normal; font-size: 13px;}
 		body.forums #content #content-padding > #topic_header_container #thread_poll #poll .poll-results {margin: 0 auto;}
 
-        /* Hidden Polls *
+    /* Hidden Polls *
 		body.forums #content #content-padding > #topic_header_container #thread_poll {height: 40px; overflow: hidden;}
 		body.forums #content #content-padding > #topic_header_container #thread_poll:hover {height: auto; overflow: visible;}
 		body.forums #content #content-padding > #topic_header_container #thread_poll:after {content: '\25BC'; color: rgba(0,0,0,0.35); display: block; position: absolute; top: 9px; right: 8px; font-size: 17px; text-shadow: 0 1px 1px #FFF;}
@@ -357,6 +357,18 @@ body.forums #content #post_container .post .postcontent {}
 		body.forums #content #post_container .post .postcontent .message .messagecontent .bg_instantbox #post_poll .bd {display: none;}
 			body.forums #content #post_container .post .postcontent .message .messagecontent .bg_instantbox #post_poll .ft:before {content: 'To make changes to your poll, edit your post.';}
 			body .bg_instantbox textarea.bbcodable {margin-top: 0 !important;}
+
+		// Font sizer
+		body.forums #content #post_container .post .postcontent .message .messagecontent .post-options ul li.bg_fontsizer {
+			float: right; background: rgba(255,255,255,0.75); user-select: none;
+			a {display: inline-block;}
+			a span:before {margin: -2px 0 2px;}
+			a.decrease {padding-right: 0.5em;}
+			a.decrease span:before {content: '\e082';}
+			a.size {pointer-events: none; padding-left: 0; padding-right: 0;}
+			a.increase {padding-left: 0.5em;}
+			a.increase span:before {content: '\e081';}
+		}
 
 		/* Post bubble */
 		body.forums #content #post_container .post .postcontent .message .messagecontent .post-bubble {margin: 0; padding: 0; overflow: auto; background: #FFF; box-shadow: 0 0 0.25em rgba(0,0,0,0.25); min-height: 197px; order: 1; z-index: 1;}
