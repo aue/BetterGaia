@@ -1,0 +1,473 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>BetterGaia Settings</title>
+
+  <link rel="stylesheet" href="../../extensions/BGCore/font.css">
+  <link rel="stylesheet" href="pure-min.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="../logo.png">
+</head>
+
+<body>
+    <div id="layout" class="pure-g">
+        <div id="nav" class="pure-u">
+            <div class="logo">
+                 <img src="../assets/logo.png">
+            </div>
+            <div class="pure-menu pure-menu-open">
+                <ul>
+                    <li>
+                        <a href="#Home">Home</a>
+                        <ul>
+                            <li><a href="#Shortcuts">Shortcuts</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#Personalize">Personalize</a>
+                        <ul>
+                            <li><a href="#Background">Background</a></li>
+                            <li><a href="#Header">Header</a></li>
+                            <li><a href="#Logo">Logo</a></li>
+                            <li><a href="#Colors">Colors</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#Forums">Forums</a>
+                        <ul>
+                            <li><a href="#PostFormat">Post Format</a></li>
+                            <li><a href="#UserTags">User Tags</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#About">About</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="pages" class="pure-u-1">
+            <div class="page" data-page="Home">
+                <div class="header">
+                    <h1>Settings</h1>
+                    <p>Tweak to your heart's content.</p>
+                </div>
+
+                <div class="content">
+                    <form class="pure-form pure-form-stacked">
+                        <fieldset></fieldset>
+                    </form>
+                </div>
+            </div>
+
+            <div class="page" data-page="Shortcuts">
+                <div class="header">
+                    <h1>Shortcuts</h1>
+                    <p>Manage the shortcuts next by your username.</p>
+                </div>
+
+                <div class="content">
+                    <form class="pure-form pure-form-stacked">
+                        <fieldset></fieldset>
+                    </form>
+
+                    <div class="text-center">
+                        <a class="pure-button add">Add Shortcut</a>
+                        <a class="pure-button pure-button-primary save" style="display: none;">Save Changes</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page fullWidth" data-page="Personalize">
+                <div class="header">
+                    <h1>Personalize</h1>
+                    <p>Here's a preview of your current picks.</p>
+                </div>
+
+                <div class="content"></div>
+            </div>
+
+            <div class="page fullWidth" data-page="Background">
+                <div class="header">
+                    <h1>Background</h1>
+                    <p>Select a background to use for the page.</p>
+                </div>
+
+                <div class="content pure-g">
+                    <div class="pure-u-1-2"></div>
+                    <div class="pure-u-1-2">
+                        <div class="options">
+                            <a data-url="" class="custom" title="Other"></a>
+                        </div>
+                        <form class="pure-form pure-form-stacked">
+                            <fieldset></fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page fullWidth" data-page="Header">
+                <div class="header">
+                    <h1>Header</h1>
+                    <p>Select a image to use for the header. When Gaia is advertising with a header, that will be shown instead.</p>
+                </div>
+
+                <div class="content pure-g">
+                    <div class="pure-u-1-2"></div>
+                    <div class="pure-u-1-2">
+                        <div class="options">
+                            <h4>Other</h4>
+                            <div>
+                                <a data-url="" data-base-url="" class="custom" title="Other"></a>
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <a class="pure-button" target="_blank" href="http://www.gaiaonline.com/guilds/viewtopic.php?t=24085591">More Headers</a>
+                        </div>
+
+                        <form class="pure-form pure-form-stacked">
+                            <fieldset></fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page fullWidth" data-page="Logo">
+                <div class="header">
+                    <h1>Logo</h1>
+                    <p>Select a logo to use for the header.</p>
+                </div>
+
+                <div class="content pure-g">
+                    <div class="pure-u-1-2"></div>
+                    <div class="pure-u-1-2">
+                        <div class="options">
+                            <a data-url="default" style="background-image: url(http://gaiaonline.com/images/gaia_global/gaia_header/br_gaia_logo_header.png);"></a>
+                            <a data-url="chrome-extension://lmgjagdflhhfjflolfalapokbplfldna/data/assets/goldengaia.png" style="background-image: url(chrome-extension://lmgjagdflhhfjflolfalapokbplfldna/data/assets/goldengaia.png);"></a>
+                            <a data-url="chrome-extension://lmgjagdflhhfjflolfalapokbplfldna/data/assets/omnidrink.png" style="background-image: url(chrome-extension://lmgjagdflhhfjflolfalapokbplfldna/data/assets/omnidrink.png);"></a>
+                            <a data-url="" class="custom" title="Other"></a>
+                        </div>
+                        <form class="pure-form pure-form-stacked">
+                            <fieldset></fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page fullWidth" data-page="Colors">
+                <div class="header">
+                    <h1>Colors</h1>
+                    <p>Choose the colors of elements for the page.</p>
+                </div>
+
+                <div class="content pure-g">
+                    <div class="pure-u-1-2"></div>
+                    <form class="pure-u-1-2 pure-form pure-form-stacked">
+                        <fieldset></fieldset>
+                    </form>
+                </div>
+            </div>
+
+            <div id="preview">
+                <div class="header">
+                    <div class="wrap">
+                        <div class="logo"></div>
+                        <div class="username">BetterGaia</div>
+                    </div>
+                </div>
+
+                <div class="nav">
+                    <a>MyGaia</a>
+                    <a>Shops</a>
+                    <a>Forums</a>
+                    <a>World</a>
+                    <a>Games</a>
+                </div>
+
+                <div class="body">
+                    <div class="linklist">
+                        <a>Gaia Forums</a><a>Gaia Online</a><a>Gaia Guides and Resources</a>
+                    </div>
+                    <div class="thread_title">BetterGaia ► Since August 2008</div>
+                    <div class="username"><span>BetterGaia</span></div>
+                    <div class="postbody">
+                        <span style="color: #F08080; font-size: 20px">❝</span><br>
+                        <strong style="color: #8B8878; font-size: 10px">WHEN YOU DO THINGS RIGHT,<br>
+PEOPLE WON'T BE SURE YOU'VE DONE ANYTHING AT ALL.</strong><br>
+                        <span style="color: #F08080; font-size: 20px">❞</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page" data-page="Forums">
+                <div class="header">
+                    <h1>Forums</h1>
+                    <p>Change how the forums are.</p>
+                </div>
+
+                <div class="content">
+                    <form class="pure-form pure-form-stacked">
+                        <fieldset></fieldset>
+                    </form>
+                </div>
+            </div>
+
+            <div class="page" data-page="PostFormat">
+                <div class="header">
+                    <h1>Post Formatting</h1>
+                    <p>Style your forum posts.</p>
+                </div>
+
+                <div class="content">
+                    <form class="pure-form pure-form-stacked">
+                        <fieldset>
+                            <div class="formats"></div>
+
+                            <div class="text-center">
+                                <a class="pure-button add">Add Format</a>
+                                <a class="pure-button pure-button-primary save" style="display: none;">Save Changes</a>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+
+            <div class="page" data-page="UserTags">
+                <div class="header">
+                    <h1>User Tags</h1>
+                    <p>Manage tags shown next to users' names in posts.</p>
+                </div>
+
+                <div class="content">
+                    <form class="pure-form pure-form-stacked">
+                        <fieldset></fieldset>
+
+                        <div class="text-center">
+                            <a class="pure-button pure-button-primary save" style="display: none;">Save Changes</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="page" data-page="About">
+                <div class="header">
+                    <h1>BetterGaia</h1>
+                    <p>Change the way you experience Gaia.</p>
+                </div>
+
+                <div class="content transferInfo" style="display: none;">
+                    <p>We've found settings from past BetterGaia installations. Would you like to transfer them over?</p>
+                    <a class="pure-button pure-button-primary">Transfer</a>
+                </div>
+
+                <div class="content pure-g">
+                    <div class="pure-u-1-4">
+                        <img src="../assets/logo.png" class="pure-img">
+                    </div>
+
+                    <div class="pure-u-3-4">
+                        <p>Version <strong class="version">0</strong>.</p>
+                        <p>The only extension that redesigns Gaia. Thank you Gaia Online, our contributors, our beta testers, and of course the regulars.</p>
+                        <p>&copy; <a href="http://www.bettergaia.com/" target="_blank">The BetterGaia Team</a>.</p>
+                        <br>
+                        <br>
+                        <a class="pure-button" target="_blank" href="http://www.bettergaia.com/">BetterGaia.com</a>
+                        <a class="pure-button" target="_blank" href="http://www.bettergaia.com/donate/">Contribute</a>
+                        <a class="pure-button reset">Reset</a>
+                        <a class="pure-button" target="_blank" href="http://www.gaiaonline.com/forum/t.96293729/">Support</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="model background">
+        <h1>Background</h1>
+        <div class="content">
+            <form class="pure-form pure-form-stacked">
+                <fieldset>
+                    <label for="onebackground">From an URL</label>
+                    <input id="onebackground" type="text" placeholder="URL">
+                </fieldset>
+            </form>
+
+            <div class="text-right">
+                <a class="pure-button cancel">Cancel</a>
+                <a class="pure-button pure-button-primary action">Save</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="model header">
+        <h1>Header</h1>
+        <div class="content">
+            <form class="pure-form pure-form-stacked">
+                <fieldset>
+                    <label for="oneheader">From an URL</label>
+                    <input type="text" placeholder="Back Image URL">
+                    <input type="text" placeholder="Front Image URL">
+                </fieldset>
+            </form>
+
+            <div class="text-right">
+                <a class="pure-button cancel">Cancel</a>
+                <a class="pure-button pure-button-primary action">Save</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="model logo">
+        <h1>Logo</h1>
+        <div class="content">
+            <form class="pure-form pure-form-stacked">
+                <fieldset>
+                    <label for="onelogo">From an URL</label>
+                    <input id="onelogo" type="text" placeholder="URL">
+                </fieldset>
+            </form>
+
+            <div class="text-right">
+                <a class="pure-button cancel">Cancel</a>
+                <a class="pure-button pure-button-primary action">Save</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="model format">
+        <h1>Edit Format</h1>
+        <div class="content">
+            <form class="pure-form pure-form-stacked">
+                <fieldset>
+                    <label for="format-name">Name</label>
+                    <input id="format-name" type="text" placeholder="Name" class="pure-input-1">
+
+                    <label for="format-text">Format</label>
+                    <textarea id="format-text" class="pure-input-1" placeholder="Format" rows="7"></textarea>
+
+                    <label for="format-type">Style</label>
+                    <select id="format-type">
+                        <option value="0">Say</option>
+                        <option value="1">Whisper</option>
+                        <option value="2">Shout</option>
+                        <option value="3">Think</option>
+                        <option value="4">Document</option>
+                        <option value="5">Ornate</option>
+                    </select>
+                </fieldset>
+            </form>
+
+            <div class="text-right">
+                <a class="pure-button cancel">Cancel</a>
+                <a class="pure-button pure-button-primary action">Save</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="model reset">
+        <h1>Reset</h1>
+        <div class="content">
+            <p>All of your set preferences will be removed. This cannot be undone.</p>
+
+            <div class="text-right">
+                <a class="pure-button cancel">Cancel</a>
+                <a class="pure-button button-warning action">Reset</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="mask"></div>
+
+    <script id="option-template" type="text/x-handlebars-template">
+    {{#each this}}
+        {{#if_eq type "checkbox"}}
+        <label for="{{key}}" class="pure-checkbox">
+            <input id="{{key}}" data-pref="{{key}}" type="checkbox"> {{description}}
+        </label>
+        {{/if_eq}}
+        {{#if_eq type "select"}}
+        <label for="{{key}}">{{description}}</label>
+        <select id="{{key}}" data-pref="{{key}}">
+            {{#each values}}
+            <option value="{{value}}">{{name}}</option>
+            {{/each}}
+        </select>
+        {{/if_eq}}
+        {{#if_eq type "color"}}
+        <label for="{{key}}">{{description}}</label>
+        <input id="{{key}}" data-pref="{{key}}" type="color">
+        {{/if_eq}}
+        {{#if_eq type "text"}}
+        <label for="{{key}}"{{#if hidden}} hidden{{/if}}>{{description}}</label>
+        <input id="{{key}}" data-pref="{{key}}" type="text" placeholder="{{description}}"{{#if hidden}} hidden{{/if}}>
+        {{/if_eq}}
+    {{/each}}
+    </script>
+
+    <script id="shortcuts-template" type="text/x-handlebars-template">
+    {{#each this}}
+        <div class="pure-g shortcut">
+            <div class="pure-u-2-5">
+                <label for="name{{@index}}">Name</label>
+                <input id="name{{@index}}" type="text" class="pure-input-1" placeholder="Name" value="{{this.[0]}}">
+            </div>
+
+            <div class="pure-u-2-5">
+                <label for="url{{@index}}">URL</label>
+                <input id="url{{@index}}" type="text" class="pure-input-1" placeholder="URL" value="{{this.[1]}}">
+            </div>
+
+            <div class="pure-u-1-5">
+                <a class="pure-button button-error delete">Delete</a>
+            </div>
+        </div>
+    {{/each}}
+    </script>
+
+    <script id="formats-template" type="text/x-handlebars-template">
+    {{#each this}}
+        <div class="pure-g format" data-bbcode="{{this.[1]}}" data-poststyle="{{this.[2]}}">
+            <div class="pure-u-4-5">
+                <strong>{{this.[0]}}</strong>
+            </div>
+
+            <div class="pure-u-1-5">
+                <a class="pure-button edit">Edit</a>
+                <a class="pure-button button-error delete">Delete</a>
+            </div>
+        </div>
+    {{/each}}
+    </script>
+
+    <script id="usertags-template" type="text/x-handlebars-template">
+    {{#each this}}
+        <div class="pure-g usertag" data-userid="{{@key}}" data-tag="{{stringify this}}">
+            <div class="pure-u-1-5">
+                {{this.[0]}}
+            </div>
+
+            <div class="pure-u-2-5">
+                {{#if this.[2]}}
+                <a href="{{urlComplete this.[2]}}" target="_blank">{{this.[1]}}</a>
+                {{else}}
+                {{this.[1]}}
+                {{/if}}
+            </div>
+
+            <div class="pure-u-1-5">
+                {{timeFromEpoch this.[3]}}
+            </div>
+
+            <div class="pure-u-1-5">
+                <a class="pure-button button-error delete">Delete</a>
+            </div>
+        </div>
+    {{/each}}
+    </script>
+
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/handlebars.min.js"></script>
+    <script src="../js/prefs.js"></script>
+    <script src="html.sortable.min.js"></script>
+    <script src="data.js"></script>
+    <script src="main.js"></script>
+</body>

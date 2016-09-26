@@ -30,6 +30,7 @@
     "merge-stream": "^1.0.0",
     "minimatch": "^3.0.2",
     "pump": "^1.0.1",
+    "purecss": "^0.6.0",
     "sortablejs": "^1.4.2",
     "vinyl-source-stream": "^1.1.0"
   }

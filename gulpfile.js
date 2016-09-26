@@ -64,10 +64,22 @@ gulp.task('build:core', function() {
 
   let files = gulp.src([
     '!core/*.js',
+    '!core/*.scss',
     'core/**/*'
   ]).pipe(gulp.dest('staging/assets'));
 
   return merge(core, files);
+});
+
+gulp.task('build:core:css', function() {
+  return gulp.src('core/**/*.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(autoprefixer())
+    .pipe(gulpif(production, cleanCSS({advanced: false, debug: true}, function(details) {
+      let ratio = (details.stats.originalSize - details.stats.minifiedSize) / details.stats.originalSize;
+      console.log(`  ${details.name}: ${details.stats.originalSize/1000}B -> ${details.stats.minifiedSize/1000}B (${parseInt(ratio*100, 10)}% reduction)`);
+    })))
+    .pipe(gulp.dest('staging/assets'));
 });
 
 /*
@@ -128,7 +140,7 @@ gulp.task('build:extensions:css', function() {
  | Distribute Core and Extensions to browser specific folders
  |--------------------------------------------------------------------------
  */
- gulp.task('stage', ['build:vendor', 'build:core', 'build:extensions'], function() {
+ gulp.task('stage', ['build:vendor', 'build:core', 'build:core:css', 'build:extensions'], function() {
    return gulp.src('staging/**/*')
      .pipe(gulp.dest('browser/Chrome'))
      .pipe(gulp.dest('browser/Firefox'));
